@@ -1,0 +1,226 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\SortieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity(repositoryClass: SortieRepository::class)]
+class Sortie
+{
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $nom = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $debutSortie = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $finSortie = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateLimiteInscription = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $nombreInscriptionsMax = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    private ?string $infosSortie = null;
+
+    #[ORM\Column]
+    private ?int $etat = null;
+
+    #[ORM\Column(length: 150, nullable: true)]
+    private ?string $motifAnnulation = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Lieu $lieu = null;
+
+    #[ORM\ManyToOne(inversedBy: 'sorties')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Campus $campus = null;
+
+    #[ORM\ManyToOne(inversedBy: 'organiseSorties')]
+    private ?Stagiaire $organisateur = null;
+
+    #[ORM\ManyToMany(targetEntity: Stagiaire::class, inversedBy: 'participeSorties')]
+    private Collection $participants;
+
+    public function __construct()
+    {
+        $this->participants = new ArrayCollection();
+    }
+
+
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
+
+        return $this;
+    }
+
+    public function getDebutSortie(): ?\DateTimeInterface
+    {
+        return $this->debutSortie;
+    }
+
+    public function setDebutSortie(\DateTimeInterface $debutSortie): self
+    {
+        $this->debutSortie = $debutSortie;
+
+        return $this;
+    }
+
+    public function getFinSortie(): ?\DateTimeInterface
+    {
+        return $this->finSortie;
+    }
+
+    public function setFinSortie(\DateTimeInterface $finSortie): self
+    {
+        $this->finSortie = $finSortie;
+
+        return $this;
+    }
+
+    public function getDateLimiteInscription(): ?\DateTimeInterface
+    {
+        return $this->dateLimiteInscription;
+    }
+
+    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): self
+    {
+        $this->dateLimiteInscription = $dateLimiteInscription;
+
+        return $this;
+    }
+
+    public function getNombreInscriptionsMax(): ?int
+    {
+        return $this->nombreInscriptionsMax;
+    }
+
+    public function setNombreInscriptionsMax(?int $nombreInscriptionsMax): self
+    {
+        $this->nombreInscriptionsMax = $nombreInscriptionsMax;
+
+        return $this;
+    }
+
+    public function getInfosSortie(): ?string
+    {
+        return $this->infosSortie;
+    }
+
+    public function setInfosSortie(?string $infosSortie): self
+    {
+        $this->infosSortie = $infosSortie;
+
+        return $this;
+    }
+
+    public function getEtat(): ?int
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(int $etat): self
+    {
+        $this->etat = $etat;
+
+        return $this;
+    }
+
+    public function getMotifAnnulation(): ?string
+    {
+        return $this->motifAnnulation;
+    }
+
+    public function setMotifAnnulation(?string $motifAnnulation): self
+    {
+        $this->motifAnnulation = $motifAnnulation;
+
+        return $this;
+    }
+
+    public function getLieu(): ?Lieu
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?Lieu $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getCampus(): ?Campus
+    {
+        return $this->campus;
+    }
+
+    public function setCampus(?Campus $campus): self
+    {
+        $this->campus = $campus;
+
+        return $this;
+    }
+
+    public function getOrganisateur(): ?Stagiaire
+    {
+        return $this->organisateur;
+    }
+
+    public function setOrganisateur(?Stagiaire $organisateur): self
+    {
+        $this->organisateur = $organisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stagiaire>
+     */
+    public function getParticipants(): Collection
+    {
+        return $this->participants;
+    }
+
+    public function addParticipant(Stagiaire $participant): self
+    {
+        if (!$this->participants->contains($participant)) {
+            $this->participants->add($participant);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipant(Stagiaire $participant): self
+    {
+        $this->participants->removeElement($participant);
+
+        return $this;
+    }
+
+
+}
