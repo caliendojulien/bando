@@ -4,11 +4,23 @@ namespace App\Controller\Admin;
 
 use App\Entity\Ville;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class VilleCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
         return Ville::class;
+    }
+    //NumberField
+    public function configureFields(string $pageName): iterable
+    {
+        return [
+            IdField::new('id')->hideOnForm(),
+            TextField::new('nom'),
+            NumberField::new('codePostal'),
+            ];
     }
 }
