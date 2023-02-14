@@ -2,6 +2,10 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Campus;
+use App\Entity\Lieu;
+use App\Entity\Stagiaire;
+use App\Entity\Ville;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -35,12 +39,17 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            ->setTitle('Bando');
+            ->setTitle('Administration de Bando');
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
-        // yield MenuItem::linkToCrud('The Label', 'fas fa-list', EntityClass::class);
+        //Ajout des CRUD et du lien de retour au site
+        yield MenuItem::linkToCrud('Campus', 'fas fa-list', Campus::class);
+        yield MenuItem::linkToCrud('Villes', 'fas fa-map-marker-alt', Ville::class);
+        yield MenuItem::linkToCrud('Lieux', 'fas fa-map-marker-alt', Lieu::class);
+        yield MenuItem::linkToCrud('Stagiaires', 'fas fa-list', Stagiaire::class);
+        //Todo choisi une autre route quand elle sera créée
+        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_test');
     }
 }
