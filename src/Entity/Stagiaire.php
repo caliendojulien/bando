@@ -52,7 +52,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\ManyToOne(inversedBy: 'stagiaires')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?campus $campus = null;
+    private ?Campus $campus = null;
 
     #[ORM\OneToMany(mappedBy: 'organisateur', targetEntity: Sortie::class)]
     private Collection $organiseSorties;
