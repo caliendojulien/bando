@@ -63,9 +63,10 @@ class SortiesController extends AbstractController
         }
         $form = $this->createForm(SortieFormType::class, $sortie);
         // Todo trouver la date de fin en fonction de la durée
-
+        //  $form->add('duree');
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
+         if ($form->isSubmitted() && $form->isValid()) {
+//            $duree= $form->get("duree")->getData();
             $entityManager->persist($sortie);
             $entityManager->flush();
 

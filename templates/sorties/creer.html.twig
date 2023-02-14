@@ -3,20 +3,43 @@
 {% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
+    <script>
+        function chargerLieux( villesEtLieux){
+            let selectVille=document.getElementById("choixVille");
+            console.log(villesEtLieux);
+            console.log(selectVille.value);
+            let $lieux=selectVille.value.getlieux;
+            console.log($lieux);
+            if ($lieux){
+                let selectlieu=document.getElementById("choixLieux");
+            }
+
+        }
+    </script>
     <h1>Créer une sortie</h1>
 
     {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.debutSortie) }}
-    <label for="duree">Durée</label><input type="number" id="duree" min="30"  step="10">minutes
+    <label for="duree">Durée</label><input type="number" id="duree"  min="30"  step="10">minutes
+{#    {{ form_row(form.duree) }}#}
     {{ form_row(form.dateLimiteInscription) }}
     {{ form_row(form.nombreInscriptionsMax) }}
     {{ form_row(form.infosSortie) }}
     {{ form_row(form.campus) }}
     {#    Todo : Ajouter la ville et les lieux par ville reçus dans la variable villesEtLieux puis afficher les infos du lieu en lecture #}
     {#    {{ form_row(form.lieu) }}#}
-    <select> <option >ville</option></select>
-    <select> <option >lieux</option></select>
+
+    <label for="choixVille"> Ville
+        <select id="choixVille" name="choixVille" onchange="chargerLieux()">
+            {% for ville in villesEtLieux %}
+                <option value="{{ ville }}"> {{ ville.nom }}</option>
+            {% endfor %}
+        </select>
+    </label>
+    <label for="choixLieux"> Lieu
+        <select id="choixLieux" name="choixLieux"></select>
+    </label>
     <button type="submit" class="btn btn-primary">Créer</button>
     {{ form_end(form) }}
 {% endblock %}

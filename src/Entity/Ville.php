@@ -54,7 +54,7 @@ class Ville
     public function __toString(): string
     {
         //fonction implémentée car elle est utilisée par le tableau de bord
-        return $this->nom;
+        return  $this->nom;
     }
 
     public function setCodePostal(string $codePostal): self
