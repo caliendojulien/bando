@@ -35,6 +35,11 @@ class Campus
         return $this->id;
     }
 
+    public function __toString(): string
+    {
+        return $this->getNom();
+    }
+
     public function getNom(): ?string
     {
         return $this->nom;
