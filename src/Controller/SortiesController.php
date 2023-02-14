@@ -6,6 +6,7 @@ use App\Entity\Sortie;
 use App\Form\SortieFormType;
 use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
+use App\Repository\VilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,16 +46,23 @@ class SortiesController extends AbstractController
     public function creer(
         EntityManagerInterface $entityManager,
         CampusRepository $campusRepository,
+        VilleRepository $villesRepo,
         Request $request
     ): Response {
 
         $user = $this->getUser();
         $sortie = new Sortie();
+        //la sortie est à l'état "créée"
         $sortie->setEtat(1);
         $sortie->setOrganisateur($user);
-        $campus = $campusRepository->findOneBy(['nom' => $user->getUserIdentifier()]);
-        $sortie->setCampus($campus);
+
+        //mettre le campus de l'organisateur par défaut
+        if (! $sortie->getCampus()) {
+            $campus = $campusRepository->findOneBy(['nom' => $user->getUserIdentifier()]);
+            $sortie->setCampus($campus);
+        }
         $form = $this->createForm(SortieFormType::class, $sortie);
+        // Todo trouver la date de fin en fonction de la durée
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -63,9 +71,10 @@ class SortiesController extends AbstractController
 
             return $this->redirectToRoute('_sorties');
         }
-
+        //passer la liste des villes avec les lieux par villes à la Form
+        $villesEtLieux = $villesRepo->findAllAveclieux();
         return $this->render('sorties/creer.html.twig', [
-            'form' => $form->createView(),
+            'form' => $form->createView(),"villesEtLieux"=>$villesEtLieux
         ]);
     }
 

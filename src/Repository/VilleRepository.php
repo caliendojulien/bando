@@ -38,7 +38,12 @@ class VilleRepository extends ServiceEntityRepository
             $this->getEntityManager()->flush();
         }
     }
-
+    public function findAllAveclieux(): array{
+        $req= $this->createQueryBuilder('ville')
+            ->leftJoin('ville.lieux','lieux')
+            ->addSelect('lieux');
+        return  $req  ->getQuery()->getResult();
+    }
 //    /**
 //     * @return Ville[] Returns an array of Ville objects
 //     */

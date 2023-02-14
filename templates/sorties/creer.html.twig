@@ -8,13 +8,15 @@
     {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.debutSortie) }}
-    {{ form_row(form.finSortie) }}
+    <label for="duree">Durée</label><input type="number" id="duree" min="30"  step="10">minutes
     {{ form_row(form.dateLimiteInscription) }}
     {{ form_row(form.nombreInscriptionsMax) }}
     {{ form_row(form.infosSortie) }}
-    {{ form_row(form.motifAnnulation) }}
     {{ form_row(form.campus) }}
-    {{ form_row(form.lieu) }}
+    {#    Todo : Ajouter la ville et les lieux par ville reçus dans la variable villesEtLieux puis afficher les infos du lieu en lecture #}
+    {#    {{ form_row(form.lieu) }}#}
+    <select> <option >ville</option></select>
+    <select> <option >lieux</option></select>
     <button type="submit" class="btn btn-primary">Créer</button>
     {{ form_end(form) }}
 {% endblock %}
