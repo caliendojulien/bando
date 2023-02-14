@@ -15,7 +15,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class SortiesController extends AbstractController
 {
 
-    #[Route('/test', name: '_sorties_test')]
+
+    #[Route('/', name: 'sorties_test')]
     public function test(): Response
     {
         return $this->render('sorties/test.html.twig', []);
