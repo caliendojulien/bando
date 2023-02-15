@@ -13,12 +13,14 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProfilType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
         $builder
             ->add('prenom', null, ['attr' => ['class' => 'profilPrenom'],])
             ->add('nom', null, ['attr' => ['class' => 'profilNom'],])
@@ -32,7 +34,23 @@ class ProfilType extends AbstractType
             ])
             ->add('campus', null, ['attr' => ['class' => 'profilCampus'],])
             ->add('url_photo', HiddenType::class, ['attr' => ['visible' => 'hidden'],])
-            ->add('photo_download', FileType::class, ['mapped' => false])
+            ->add('imageFile', VichFileType::class, [
+                'required' => false,
+                'allow_delete' => false,
+                'download_label' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '1024k',
+                        'maxSizeMessage' => 'Le fichier est trop grand',
+                        'mimeTypes' => [
+                            'image/jpg',
+                            'image/jpeg',
+                            'image/png',
+                        ],
+                        'mimeTypesMessage' => 'Votre photo doit être au format .jpg ou .jpeg ou .png'
+                    ])
+                ]
+            ])
             ->add('Envoyer', SubmitType::class);
     }
 

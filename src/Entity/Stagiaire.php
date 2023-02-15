@@ -3,12 +3,19 @@
 namespace App\Entity;
 
 use App\Repository\StagiaireRepository;
+use DateTime;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+
+#[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: StagiaireRepository::class)]
 class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -60,6 +67,16 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $participeSorties;
 
+
+    #[ORM\Column(type: 'string', length: 255)]
+    private $image;
+
+    #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'image')]
+    private $imageFile;
+
+    #[ORM\Column(nullable: true)]
+    private ?DateTime $updatedAt = null;
+
     public function __construct()
     {
         $this->organiseSorties = new ArrayCollection();
@@ -90,7 +107,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return (string)$this->email;
     }
 
     /**
@@ -288,4 +305,87 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    //Utilisation de du bundle vich pour upload les images
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new DateTime('now');
+        }
+    }
+
+    public function getImage()
+    {
+        return $this->image;
+    }
+
+    public function setImage($image)
+    {
+        $this->image = $image;
+    }
+
+    public function getUpdatedAt(): ?DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'roles' => $this->roles,
+            'nom' => $this->nom,
+            'prenom' => $this->prenom,
+            'telephone' => $this->telephone,
+            'url_photo' => $this->urlPhoto,
+            'administrateur' => $this->administrateur,
+            'actif' => $this->actif,
+            'premiere_connexion' => $this->premiereConnexion,
+            'campus' => $this->campus,
+            'organise_sortie' => $this->organiseSorties,
+            'participe_sortie' => $this->participeSorties,
+            'image' => $this->image,
+            'update_at' => $this->updatedAt,
+            'imageFile' => base64_encode($this->imageFile),
+            'password' => $this->password,
+        ];
+    }
+
+    public function __unserialize(array $serialized)
+    {
+        $this->id = $serialized['id'];
+        $this->email = $serialized['email'];
+        $this->roles = $serialized['roles'];
+        $this->nom = $serialized['nom'];
+        $this->telephone = $serialized['telephone'];
+        $this->urlPhoto = $serialized['url_photo'];
+        $this->administrateur = $serialized['administrateur'];
+        $this->premiereConnexion = $serialized['premiere_connexion'];
+        $this->campus = $serialized['campus'];
+        $this->organiseSorties = $serialized['organise_sortie'];
+        $this->participeSorties = $serialized['participe_sortie'];
+        $this->image = $serialized['image'];
+        $this->updatedAt = $serialized['update_at'];
+        $this->imageFile = base64_decode($serialized['imageFile']);
+        $this->password = $serialized['password'];
+
+        return $this;
+    }
+
 }

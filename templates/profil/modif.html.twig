@@ -3,23 +3,11 @@
 {% block body %}
     <h2>page de gestion du profil</h2>
     <div>
-        {{ form_start(profilForm) }}
-        {{ form_widget(profilForm.prenom) }}
-        {{ form_widget(profilForm.nom) }}
-        </br>
-        {{ form_widget(profilForm.telephone) }}
-        </br>
-        {{ form_widget(profilForm.password) }}
-        </br>
-        {{ form_widget(profilForm.photo_download) }}
-        </br>
-        {{ form_widget(profilForm.Envoyer) }}
-        {{ form_end(profilForm) }}
+        {{ form(profilForm) }}
     </div>
     <div>
-        <img src="{{ url }}">
+        <img src="/photos/{{ url }}">
     </div>
-
 
 {% endblock %}
 
