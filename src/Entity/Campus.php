@@ -15,12 +15,6 @@ class Campus
     #[ORM\Column]
     private ?int $id = null;
 
-    public function __toString(): string
-    {
-        //fonction implémentée car elle est utilisée par le tableau de bord
-        return  $this->nom  ;
-    }
-
     #[ORM\Column(length: 150)]
     private ?string $nom = null;
 
