@@ -73,7 +73,7 @@ class SortiesController extends AbstractController
             );
         } else {
             // Si le formulaire n'a pas été soumis ou n'est pas valide, récupération de toutes les sorties
-            $sorties = $sortieRepository->findAll();
+            $sorties = $sortieRepository->findSorties();
         }
 
         // Rendu de la vue et envoi des données
