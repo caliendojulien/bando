@@ -6,28 +6,30 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
-                <form method="get" action="{{ path('_sorties') }}">
-                    <div class="form-group">
-                        <label for="campus">Rechercher par campus :</label>
-                        <input type="text" id="campus" name="campus" value="{{ app.request.query.get('campus', '') }}"
-                               class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="nom">Le nom de la sortie contient :</label>
-                        <input type="text" id="nom" name="nom" class="form-control">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Rechercher</button>
-                </form>
+                {{ form_start(form) }}
+                {{ form_row(form.nom) }}
+                {{ form_row(form.debutSortie) }}
+                {{ form_row(form.finSortie) }}
+                {{ form_row(form.campus) }}
+                {{ form_row(form.organisateur) }}
+                {{ form_row(form.inscrit) }}
+                {{ form_row(form.non_inscrit) }}
+                {{ form_row(form.sorties_passees) }}
+                <button type="submit" class="btn btn-primary">Rechercher</button>
+                <a href="{{ path('_sorties') }}" class="btn btn-secondary">Effacer les filtres</a>
+                {{ form_end(form) }}
                 <table class="table table-striped">
                     <thead>
                     <tr>
                         <th>Nom</th>
                         <th>Campus</th>
                         <th>Début de la sortie</th>
-                        <th>Nombre d'inscriptions maximum</th>
-                        <th>Infos sur la sortie</th>
+                        <th>Inscrits/Places</th>
                         <th>État</th>
-                        <th>Motif d'annulation</th>
+                        <th>Inscrit</th>
+                        <th>Organisateur</th>
+                        <th>Participants</th>
+                        <th>Actions</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -36,10 +38,28 @@
                             <td>{{ sortie.nom }}</td>
                             <td>{{ sortie.campus.nom }}</td>
                             <td>{{ sortie.debutSortie|date('d/m/Y H:i') }}</td>
-                            <td>{{ sortie.nombreInscriptionsMax }}</td>
-                            <td>{{ sortie.infosSortie }}</td>
+                            <td>{{ sortie.participants|length }}/{{ sortie.nombreInscriptionsMax }}</td>
                             <td>{{ sortie.etat }}</td>
-                            <td>{{ sortie.motifAnnulation }}</td>
+                            <td>
+                                {% if app.user in sortie.participants %}
+                                    x
+                                {% endif %}
+                            </td>
+                            <td>{{ sortie.organisateur.nom }}</td>
+                            <td>
+                                {% for participant in sortie.participants %}
+                                    {{ participant.nom }}<br>
+                                {% endfor %}
+                            </td>
+                            <td>
+                                <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
+                                {% if app.user in sortie.participants %}
+                                    <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
+                            </td>
+
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -47,23 +67,6 @@
             </div>
         </div>
     </div>
-
-    <script>
-        const nomInput = document.getElementById('nom');
-        const rows = document.querySelectorAll('tbody tr');
-
-        nomInput.addEventListener('input', () => {
-            const filterValue = nomInput.value.toLowerCase();
-            rows.forEach(row => {
-                const name = row.querySelector('td:first-child').textContent.toLowerCase();
-                if (name.includes(filterValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        });
-    </script>
 {% endblock %}
 
 

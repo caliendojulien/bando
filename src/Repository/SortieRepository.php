@@ -2,7 +2,9 @@
 
 namespace App\Repository;
 
+use App\Entity\Campus;
 use App\Entity\Sortie;
+use App\Entity\Stagiaire;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,15 +41,108 @@ class SortieRepository extends ServiceEntityRepository
         }
     }
 
-    public function findByCampus(string $nom): array
+    public function findMinSortieDate(): array
     {
-        return $this->createQueryBuilder('s')
-            ->leftJoin('s.campus', 'c')
-            ->where('c.nom = :nom')
-            ->setParameter('nom', $nom)
-            ->getQuery()
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT MIN(s.debutSortie) as minDate FROM App\Entity\Sortie s'
+            )
             ->getResult();
     }
+
+    public function findMaxSortieDate(): array
+    {
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT MAX(s.finSortie) as maxDate FROM App\Entity\Sortie s'
+            )
+            ->getResult();
+    }
+
+    public function findSorties(
+        ?string    $nom = null,
+        ?\DateTime $debutSortie = null,
+        ?\DateTime $finSortie = null,
+        ?Campus    $campus = null,
+        ?bool      $organisateur = false,
+        Stagiaire  $user = null,
+        ?bool      $inscrit = false,
+        ?bool      $non_inscrit = false,
+        ?bool      $sorties_passees = false
+    ): array
+    {
+        $query_builder = $this->createQueryBuilder('s')
+            ->leftJoin('s.campus', 'c')
+            ->leftJoin('s.participants', 'p');
+
+        // Gestion des input
+
+        if ($nom) {
+            $query_builder->andWhere('s.nom LIKE :nom')
+                ->setParameter('nom', '%' . $nom . '%');
+        }
+
+        if ($debutSortie) {
+            $query_builder->andWhere('s.debutSortie >= :debutSortie')
+                ->setParameter('debutSortie', $debutSortie);
+        }
+
+        if ($finSortie) {
+            $query_builder->andWhere('s.debutSortie <= :finSortie')
+                ->setParameter('finSortie', $finSortie);
+        }
+
+        if ($campus) {
+            $query_builder->andWhere('c = :campus')
+                ->setParameter('campus', $campus);
+        }
+
+        // Gestion des cases à cocher
+
+        switch (true) {
+            case ($organisateur && $inscrit && $non_inscrit && $sorties_passees):
+                $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user OR s.finSortie <= :now')
+                    ->setParameter('user', $user)
+                    ->setParameter('now', new \DateTime());;
+                break;
+            case ($organisateur && $non_inscrit):
+            case ($organisateur && $inscrit && $non_inscrit):
+            case ($inscrit && $non_inscrit):
+                $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user')
+                    ->setParameter('user', $user);
+                break;
+            case ($organisateur && $inscrit):
+            case ($organisateur):
+            case ($inscrit):
+                $query_builder->andWhere('s.organisateur = :user')
+                    ->setParameter('user', $user);
+                break;
+            case ($organisateur && $sorties_passees):
+                $query_builder->andWhere('s.organisateur = :user OR s.finSortie <= :now')
+                    ->setParameter('user', $user)
+                    ->setParameter('now', new \DateTime());
+                break;
+            case($non_inscrit && $sorties_passees):
+                $query_builder->andWhere('s.organisateur != :user OR s.finSortie <= :now')
+                    ->setParameter('user', $user)
+                    ->setParameter('now', new \DateTime());
+                break;
+            case($sorties_passees):
+                $query_builder->andWhere('s.finSortie <= :now')
+                    ->setParameter('now', new \DateTime());
+                break;
+            default:
+                // Traiter les cas où toutes les cases à cocher sont décochées en retournant toutes les sorties
+                $query_builder->andWhere('1=1');
+                break;
+        }
+
+        return $query_builder->getQuery()->getResult();
+    }
+
+
+
+
 
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
