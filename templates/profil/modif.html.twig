@@ -2,9 +2,12 @@
 
 {% block body %}
     <h2>page de gestion du profil</h2>
-{% endblock %}
-
-{% block title %}
+    <div>
+        {{ form(profilForm) }}
+    </div>
+    <div>
+        <img src="/photos/{{ url }}">
+    </div>
 
 {% endblock %}
 
