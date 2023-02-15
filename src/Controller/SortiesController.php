@@ -107,9 +107,8 @@ class SortiesController extends AbstractController
         $sortie->setEtat(1);//la sortie est à l'état "créée"
         $sortie->setOrganisateur($user);
         //mettre le campus de l'organisateur par défaut
-        if (! $sortie->getCampus()) {
-            $sortie->setCampus($user->getCampus());
-        }
+        if (! $sortie->getCampus())  $sortie->setCampus($user->getCampus());
+
         //création du formulaire
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
@@ -120,7 +119,7 @@ class SortiesController extends AbstractController
             $duree = $request->request->get("duree");
             settype($duree,'integer');
             if ($duree){
-                $dateFin=new \DateTime($sortie->getDebutSortie()->format("d/m/y H:i"));
+                $dateFin=new \DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
                 $dateFin= $dateFin->add(new \DateInterval('PT'.$duree.'M'));
                     $sortie->setFinSortie( $dateFin);
             }
