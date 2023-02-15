@@ -17,20 +17,39 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class ProfilController extends AbstractController
 {
     #[Route('/profil', name: 'profil_modif')]
-    public function index(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository, SluggerInterface $slugger): Response
+    public function index(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository): Response
     {
-        $stagiaires = $this->getUser();
-        $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaires->getUserIdentifier()]);
-        $profilForm = $this->createForm(ProfilType::class, $stagiaires);
+        $stagiaireConnecte = $this->getUser();
+        $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
+        $profilForm = $this->createForm(ProfilType::class, $stagiaireConnecte);
         $profilForm->handleRequest($request);
 
         if ($profilForm->isSubmitted()) {
-            $em->persist($stagiaires);
+            $em->persist($stagiaireConnecte);
             $em->flush();
         }
         return $this->render('profil/modif.html.twig', [
             'profilForm' => $profilForm,
-            'url' => $stagiaire->getImage()
+            'stagiaire' => $stagiaire
         ]);
     }
+
+    #[Route('/profilAffiche/{id}', name: 'profil_affich')]
+    public function affiche(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository,int $id): Response
+    {
+        //Récupération du stagiaire passé en paramètre de l'appel au contrôleur
+        $stagiaire = $stagiaireRepository->findOneBy(['id' => $id]);
+
+        //Récupération du stagiaire connecté
+        $stagiaireConnecteInterface = $this->getUser();
+        $stagiaireConnecte = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecteInterface->getUserIdentifier()]);
+
+        //Si le stagiaire connecté est le stagiaire recherché alors il est renvoyé vers la page de modification du profil
+        if($stagiaire->getId() == $stagiaireConnecte->getId()){
+            return $this->redirectToRoute('profil_modif');
+        }
+            return $this->render('profil/affiche.html.twig', [
+                'stagiaire' => $stagiaire,
+            ]);
+        }
 }

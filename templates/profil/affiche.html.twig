@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h2>page affichage profil autre</h2>
+
+    <div>
+        <p>Prénom:{{ stagiaire.prenom }}</p>
+        <p>Nom:{{ stagiaire.nom }}</p>
+        <p>Téléphone:{{ stagiaire.telephone }}</p>
+        <p>Email:{{ stagiaire.email }}</p>
+        <p>Campus:{{ stagiaire.campus }}</p>
+    </div>
+
+{% endblock %}
+

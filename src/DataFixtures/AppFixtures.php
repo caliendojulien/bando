@@ -12,6 +12,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Faker;
+use PHPUnit\Framework\Warning;
 
 class AppFixtures extends Fixture
 {
@@ -101,7 +102,7 @@ class AppFixtures extends Fixture
             $sorties[$i]->setLieu($lieux[$ramdom_key_lieu]);
             $sorties[$i]->setCampus($campus[$ramdom_key_campus]);
             $sorties[$i]->setOrganisateur($stagiaires[$random_keys_stagiaire]);
-            $sorties[$i]->setNom("test");
+            $sorties[$i]->setNom("Ma sortie à ".$faker->city.' - '.$faker->company);
 
             $sorties[$i]->setDebutSortie($rand_date_debut);
             $sorties[$i]->setFinSortie($rand_date_fin);
