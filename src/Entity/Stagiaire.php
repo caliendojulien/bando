@@ -67,8 +67,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Sortie::class, mappedBy: 'participants')]
     private Collection $participeSorties;
 
-
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $image;
 
     #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'image')]
