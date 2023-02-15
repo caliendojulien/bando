@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une sortie{% endblock %}
+
+{% block body %}
+    <h1>Créer une sortie</h1>
+
+    {{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.debutSortie) }}
+    {{ form_row(form.finSortie) }}
+    {{ form_row(form.dateLimiteInscription) }}
+    {{ form_row(form.nombreInscriptionsMax) }}
+    {{ form_row(form.infosSortie) }}
+    {{ form_row(form.motifAnnulation) }}
+    {{ form_row(form.campus) }}
+    {{ form_row(form.lieu) }}
+    <button type="submit" class="btn btn-primary">Créer</button>
+    {{ form_end(form) }}
+{% endblock %}
+
+

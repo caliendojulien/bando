@@ -1,10 +1,70 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}
-
-{% endblock %}
+{% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
+    <div class="container-fluid">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-12 col-sm-12">
+                <form method="get" action="{{ path('_sorties') }}">
+                    <div class="form-group">
+                        <label for="campus">Rechercher par campus :</label>
+                        <input type="text" id="campus" name="campus" value="{{ app.request.query.get('campus', '') }}"
+                               class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Le nom de la sortie contient :</label>
+                        <input type="text" id="nom" name="nom" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Rechercher</button>
+                </form>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Campus</th>
+                        <th>Début de la sortie</th>
+                        <th>Nombre d'inscriptions maximum</th>
+                        <th>Infos sur la sortie</th>
+                        <th>État</th>
+                        <th>Motif d'annulation</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for sortie in sorties %}
+                        <tr>
+                            <td>{{ sortie.nom }}</td>
+                            <td>{{ sortie.campus.nom }}</td>
+                            <td>{{ sortie.debutSortie|date('d/m/Y H:i') }}</td>
+                            <td>{{ sortie.nombreInscriptionsMax }}</td>
+                            <td>{{ sortie.infosSortie }}</td>
+                            <td>{{ sortie.etat }}</td>
+                            <td>{{ sortie.motifAnnulation }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        const nomInput = document.getElementById('nom');
+        const rows = document.querySelectorAll('tbody tr');
+
+        nomInput.addEventListener('input', () => {
+            const filterValue = nomInput.value.toLowerCase();
+            rows.forEach(row => {
+                const name = row.querySelector('td:first-child').textContent.toLowerCase();
+                if (name.includes(filterValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 {% endblock %}
+
+
 

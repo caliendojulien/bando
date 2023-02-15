@@ -39,6 +39,16 @@ class SortieRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByCampus(string $nom): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.campus', 'c')
+            ->where('c.nom = :nom')
+            ->setParameter('nom', $nom)
+            ->getQuery()
+            ->getResult();
+    }
+
 //    /**
 //     * @return Sortie[] Returns an array of Sortie objects
 //     */

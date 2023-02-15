@@ -2,25 +2,30 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Ville;
+use App\Entity\Lieu;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
-class VilleCrudController extends AbstractCrudController
+class LieuCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
     {
-        return Ville::class;
+        return Lieu::class;
     }
-    //NumberField
+
     public function configureFields(string $pageName): iterable
     {
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('nom'),
-            NumberField::new('codePostal'),
-            ];
+            TextField::new('rue'),
+            NumberField::new('latitude'),
+            NumberField::new('longitude'),
+            AssociationField::new('ville'),
+        ];
     }
+
 }
