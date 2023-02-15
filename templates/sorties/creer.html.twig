@@ -10,27 +10,23 @@
         function chargerLieux( idVille){
 
            let selectlieu=document.getElementById("choixLieux");
-
-            {#for (const lieu of {{ lieux }}) {#}
-            {#    console.log(lieu);#}
-            {#}#}
-            {#console.log({{ lieux }});#}
-
-            // fetch("http://localhost:8000/listerLieux/"+idVille+".json")
-            fetch('{{  path('sorties_listeLieux', {'id': 1})}}')
-            // fetch("http://localhost:8000/listerLieux/"+idVille+".json")
+           selectlieu.length=0;
+           // Todo Trouver le moyen de mettre le param idVille !
+            fetch("{{  path('sorties_listeLieux', {'id': 1})}}")
+            // fetch("http://localhost:8000/listerLieux/1")
+           {#fetch("{{  url('sorties_listeLieux')}}"+"/"+idVille)#}
+           {# fetch("{{  path('sorties_listeLieux',{'id:')}}"+idVille+"}")#}
                 // reponse = retour de la commande précédente, puis je le transforme en JSON
                 .then((reponse) => reponse.json())
                 //json est donc le json récupéré, je l'ajoute dans le select
                 .then((json) =>{
                     for (let lieu of json) {
-                        //     let momOption=document.createElement('<option>');
-                        //     momOption.innerText = lieux.nom;
-                        //     selectlieu.appendChild(momOption);
-                        console.log(lieu.nom);
+                            let momOption=document.createElement('option');
+                            momOption.value=lieu.id;
+                            momOption.innerText = lieu.nom;
+                            selectlieu.appendChild(momOption);
                     }
                 });
-        // }
     }
     </script>
     <h1>Créer une sortie</h1>
@@ -38,7 +34,7 @@
     {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.debutSortie) }}
-    <label for="duree">Durée</label><input type="number" id="duree"  min="30"  step="10">minutes
+    <label for="duree" >Durée</label><input type="number" id="duree" name="duree" min="30"  step="10">minutes
     {{ form_row(form.dateLimiteInscription) }}
     {{ form_row(form.nombreInscriptionsMax) }}
     {{ form_row(form.infosSortie) }}
@@ -46,21 +42,18 @@
 
     <label for="choixVille"> Ville
         <select id="choixVille" name="choixVille" onchange="chargerLieux(value)">
-            <optgroup label="choisissez une ville">
+                <option  disabled selected>choisissez une ville:</option>
             {% for ville in villes %}
                 <option value="{{ ville.id }}"> {{ ville.nom }}</option>
             {% endfor %}
-            </optgroup>
         </select>
     </label>
-{#    Todo afficher les lieux par rapport à la ville#}
+
     <label for="choixLieux"> Lieu
         <select id="choixLieux" name="choixLieux">
-{#            {% for lieu in lieux %}#}
-{#                <option value="{{ lieu.id }}"> {{ lieu.nom }}</option>#}
-{#            {% endfor %}#}
         </select>
     </label>
+
     <button type="submit" class="btn btn-primary">Créer</button>
     {{ form_end(form) }}
 {% endblock %}
