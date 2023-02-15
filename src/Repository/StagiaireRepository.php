@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use function get_class;
 
 /**
  * @extends ServiceEntityRepository<Stagiaire>
@@ -22,15 +23,6 @@ class StagiaireRepository extends ServiceEntityRepository implements PasswordUpg
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Stagiaire::class);
-    }
-
-    public function save(Stagiaire $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
     }
 
     public function remove(Stagiaire $entity, bool $flush = false): void
@@ -48,13 +40,23 @@ class StagiaireRepository extends ServiceEntityRepository implements PasswordUpg
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof Stagiaire) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
         $user->setPassword($newHashedPassword);
 
         $this->save($user, true);
     }
+
+    public function save(Stagiaire $entity, bool $flush = false): void
+    {
+        $this->getEntityManager()->persist($entity);
+
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
 
 //    /**
 //     * @return Stagiaire[] Returns an array of Stagiaire objects
