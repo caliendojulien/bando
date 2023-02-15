@@ -39,6 +39,15 @@ class VilleRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return array La liste de toutes les villes avec toutes les sorties de chaque ville, s'il y en a
+     */
+    public function findAllAveclieux(): array{
+        $req= $this->createQueryBuilder('ville')
+            ->leftJoin('ville.lieux','lieux')
+            ->addSelect('lieux');
+        return  $req  ->getQuery()->getResult();
+    }
 //    /**
 //     * @return Ville[] Returns an array of Ville objects
 //     */

@@ -48,6 +48,20 @@ class StagiaireRepository extends ServiceEntityRepository implements PasswordUpg
         $this->save($user, true);
     }
 
+
+    /**
+     * @param string $email L'identifiant de cnx l'utilisateur, donc du stagiaire
+     * @return Stagiaire  Le stagiaire et les infos de son campus
+     */
+    public function findOneAvecCampus(string $email): Stagiaire{
+        $req= $this->createQueryBuilder('stag')
+            ->innerJoin('stag.campus','campus')
+            ->andwhere("stag.email = :email")
+            ->setParameter('email',$email)
+            ->addSelect('campus');
+        return  $req  ->getQuery()->getResult()[0];
+    }
+
     public function save(Stagiaire $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
