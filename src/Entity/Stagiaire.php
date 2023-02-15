@@ -288,4 +288,5 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
 }

@@ -17,23 +17,15 @@ class SortieFormType extends AbstractType
         $builder
             ->add('nom')
             ->add('debutSortie')
-            //->add('finSortie')
             ->add('dateLimiteInscription')
             ->add('nombreInscriptionsMax')
             ->add('infosSortie')
-            //->add('motifAnnulation')
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Sélectionner un campus',
                 'required' => false,
             ])
-//            ->add('lieu', EntityType::class, [
-//                'class' => Lieu::class,
-//                'choice_label' => 'nom',
-//                'placeholder' => 'Sélectionner un lieu',
-//                'required' => false,
-//            ])
         ;
     }
 
