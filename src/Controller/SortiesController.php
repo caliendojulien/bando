@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\EtatSorties;
 use App\Entity\Sortie;
 use App\Form\SortieFormType;
 use App\Repository\LieuRepository;
 use App\Form\SortieSearchFormType;
-use App\Repository\CampusRepository;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
@@ -107,32 +107,35 @@ class SortiesController extends AbstractController
     #[Route('/creer', name: '_creer-sortie')]
     public function creer(
         EntityManagerInterface $entityManager,
-     StagiaireRepository $stagRepo,
+        StagiaireRepository $stagRepo,
         VilleRepository $villesRepo,
         LieuRepository $LieuxRepo,
         Request $request
     ): Response {
+        If ($request->request->get( 'Annuler' )){
+            return  $this->redirectToRoute('_sorties');
+        }
         $u = $this->getUser();
         $user=$stagRepo->findOneAvecCampus($u->getUserIdentifier());
 
         $sortie = new Sortie();
-        $sortie->setEtat(1);//la sortie est à l'état "créée"
+
         $sortie->setOrganisateur($user);
         //mettre le campus de l'organisateur par défaut
-        if (! $sortie->getCampus()) {
-            $sortie->setCampus($user->getCampus());
-        }
+        if (! $sortie->getCampus())  $sortie->setCampus($user->getCampus());
+
         //création du formulaire
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
 
         //traiter l'envoi du formulaire
          if ($form->isSubmitted() ) {
-             //  trouver la date de fin en fonction de la durée et de la date de début
+
+                 //  trouver la date de fin en fonction de la durée et de la date de début
             $duree = $request->request->get("duree");
             settype($duree,'integer');
             if ($duree){
-                $dateFin=new \DateTime($sortie->getDebutSortie()->format("d/m/y H:i"));
+                $dateFin=new \DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
                 $dateFin= $dateFin->add(new \DateInterval('PT'.$duree.'M'));
                     $sortie->setFinSortie( $dateFin);
             }
@@ -140,6 +143,13 @@ class SortiesController extends AbstractController
             $idLieu=$request->request->get("choixLieux");
             $lieu=$LieuxRepo->findOneBy(["id"=>$idLieu]);
             $sortie->setLieu($lieu);
+            //l'état dépend du bouton
+             $bouton=$form->getConfig();
+            If ($request->request->get( 'Publier' ))
+                $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
+             else
+                 $sortie->setEtat(EtatSorties::Creee->value);//la sortie est à l'état "créée"
+
             //si OK on enregistre
             if ($form->isValid()) {
                 $entityManager->persist($sortie);
@@ -155,7 +165,6 @@ class SortiesController extends AbstractController
             "villes"=>$villes
         ]);
     }
-
     /**
      * Cette URL permet de racupérer les lieux d'une ville
      *
@@ -173,4 +182,15 @@ class SortiesController extends AbstractController
         return new Response($productSerialized);
     }
 
+    /**
+     * @param int $id
+     * @param LieuRepository $LieuxRepo
+     * @return Response
+     */
+    #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
+    public function AfficherLieu(int $id,
+                                  LieuRepository $LieuxRepo):Response{
+       $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
+        return $this->render('sorties/afficheLieu.html.twig', ["lieu"=>$lieu ]);
+    }
 }
