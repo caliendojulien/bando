@@ -70,6 +70,10 @@
                                 {% if app.user in sortie.participants and sortie.etat == 2 %}
                                     <a href="{{ path('_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
+                                {% if app.user not in sortie.participants and sortie.etat == 2 %}
+                                    <a href="{{ path('_sinscrire', {'idSortie': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
+                                {% endif %}
+
                             </td>
                         </tr>
                     {% endfor %}

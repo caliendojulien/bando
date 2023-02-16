@@ -201,6 +201,7 @@ class SortiesController extends AbstractController
        return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 
+
     /**
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
      * @param int $idSortie L'identifiant de la sortie
@@ -211,6 +212,7 @@ class SortiesController extends AbstractController
      */
 //    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
     #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
+
     public function Sinscrire(  int $idSortie,
 //                                int $idStagiaire,
                                 SortieRepository $sortieRepo,
@@ -223,10 +225,12 @@ class SortiesController extends AbstractController
         // récupérer la sortie
         $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
         // inscrire et confirmer ou infirmer l'inscription
+
         $tab=$serv->inscrire($stag,$sortie,$entityManager);
       if ($tab[0])
           $this->addFlash('success', 'vous avez été inscrit à la sortie');
       else  $this->addFlash('error','inscription impossible : '.$tab[1]);
+
         //rediriger
         return $this->redirectToRoute('_sorties');
     }
