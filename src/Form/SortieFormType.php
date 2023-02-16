@@ -20,7 +20,7 @@ class SortieFormType extends AbstractType
         $dateDeb->add(new \DateInterval('P2D'));
         $datelimite= new \DateTime('18:00:00');
         $datelimite->add(new \DateInterval('P1D'));
-
+//
         $builder
             ->add('nom')
             ->add('debutSortie',DateTimeType::class, [
