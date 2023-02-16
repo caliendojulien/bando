@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Stagiaire;
 use App\Form\ProfilType;
+use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
+use App\Services\EtatSorties;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,4 +54,14 @@ class ProfilController extends AbstractController
             'stagiaire' => $stagiaire,
         ]);
     }
+
+    #[Route('/testService', name: 'test-service')]
+    public function service(EtatSorties $etatSorties): Response
+    {
+        $etatSorties->updateEtatSorties();
+        return $this->render('sorties/test.html.twig', [
+        ]);
+    }
+
+
 }

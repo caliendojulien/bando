@@ -74,23 +74,23 @@ class AppFixtures extends Fixture
 
         //Création de 100 sorties
         $sorties = array();
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 500; $i++) {
             //Définition d'une date de début de sortie random
             $date_ref = new DateTime();
             $second_ref = $date_ref->getTimestamp();
-            $rand_val_debut = rand(-100000, 1000000);
+            $rand_val_debut = rand(-50000000, 10000000);
             $rand_debut = $second_ref + $rand_val_debut;
             $rand_date_debut = new DateTime();
             $rand_date_debut->setTimestamp($rand_debut);
 
             //Définition d'une date de fin inscription random
-            $rand_val_inscription_max = rand(18000, 1000000);
-            $rand_val_inscription = $second_ref + $rand_val_inscription_max;
+            $rand_val_inscription_max = rand(87000, 260000);
+            $rand_val_inscription = $rand_debut - $rand_val_inscription_max;
             $rand_date_max_inscription = new DateTime();
             $rand_date_max_inscription->setTimestamp($rand_val_inscription);
 
             //Définition d'une date de fin sortie random
-            $rand_val_fin = rand(18000, 1000000);
+            $rand_val_fin = rand(18000, 10000000);
             $val_fin = $rand_val_inscription + $rand_val_fin;
             $rand_date_fin = new DateTime();
             $rand_date_fin->setTimestamp($val_fin);
@@ -110,8 +110,20 @@ class AppFixtures extends Fixture
 
             $sorties[$i]->setNombreInscriptionsMax(rand(1, 200));
             $sorties[$i]->setInfosSortie("Les informations sur la sorties seront à renseigner dans cette espace.Les informations sur la sorties seront à renseigner dans cette espace.");
-            $sorties[$i]->setEtat(rand(1, 7));
 
+            $now = new DateTime('now');
+            if ($rand_date_fin < $now) {
+                $sorties[$i]->setEtat(rand(5, 7));
+            }
+            if ($rand_date_max_inscription < $now && $rand_date_debut > $now) {
+                $sorties[$i]->setEtat(3);
+            }
+            if ($rand_date_debut > $now && $sorties[$i]->getEtat() != 3) {
+                $sorties[$i]->setEtat(rand(1, 2));
+            }
+            if ($rand_date_debut < $now && $rand_date_fin > $now) {
+                $sorties[$i]->setEtat(4);
+            }
             $sorties[$i]->addParticipant($stagiaires[2]);
             //ajout de participants à la sorties
             $rand_nb_participants = rand(2, 80);

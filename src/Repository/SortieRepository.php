@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Campus;
 use App\Entity\Sortie;
 use App\Entity\Stagiaire;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -60,15 +61,15 @@ class SortieRepository extends ServiceEntityRepository
     }
 
     public function findSorties(
-        ?string    $nom = null,
-        ?\DateTime $debutSortie = null,
-        ?\DateTime $finSortie = null,
-        ?Campus    $campus = null,
-        ?bool      $organisateur = false,
-        Stagiaire  $user = null,
-        ?bool      $inscrit = false,
-        ?bool      $non_inscrit = false,
-        ?bool      $sorties_passees = false
+        ?string   $nom = null,
+        ?DateTime $debutSortie = null,
+        ?DateTime $finSortie = null,
+        ?Campus   $campus = null,
+        ?bool     $organisateur = false,
+        Stagiaire $user = null,
+        ?bool     $inscrit = false,
+        ?bool     $non_inscrit = false,
+        ?bool     $sorties_passees = false
     ): array
     {
         $query_builder = $this->createQueryBuilder('s')
@@ -103,7 +104,7 @@ class SortieRepository extends ServiceEntityRepository
             case ($organisateur && $inscrit && $non_inscrit && $sorties_passees):
                 $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user OR s.finSortie <= :now')
                     ->setParameter('user', $user)
-                    ->setParameter('now', new \DateTime());;
+                    ->setParameter('now', new DateTime());
                 break;
             case ($organisateur && $non_inscrit):
             case ($organisateur && $inscrit && $non_inscrit):
@@ -120,16 +121,16 @@ class SortieRepository extends ServiceEntityRepository
             case ($organisateur && $sorties_passees):
                 $query_builder->andWhere('s.organisateur = :user OR s.finSortie <= :now')
                     ->setParameter('user', $user)
-                    ->setParameter('now', new \DateTime());
+                    ->setParameter('now', new DateTime());
                 break;
             case($non_inscrit && $sorties_passees):
                 $query_builder->andWhere('s.organisateur != :user OR s.finSortie <= :now')
                     ->setParameter('user', $user)
-                    ->setParameter('now', new \DateTime());
+                    ->setParameter('now', new DateTime());
                 break;
             case($sorties_passees):
                 $query_builder->andWhere('s.finSortie <= :now')
-                    ->setParameter('now', new \DateTime());
+                    ->setParameter('now', new DateTime());
                 break;
             default:
                 // Traiter les cas où toutes les cases à cocher sont décochées en retournant toutes les sorties
@@ -147,7 +148,16 @@ class SortieRepository extends ServiceEntityRepository
                 });
     }
 
-
+    /**
+     * @return Sortie[] Returns an array of Sortie objects
+     */
+    public function findByEtat(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.etat != 7')
+            ->getQuery()
+            ->getResult();
+    }
 
 
 
