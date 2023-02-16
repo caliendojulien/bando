@@ -68,7 +68,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $participeSorties;
 
 
-    #[ORM\Column(type: 'string', length: 255,nullable: true)]
+    #[ORM\Column(type: 'string', length: 255)]
     private $image;
 
     #[Vich\UploadableField(mapping: 'product_image', fileNameProperty: 'image')]
