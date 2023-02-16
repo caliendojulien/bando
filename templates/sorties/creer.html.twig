@@ -15,6 +15,7 @@
     {{ form_row(form.infosSortie) }}
     {{ form_row(form.campus) }}
 
+    {#--------- section villes ------------#}
     <label for="choixVille"> Ville
         <select id="choixVille" name="choixVille" required onchange="chargerLieux(value)">
                 <option  disabled selected>choisissez une ville:</option>
@@ -22,14 +23,18 @@
                 <option value="{{ ville.id }}"> {{ ville.nom }}</option>
             {% endfor %}
         </select>
-
     </label>
 
-    <label for="choixLieux" > Lieu
-        <select id="choixLieux" name="choixLieux" required>
+{#--------- section Lieux ------------#}
+    <label for="choixLieux"> Lieu
+        <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">
         </select>
     </label>
     <a href="{{ path('creer_Lieu') }}"><input type="button" name="creerLieu" value="+" ></a>
+    <section id="afficheLieu"></section>
+
+
+    {#--------- section boutons ------------#}
     <input type="submit" name="Creer" value="Créer">
     <input type="submit" name="Publier" value="Publier">
     <a href="{{ path('_sorties') }}"><input type="button" name="Annuler" value="Annuler" ></a>

@@ -11,6 +11,7 @@ use App\Form\SortieSearchFormType;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
+use App\Services\InscriptionsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -108,17 +109,13 @@ class SortiesController extends AbstractController
     #[Route('/creer', name: '_creer-sortie')]
     public function creer(
         EntityManagerInterface $entityManager,
-        StagiaireRepository    $stagRepo,
-        VilleRepository        $villesRepo,
-        LieuRepository         $LieuxRepo,
-        Request                $request
-    ): Response
-    {
-        if ($request->request->get('Annuler')) {
-            return $this->redirectToRoute('_sorties');
-        }
-        $u = $this->getUser();
-        $user = $stagRepo->findOneAvecCampus($u->getUserIdentifier());
+        StagiaireRepository $stagRepo,
+        VilleRepository $villesRepo,
+        LieuRepository $LieuxRepo,
+        Request $request
+    ): Response {
+        $user=$stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
+
 
         $sortie = new Sortie();
 
@@ -133,7 +130,9 @@ class SortiesController extends AbstractController
         //traiter l'envoi du formulaire
         if ($form->isSubmitted()) {
 
-            //  trouver la date de fin en fonction de la durée et de la date de début
+
+             //  trouver la date de fin en fonction de la durée et de la date de début
+
             $duree = $request->request->get("duree");
             settype($duree, 'integer');
             if ($duree) {
@@ -145,9 +144,10 @@ class SortiesController extends AbstractController
             $idLieu = $request->request->get("choixLieux");
             $lieu = $LieuxRepo->findOneBy(["id" => $idLieu]);
             $sortie->setLieu($lieu);
-            //l'état dépend du bouton
-            $bouton = $form->getConfig();
-            if ($request->request->get('Publier'))
+
+            //l'état dépend du bouton sur lequel on a cliqué
+            If ($request->request->get( 'Publier' ))
+
                 $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
             else
                 $sortie->setEtat(EtatSorties::Creee->value);//la sortie est à l'état "créée"
@@ -187,16 +187,41 @@ class SortiesController extends AbstractController
     }
 
     /**
+     * cette URL affiche une page d'informations du lieu
+     *
      * @param int $id
      * @param LieuRepository $LieuxRepo
      * @return Response
      */
     #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
-    public function AfficherLieu(int            $id,
-                                 LieuRepository $LieuxRepo): Response
-    {
-        $lieu = $LieuxRepo->findOneBy(["id" => $id]);
-        return $this->render('sorties/afficheLieu.html.twig', ["lieu" => $lieu]);
+
+    public function AfficherLieu(int $id,
+                                  LieuRepository $LieuxRepo):Response{
+        $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
+       return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
+    }
+
+//    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
+    #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
+    public function Sinscrire(  int $idSortie,
+//                                int $idStagiaire,
+                                StagiaireRepository $stagRepo,
+                                SortieRepository $sortieRepo,
+                                EntityManagerInterface $entityManager,
+                                InscriptionsService $serv){
+
+        // récupérer le stagiaire ( c'est toujours le user connecté ??)
+//        $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
+        $stag = $this->getUser();
+        // récupérer la sortie
+        $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
+        // inscrire et confirmer ou infirmer l'inscription
+      if ($serv->inscrire($stag,$sortie,$entityManager))
+          $this->addFlash('success', 'vous avez été inscrit à la sortie');
+      else  $this->addFlash('error','inscription impossible');
+        //rediriger
+        return $this->redirectToRoute('_sorties');
+
     }
 
     /**
