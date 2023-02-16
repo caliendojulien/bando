@@ -10,6 +10,7 @@ use App\Form\SortieSearchFormType;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
+use App\Services\InscriptionsService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -190,5 +191,27 @@ class SortiesController extends AbstractController
                                   LieuRepository $LieuxRepo):Response{
         $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
        return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
+    }
+
+//    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
+    #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
+    public function Sinscrire(  int $idSortie,
+//                                int $idStagiaire,
+                                StagiaireRepository $stagRepo,
+                                SortieRepository $sortieRepo,
+                                EntityManagerInterface $entityManager,
+                                InscriptionsService $serv){
+
+        // récupérer le stagiaire ( c'est toujours le user connecté ??)
+//        $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
+        $stag = $this->getUser();
+        // récupérer la sortie
+        $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
+        // inscrire et confirmer ou infirmer l'inscription
+      if ($serv->inscrire($stag,$sortie,$entityManager))
+          $this->addFlash('success', 'vous avez été inscrit à la sortie');
+      else  $this->addFlash('error','inscription impossible');
+        //rediriger
+        return $this->redirectToRoute('_sorties');
     }
 }
