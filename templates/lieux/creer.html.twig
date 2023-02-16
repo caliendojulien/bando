@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+ {{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.rue) }}
+    {{ form_row(form.longitude) }}
+    {{ form_row(form.latitude) }}
+    {{ form_row(form.ville) }}
+    {{ form_end(form) }}
+    <a href="{{ path('_creer-sortie') }}"><input type="button" name="Retour" value="Retour" ></a>
+{% endblock %}

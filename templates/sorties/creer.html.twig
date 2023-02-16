@@ -3,32 +3,7 @@
 {% block title %}Créer une sortie{% endblock %}
 
 {% block body %}
-{#   {% set url=path('sorties_listeLieux',{id:1}) %}#}
-
-    <script>
-
-        function chargerLieux( idVille){
-
-           let selectlieu=document.getElementById("choixLieux");
-           selectlieu.length=0;
-           // Todo Trouver le moyen de mettre le param idVille !
-            fetch("{{  path('sorties_listeLieux', {'id': 43})}}")
-            // fetch("http://localhost:8000/listerLieux/1")
-           {#fetch("{{  url('sorties_listeLieux')}}"+"/"+idVille)#}
-           {# fetch("{{  path('sorties_listeLieux',{'id:')}}"+idVille+"}")#}
-                // reponse = retour de la commande précédente, puis je le transforme en JSON
-                .then((reponse) => reponse.json())
-                //json est donc le json récupéré, je l'ajoute dans le select
-                .then((json) =>{
-                    for (let lieu of json) {
-                            let momOption=document.createElement('option');
-                            momOption.value=lieu.id;
-                            momOption.innerText = lieu.nom;
-                            selectlieu.appendChild(momOption);
-                    }
-                });
-    }
-    </script>
+    <script src="{{ asset('JS/VillesEtLieux.js') }}"></script>
     <h1>Créer une sortie</h1>
 
     {{ form_start(form) }}
@@ -47,14 +22,17 @@
                 <option value="{{ ville.id }}"> {{ ville.nom }}</option>
             {% endfor %}
         </select>
+
     </label>
 
     <label for="choixLieux" > Lieu
         <select id="choixLieux" name="choixLieux" required>
         </select>
     </label>
-
-{#    <button type="submit" class="btn btn-primary">Créer</button>#}
+    <a href="{{ path('creer_Lieu') }}"><input type="button" name="creerLieu" value="+" ></a>
+    <input type="submit" name="Creer" value="Créer">
+    <input type="submit" name="Publier" value="Publier">
+    <a href="{{ path('_sorties') }}"><input type="button" name="Annuler" value="Annuler" ></a>
     {{ form_end(form) }}
 {% endblock %}
 

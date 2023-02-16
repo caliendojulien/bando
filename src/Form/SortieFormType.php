@@ -37,7 +37,10 @@ class SortieFormType extends AbstractType
                 'placeholder' => 'Sélectionner un campus',
                 'required' => false,
             ])
-            ->add('Envoyer', SubmitType::class);
+//            ->add('Creer', SubmitType::class,[ 'label' => 'Créer'])
+//        ->add('Publier', SubmitType::class,)
+//            ->add('Annuler', SubmitType::class)
+        ;
         ;
     }
 
