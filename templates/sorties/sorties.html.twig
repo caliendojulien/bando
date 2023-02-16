@@ -6,6 +6,10 @@
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
+                <section>
+                <strong>Date du jour : </strong>{{ "now"|date("d/m/Y") }} <br>
+                <strong>Participant : </strong>{{ app.user.nom }}
+                </section>
                 {{ form_start(form) }}
                 {{ form_row(form.nom) }}
                 {{ form_row(form.debutSortie) }}
@@ -23,12 +27,12 @@
                     <tr>
                         <th>Nom</th>
                         <th>Campus</th>
-                        <th>Début de la sortie</th>
+                        <th>Date de la sortie</th>
+                        <th>Clôture</th>
                         <th>Inscrits/Places</th>
                         <th>État</th>
                         <th>Inscrit</th>
                         <th>Organisateur</th>
-                        <th>Participants</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -38,8 +42,17 @@
                             <td>{{ sortie.nom }}</td>
                             <td>{{ sortie.campus.nom }}</td>
                             <td>{{ sortie.debutSortie|date('d/m/Y H:i') }}</td>
+                            <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
                             <td>{{ sortie.participants|length }}/{{ sortie.nombreInscriptionsMax }}</td>
-                            <td>{{ sortie.etat }}</td>
+                            <td>
+                                {{ sortie.etat == 1 ? 'En création' :
+                                sortie.etat == 2 ? 'Ouvert' :
+                                sortie.etat == 3 ? 'Fermé' :
+                                sortie.etat == 4 ? 'En cours' :
+                                sortie.etat == 5 ? 'Annulé' :
+                                sortie.etat == 6 ? 'Passé' :
+                                sortie.etat == 7 ? 'Archivé' : '' }}
+                            </td>
                             <td>
                                 {% if app.user in sortie.participants %}
                                     x
@@ -47,11 +60,9 @@
                             </td>
                             <td>{{ sortie.organisateur.nom }}</td>
                             <td>
-                                {% for participant in sortie.participants %}
-                                    {{ participant.nom }}<br>
-                                {% endfor %}
-                            </td>
-                            <td>
+                                {% if sortie.etat == 1 %}
+                                    <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                {% endif %}
                                 <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
                                 {% if app.user in sortie.participants %}
                                     <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>
@@ -59,11 +70,15 @@
                                     &nbsp;
                                 {% endif %}
                             </td>
-
                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
+                <div class="text-center my-3">
+                    <a href="{{ path('_creer-sortie') }}" class="btn btn-success">
+                        Créer une sortie
+                    </a>
+                </div>
             </div>
         </div>
     </div>

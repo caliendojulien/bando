@@ -137,7 +137,14 @@ class SortieRepository extends ServiceEntityRepository
                 break;
         }
 
-        return $query_builder->getQuery()->getResult();
+        return
+            array_filter(
+                $query_builder->getQuery()->getResult(),
+                function ($sortie) use ($user) {
+                    return
+                        $sortie->getEtat() != 1 ||
+                        $sortie->getOrganisateur() == $user;
+                });
     }
 
 
