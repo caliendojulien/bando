@@ -25,7 +25,14 @@
         {% else %}
             <a href="{{ path('app_login') }}">Connexion</a>
         {%endif %}
-    </nav></nav>
-        {% block body %}{% endblock %}
+    </nav>
+    <div id="champFlash">
+        {% for label, messages in  app.flashes  %}
+            {% for message in messages %}
+                <div class="alert-{{ label }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    {% block body %}{% endblock %}
     </body>
 </html>

@@ -35,9 +35,7 @@ function chargerLieux( idVille){
  */
 function afficherUnLieu(idLieu){
     fetch("/AfficherLieu/"+idLieu)
-        // reponse = retour de la commande précédente, puis je le transforme en JSON
         .then((reponse) => reponse.text())
-        //json est donc le json récupéré, je l'ajoute dans le select
         .then((texte) =>{
             console.log(texte);
             let container = document.getElementById('afficheLieu');
