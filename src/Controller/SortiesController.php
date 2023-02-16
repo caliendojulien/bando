@@ -112,11 +112,8 @@ class SortiesController extends AbstractController
         LieuRepository $LieuxRepo,
         Request $request
     ): Response {
-        If ($request->request->get( 'Annuler' )){
-            return  $this->redirectToRoute('_sorties');
-        }
-        $u = $this->getUser();
-        $user=$stagRepo->findOneAvecCampus($u->getUserIdentifier());
+
+        $user=$stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
 
         $sortie = new Sortie();
 
@@ -131,7 +128,7 @@ class SortiesController extends AbstractController
         //traiter l'envoi du formulaire
          if ($form->isSubmitted() ) {
 
-                 //  trouver la date de fin en fonction de la durée et de la date de début
+             //  trouver la date de fin en fonction de la durée et de la date de début
             $duree = $request->request->get("duree");
             settype($duree,'integer');
             if ($duree){
@@ -143,8 +140,7 @@ class SortiesController extends AbstractController
             $idLieu=$request->request->get("choixLieux");
             $lieu=$LieuxRepo->findOneBy(["id"=>$idLieu]);
             $sortie->setLieu($lieu);
-            //l'état dépend du bouton
-             $bouton=$form->getConfig();
+            //l'état dépend du bouton sur lequel on a cliqué
             If ($request->request->get( 'Publier' ))
                 $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
              else
@@ -183,6 +179,8 @@ class SortiesController extends AbstractController
     }
 
     /**
+     * cette URL affiche une page d'informations du lieu
+     *
      * @param int $id
      * @param LieuRepository $LieuxRepo
      * @return Response
@@ -190,7 +188,7 @@ class SortiesController extends AbstractController
     #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
     public function AfficherLieu(int $id,
                                   LieuRepository $LieuxRepo):Response{
-       $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
-        return $this->render('sorties/afficheLieu.html.twig', ["lieu"=>$lieu ]);
+        $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
+       return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 }
