@@ -35,9 +35,9 @@ class ProfilController extends AbstractController
     }
 
     #[Route('/profilAffiche/{id}', name: 'profil_affich')]
-    public function affiche(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository,int $id): Response
+    public function affiche(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository, int $id): Response
     {
-        //Récupération du stagiaire passé en paramètre de l'appel au contrôleur
+        //Récupération du stagiaire passé en paramètre de l'appel au contrôleur.
         $stagiaire = $stagiaireRepository->findOneBy(['id' => $id]);
 
         //Récupération du stagiaire connecté
@@ -45,11 +45,11 @@ class ProfilController extends AbstractController
         $stagiaireConnecte = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecteInterface->getUserIdentifier()]);
 
         //Si le stagiaire connecté est le stagiaire recherché alors il est renvoyé vers la page de modification du profil
-        if($stagiaire->getId() == $stagiaireConnecte->getId()){
+        if ($stagiaire->getId() == $stagiaireConnecte->getId()) {
             return $this->redirectToRoute('profil_modif');
         }
-            return $this->render('profil/affiche.html.twig', [
-                'stagiaire' => $stagiaire,
-            ]);
-        }
+        return $this->render('profil/affiche.html.twig', [
+            'stagiaire' => $stagiaire,
+        ]);
+    }
 }
