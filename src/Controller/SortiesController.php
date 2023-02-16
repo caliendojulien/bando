@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\EtatSorties;
 use App\Entity\Sortie;
+use App\Entity\Stagiaire;
 use App\Form\SortieFormType;
 use App\Repository\LieuRepository;
 use App\Form\SortieSearchFormType;
@@ -86,7 +87,7 @@ class SortiesController extends AbstractController
 
     #[Route('/sortie/{id}', name: '_sortie')]
     public function detail(
-        int            $id,
+        int              $id,
         SortieRepository $sortieRepository
     ): Response
     {
@@ -113,39 +114,43 @@ class SortiesController extends AbstractController
         LieuRepository $LieuxRepo,
         Request $request
     ): Response {
-
         $user=$stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
+
 
         $sortie = new Sortie();
 
         $sortie->setOrganisateur($user);
         //mettre le campus de l'organisateur par défaut
-        if (! $sortie->getCampus())  $sortie->setCampus($user->getCampus());
+        if (!$sortie->getCampus()) $sortie->setCampus($user->getCampus());
 
         //création du formulaire
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
 
         //traiter l'envoi du formulaire
-         if ($form->isSubmitted() ) {
+        if ($form->isSubmitted()) {
+
 
              //  trouver la date de fin en fonction de la durée et de la date de début
+
             $duree = $request->request->get("duree");
-            settype($duree,'integer');
-            if ($duree){
-                $dateFin=new \DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
-                $dateFin= $dateFin->add(new \DateInterval('PT'.$duree.'M'));
-                    $sortie->setFinSortie( $dateFin);
+            settype($duree, 'integer');
+            if ($duree) {
+                $dateFin = new \DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
+                $dateFin = $dateFin->add(new \DateInterval('PT' . $duree . 'M'));
+                $sortie->setFinSortie($dateFin);
             }
-             // renseigner le lieu
-            $idLieu=$request->request->get("choixLieux");
-            $lieu=$LieuxRepo->findOneBy(["id"=>$idLieu]);
+            // renseigner le lieu
+            $idLieu = $request->request->get("choixLieux");
+            $lieu = $LieuxRepo->findOneBy(["id" => $idLieu]);
             $sortie->setLieu($lieu);
+
             //l'état dépend du bouton sur lequel on a cliqué
             If ($request->request->get( 'Publier' ))
+
                 $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
-             else
-                 $sortie->setEtat(EtatSorties::Creee->value);//la sortie est à l'état "créée"
+            else
+                $sortie->setEtat(EtatSorties::Creee->value);//la sortie est à l'état "créée"
 
             //si OK on enregistre
             if ($form->isValid()) {
@@ -156,12 +161,13 @@ class SortiesController extends AbstractController
         }
 
         //passer la liste des villes au formulaire
-         $villes=$villesRepo->findAll();
+        $villes = $villesRepo->findAll();
         return $this->render('sorties/creer.html.twig', [
             'form' => $form->createView(),
-            "villes"=>$villes
+            "villes" => $villes
         ]);
     }
+
     /**
      * Cette URL permet de racupérer les lieux d'une ville
      *
@@ -171,11 +177,12 @@ class SortiesController extends AbstractController
      * @return Response Json contenant les lieux
      */
     #[Route('/listerLieux/{id}', name: 'sorties_listeLieux')]
-    public function LieuxParVille(int $id,
-                                  LieuRepository $LieuxRepo,
-                                 SerializerInterface $serializer):Response{
-        $lieux=$LieuxRepo->findBy(["ville"=>$id]) ;
-        $productSerialized = $serializer->serialize($lieux, 'json',['groups' => ['lieux']]);
+    public function LieuxParVille(int                 $id,
+                                  LieuRepository      $LieuxRepo,
+                                  SerializerInterface $serializer): Response
+    {
+        $lieux = $LieuxRepo->findBy(["ville" => $id]);
+        $productSerialized = $serializer->serialize($lieux, 'json', ['groups' => ['lieux']]);
         return new Response($productSerialized);
     }
 
@@ -187,6 +194,7 @@ class SortiesController extends AbstractController
      * @return Response
      */
     #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
+
     public function AfficherLieu(int $id,
                                   LieuRepository $LieuxRepo):Response{
         $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
@@ -213,5 +221,38 @@ class SortiesController extends AbstractController
       else  $this->addFlash('error','inscription impossible');
         //rediriger
         return $this->redirectToRoute('_sorties');
+
     }
+
+    /**
+     * Méthode permettant à un utilisateur authentifié de se désister d'une sortie à laquelle il est inscrit.
+     *
+     * @param int $id L'identifiant de la sortie.
+     * @param SortieRepository $sortieRepository Le repository des sorties.
+     * @param EntityManagerInterface $entityManager L'EntityManager pour gérer les entités Sortie.
+     * @return Response
+     */
+    #[Route('/desistement/sortie/{id}', name: '_desistement')]
+    public function desistement(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    {
+        // Récupère la sortie correspondant à l'ID spécifié.
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+
+        // Vérifie que l'utilisateur actuel participe bien à la sortie.
+        $user = $this->getUser();
+        $participants = $sortie->getParticipants();
+        foreach ($participants as $participant) {
+            if ($participant === $user) {
+                // Si l'utilisateur participe bien à la sortie, le supprime de la liste des participants.
+                $sortie->removeParticipant($participant);
+                $entityManager->flush();
+                // Ajoute un message flash pour indiquer que le désistement a été enregistré.
+                $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+            }
+        }
+
+        // Redirige l'utilisateur vers la liste des sorties.
+        return $this->redirectToRoute('_sorties');
+    }
+
 }
