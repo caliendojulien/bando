@@ -201,8 +201,8 @@ class SortiesController extends AbstractController
        return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 
-//    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
-    #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
+//    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: '_sinscrire')]
+    #[Route('/sinscrire/{idSortie}', name: '_sinscrire')]
     public function Sinscrire(  int $idSortie,
 //                                int $idStagiaire,
                                 StagiaireRepository $stagRepo,
@@ -217,8 +217,8 @@ class SortiesController extends AbstractController
         $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
         // inscrire et confirmer ou infirmer l'inscription
       if ($serv->inscrire($stag,$sortie,$entityManager))
-          $this->addFlash('success', 'vous avez été inscrit à la sortie');
-      else  $this->addFlash('error','inscription impossible');
+          $this->addFlash('success', 'Vous avez été inscrit à la sortie');
+      else  $this->addFlash('error','Inscription impossible');
         //rediriger
         return $this->redirectToRoute('_sorties');
 
