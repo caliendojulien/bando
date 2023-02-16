@@ -3,6 +3,9 @@
 {% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
+
+    <h1>Liste des sorties</h1>
+
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
@@ -61,13 +64,11 @@
                             <td>{{ sortie.organisateur.nom }}</td>
                             <td>
                                 {% if sortie.etat == 1 %}
-                                    <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                                 {% endif %}
-                                <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
+                                <a href="{{ path('_sortie', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
                                 {% if app.user in sortie.participants %}
-                                    <a href="{{ path('sorties_test', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>
-                                {% else %}
-                                    &nbsp;
+                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
                             </td>
                         </tr>

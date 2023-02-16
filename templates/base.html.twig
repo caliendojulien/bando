@@ -16,7 +16,7 @@
     <body>
     <nav class="navigationP">
         {% if app.user%}
-            <a href={{ path('sorties_test') }}>Accueil</a>
+            <a href={{ path('_sorties_test') }}>Accueil</a>
             <a href={{ path('profil_modif') }}>Profil</a>
             {% if is_granted('ROLE_ADMIN') %}
                 <a href={{ path('admin') }}>Tableau de bord admin</a>
