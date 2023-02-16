@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\EtatSorties;
 use App\Entity\Sortie;
-use App\Entity\Stagiaire;
 use App\Form\SortieFormType;
 use App\Repository\LieuRepository;
 use App\Form\SortieSearchFormType;
@@ -12,7 +11,10 @@ use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\InscriptionsService;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,13 +24,11 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SortiesController extends AbstractController
 {
-
     #[Route('/', name: '_sorties_test')]
     public function test(): Response
     {
         return $this->render('sorties/test.html.twig', []);
     }
-
     #[Route('/sorties', name: '_sorties')]
     public function sorties(
         SortieRepository     $sortieRepository,
@@ -104,7 +104,7 @@ class SortiesController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @param Request $request
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     #[Route('/creer', name: '_creer-sortie')]
     public function creer(
@@ -136,8 +136,8 @@ class SortiesController extends AbstractController
             $duree = $request->request->get("duree");
             settype($duree, 'integer');
             if ($duree) {
-                $dateFin = new \DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
-                $dateFin = $dateFin->add(new \DateInterval('PT' . $duree . 'M'));
+                $dateFin = new DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
+                $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
                 $sortie->setFinSortie($dateFin);
             }
             // renseigner le lieu
@@ -201,27 +201,34 @@ class SortiesController extends AbstractController
        return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 
+    /**
+     * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
+     * @param int $idSortie L'identifiant de la sortie
+     * @param SortieRepository $sortieRepo
+     * @param EntityManagerInterface $entityManager
+     * @param InscriptionsService $serv
+     * @return Response
+     */
 //    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
     #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
     public function Sinscrire(  int $idSortie,
 //                                int $idStagiaire,
-                                StagiaireRepository $stagRepo,
                                 SortieRepository $sortieRepo,
                                 EntityManagerInterface $entityManager,
-                                InscriptionsService $serv){
-
+                                InscriptionsService $serv) :Response
+    {
         // récupérer le stagiaire ( c'est toujours le user connecté ??)
 //        $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
         $stag = $this->getUser();
         // récupérer la sortie
         $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
         // inscrire et confirmer ou infirmer l'inscription
-      if ($serv->inscrire($stag,$sortie,$entityManager))
+        $tab=$serv->inscrire($stag,$sortie,$entityManager);
+      if ($tab[0])
           $this->addFlash('success', 'vous avez été inscrit à la sortie');
-      else  $this->addFlash('error','inscription impossible');
+      else  $this->addFlash('error','inscription impossible : '.$tab[1]);
         //rediriger
         return $this->redirectToRoute('_sorties');
-
     }
 
     /**

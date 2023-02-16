@@ -8,14 +8,36 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class InscriptionsService
 {
-    function inscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):bool{
+
+    /**
+     * Méthode qui inscrit un stagiaire à une sortie
+     * @param Stagiaire $stag
+     * @param Sortie $sortie
+     * @param EntityManagerInterface $em
+     * @return array Tableau qui contient : true ou falsse en fonction de l'inscription + le message explicatif
+     */
+    function inscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):array{
+        $message="";
+        $ok=true;
         // Vérifier qu'il est possible de s'inscrire à la sortie
         // la sortie doit être à l'état 2
+        if (!$sortie->getEtat()==\App\Entity\EtatSorties::Publiee->value)
+            {
+                $message="sortie a l'état".$sortie->getEtat();
+                $ok=false;
+            }
         // le nb d'inscrits ne dépasse pas le nb max d'inscription
+        if( $sortie->getParticipants()->count() >= $sortie->getNombreInscriptionsMax())
+            {
+                $message="nb de participants max atteint";
+                $ok=false;
+            }
         // le stagiaire ne doit pas déjà être inscrit
-        if ($sortie->getEtat()==\App\Entity\EtatSorties::Publiee->value &&
-            $sortie->getParticipants()->count() < $sortie->getNombreInscriptionsMax() &&
-            !$sortie->getParticipants()->contains($stag))
+        if ($sortie->getParticipants()->contains($stag)){
+            $message="Vous êtes déjà inscrit !";
+            $ok=false;
+        }
+        if ($ok)
         {
             // inscrire
             $sortie->addParticipant($stag);
@@ -23,8 +45,8 @@ class InscriptionsService
              $em->persist($sortie);
              $em->flush();
         }
-        else return false;
-        return true;
+        else return [false,$message];
+        return [true,$message];
     }
 
 }
