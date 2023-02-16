@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class SortiesController extends AbstractController
 {
 
-    #[Route('/', name: 'sorties_test')]
+    #[Route('/', name: '_sorties_test')]
     public function test(): Response
     {
         return $this->render('sorties/test.html.twig', []);
@@ -81,6 +81,18 @@ class SortiesController extends AbstractController
             'sorties' => $sorties,
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/sortie/{id}', name: '_sortie')]
+    public function detail(
+        int            $id,
+        SortieRepository $sortieRepository
+    ): Response
+    {
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+        return $this->render('sorties/sortie-detail.html.twig',
+            compact('sortie')
+        );
     }
 
     /**
