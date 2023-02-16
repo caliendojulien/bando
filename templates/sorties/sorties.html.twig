@@ -67,8 +67,8 @@
                                     <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                                 {% endif %}
                                 <a href="{{ path('_sortie', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
-                                {% if app.user in sortie.participants %}
-                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
+                                {% if app.user in sortie.participants and sortie.etat == 2 %}
+                                    <a href="{{ path('_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
                             </td>
                         </tr>
