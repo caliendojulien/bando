@@ -27,7 +27,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class SortiesController extends AbstractController
 {
-    #[Route('/', name: '_sorties_test')]
+    #[Route('/', name: 'sorties_test')]
     public function test(): Response
     {
         return $this->render('sorties/test.html.twig', []);
