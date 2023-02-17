@@ -4,12 +4,12 @@
 
 {% block body %}
     <script src="{{ asset('JS/VillesEtLieux.js') }}"></script>
-{#    <script>#}
-{#        document.addEventListener('DOMContentLoaded', function() {#}
-{#            var elems = document.querySelectorAll('select');#}
-{#            var instances = M.FormSelect.init(elems, "");#}
-{#        });#}
-{#    </script>#}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('select');
+            var instances = M.FormSelect.init(elems, "");
+        });
+    </script>
     <h1>Créer une sortie</h1>
 
     {{ form_start(form) }}
