@@ -4,7 +4,10 @@ namespace App\Controller;
 
 use App\Entity\EtatSorties;
 use App\Entity\Sortie;
+use App\Form\ProfilType;
+use App\Form\SortieAnnulationFormType;
 use App\Form\SortieFormType;
+use App\Repository\CampusRepository;
 use App\Repository\LieuRepository;
 use App\Form\SortieSearchFormType;
 use App\Repository\SortieRepository;
@@ -264,6 +267,47 @@ class SortiesController extends AbstractController
 
         // Redirige l'utilisateur vers la liste des sorties.
         return $this->redirectToRoute('_sorties');
+    }
+
+    #[Route('/annulation/sortie/{id}', name: '_annulation')]
+    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager,StagiaireRepository $stagiaireRepository,VilleRepository $villeRepository,LieuRepository $lieuRepository,CampusRepository $campusRepository,Request $request): Response
+    {
+        // Récupère la sortie correspondant à l'ID spécifié.
+        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+
+        //Récupérer le campus associé à la sortie
+        $campus = $campusRepository->findOneBy(['id'=> $sortie->getCampus()]);
+
+        //Récupérer le lieu associé à la sortie
+        $lieu = $lieuRepository->findOneBy(['id'=>$sortie->getLieu()->getId()]);
+
+        //Récupérer la ville associé à la sortie
+        $ville = $villeRepository->findOneBy(['id'=>$lieu->getVille()->getId()]);
+
+        //Récupère l'id du stagiaire connécté
+        $stagiaireConnecte = $this->getUser();
+        $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
+        $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
+        $sortieForm->handleRequest($request);
+
+        //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
+        if($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3){
+            return $this->redirectToRoute('_sorties');
+        }
+        if ($sortieForm->isSubmitted()) {
+            $sortie->setEtat(6);
+            $entityManager->persist($sortie);
+            $entityManager->flush();
+            return $this->redirectToRoute('_sorties');
+        }
+
+        return $this->render('sorties/annulation.html.twig', [
+            'sortieForm' => $sortieForm,
+            'sortie' => $sortie,
+            'campus' => $campus,
+            'lieu' => $lieu,
+            'ville' => $ville
+        ]);
     }
 
 }

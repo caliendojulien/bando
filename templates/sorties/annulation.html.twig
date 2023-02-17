@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des sorties{% endblock %}
+
+{% block body %}
+    <h1>Annuler une sortie</h1>
+    <p>Nom de la sortie: {{ sortie.nom }}</p>
+    <p>Date de la sortie: {{ sortie.debutSortie | date('d-m-Y') }}</p>
+    <p>Campus: {{ campus.nom }}</p>
+    <p>Lieu: {{ lieu.nom }} {{ lieu.rue }} {{ ville.codePostal }} {{ ville.nom }}</p>
+
+    <div>
+        {{ form(sortieForm) }}
+    </div>
+{% endblock %}
+
+
+
