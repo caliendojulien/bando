@@ -27,6 +27,12 @@ function chargerLieux( idVille){
                 selectlieu.appendChild(momOptionDisable);
                  }
         });
+
+        // document.addEventListener('DOMContentLoaded', function() {
+        // var elems = document.querySelectorAll('select');
+        // var instances = M.FormSelect.init(elems, "");
+    // });
+
 }
 
 /**

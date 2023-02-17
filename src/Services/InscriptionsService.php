@@ -18,26 +18,20 @@ class InscriptionsService
      */
     function inscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):array{
         $message="";
-        $ok=true;
         // Vérifier qu'il est possible de s'inscrire à la sortie
         // la sortie doit être à l'état 2
         if (!$sortie->getEtat()==\App\Entity\EtatSorties::Publiee->value)
-            {
                 $message="sortie a l'état".$sortie->getEtat();
-                $ok=false;
-            }
+
         // le nb d'inscrits ne dépasse pas le nb max d'inscription
         if( $sortie->getParticipants()->count() >= $sortie->getNombreInscriptionsMax())
-            {
                 $message="nb de participants max atteint";
-                $ok=false;
-            }
+
         // le stagiaire ne doit pas déjà être inscrit
-        if ($sortie->getParticipants()->contains($stag)){
-            $message="Vous êtes déjà inscrit !";
-            $ok=false;
-        }
-        if ($ok)
+        if ($sortie->getParticipants()->contains($stag))
+                $message="Vous êtes déjà inscrit !";
+
+        if ($message=="")
         {
             // inscrire
             $sortie->addParticipant($stag);
