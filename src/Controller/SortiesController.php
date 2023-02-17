@@ -15,6 +15,7 @@ use App\Services\InscriptionsService;
 use App\Services\SortiesService;
 use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -179,7 +180,6 @@ class SortiesController extends AbstractController
     }
 
     /**
-
      * Modifie une sortie existante dans la base de données.
      *
      * @param int                    $id               L'identifiant de la sortie à modifier.
@@ -259,7 +259,7 @@ class SortiesController extends AbstractController
             'duree' => $duree
         ]);
     }
-    /*
+    /**
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
      * @param int $idSortie L'identifiant de la sortie
      * @param SortieRepository $sortieRepo
