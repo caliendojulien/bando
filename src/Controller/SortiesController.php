@@ -261,7 +261,7 @@ class SortiesController extends AbstractController
 
         //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
         if($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3){
-            return $this->redirectToRoute('_sorties');
+            return $this->redirectToRoute('sorties_liste');
         }
         if ($sortieForm->isSubmitted()) {
             $sortie->setEtat(6);
