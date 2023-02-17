@@ -10,8 +10,8 @@
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
                 <section>
-                <strong>Date du jour : </strong>{{ "now"|date("d/m/Y") }} <br>
-                <strong>Participant : </strong>{{ app.user.nom }}
+                    <strong>Date du jour : </strong>{{ "now"|date("d/m/Y") }} <br>
+                    <strong>Participant : </strong>{{ app.user.nom }}
                 </section>
                 {{ form_start(form) }}
                 {{ form_row(form.nom) }}
@@ -64,14 +64,17 @@
                             <td>{{ sortie.organisateur.nom }}</td>
                             <td>
                                 {% if sortie.etat == 1 %}
-                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}"
+                                       class="btn btn-warning btn-sm">Modifier</a>
                                 {% endif %}
                                 <a href="{{ path('_sortie', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
                                 {% if app.user in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
+                                    <a href="{{ path('_desistement', {'id': sortie.id}) }}"
+                                       class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
                                 {% if app.user not in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('_sinscrire', {'idSortie': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
+                                    <a href="{{ path('sorties_sinscrire', {'idSortie': sortie.id}) }}"
+                                       class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
                                 {% endif %}
 
                             </td>

@@ -3,8 +3,12 @@
 {% block body %}
     <h2>page de gestion du profil</h2>
     <div>
-        {{ form(profilForm) }}
+        {{ form_start(profilForm) }}
+        {{ form_end(profilForm) }}
     </div>
+    <a href="{{ path('_sorties') }}">
+        <button>Annuler</button>
+    </a>
     <div>
         <img src="/photos/{{ stagiaire.image }}">
     </div>

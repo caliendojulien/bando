@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -20,13 +21,13 @@ class Sortie
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $debutSortie = null;
+    private ?DateTimeInterface $debutSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $finSortie = null;
+    private ?DateTimeInterface $finSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateLimiteInscription = null;
+    private ?DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $nombreInscriptionsMax = null;
@@ -60,7 +61,6 @@ class Sortie
     }
 
 
-
     public function getId(): ?int
     {
         return $this->id;
@@ -78,36 +78,36 @@ class Sortie
         return $this;
     }
 
-    public function getDebutSortie(): ?\DateTimeInterface
+    public function getDebutSortie(): ?DateTimeInterface
     {
         return $this->debutSortie;
     }
 
-    public function setDebutSortie(\DateTimeInterface $debutSortie): self
+    public function setDebutSortie(DateTimeInterface $debutSortie): self
     {
         $this->debutSortie = $debutSortie;
 
         return $this;
     }
 
-    public function getFinSortie(): ?\DateTimeInterface
+    public function getFinSortie(): ?DateTimeInterface
     {
         return $this->finSortie;
     }
 
-    public function setFinSortie(\DateTimeInterface $finSortie): self
+    public function setFinSortie(DateTimeInterface $finSortie): self
     {
         $this->finSortie = $finSortie;
 
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeInterface
+    public function getDateLimiteInscription(): ?DateTimeInterface
     {
         return $this->dateLimiteInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): self
+    public function setDateLimiteInscription(DateTimeInterface $dateLimiteInscription): self
     {
         $this->dateLimiteInscription = $dateLimiteInscription;
 
@@ -221,6 +221,4 @@ class Sortie
 
         return $this;
     }
-
-
 }

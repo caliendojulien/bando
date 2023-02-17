@@ -7,12 +7,14 @@ use DateTime;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\ORM\Mapping as ORM;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\Validator\Constraints as SecurityAssert;
 
 //comment
 #[Vich\Uploadable]
@@ -22,9 +24,21 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\Type('int')]
+    #[Assert\NotNull]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Assert\Email(
+        message: 'Le format de l\'email n\'est pas valide',
+    )]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 3,
+        max: 255,
+        minMessage: 'Votre email trop court, limite: {{ limit }}',
+        maxMessage: 'Votre email trop long, limite: {{ limit }}',
+    )]
     private ?string $email = null;
 
     #[ORM\Column]
@@ -34,27 +48,56 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
+    #[Assert\NotBlank]
+    #[Assert\Length(
+        min: 8,
+        max: 255,
+        minMessage: 'Votre email trop court, limite: {{ limit }}',
+        maxMessage: 'Votre email trop long, limite: {{ limit }}',
+    )]
     private ?string $password = null;
 
     #[ORM\Column(length: 150)]
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(
+        min: 1,
+        max: 150,
+        minMessage: 'Votre nom est trop court, limite: {{ limit }}',
+        maxMessage: 'Votre nom est trop long, limite: {{ limit }}',
+    )]
     private ?string $nom = null;
 
     #[ORM\Column(length: 150)]
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(
+        min: 1,
+        max: 150,
+        minMessage: 'Votre prénom est trop court, limite: {{ limit }}',
+        maxMessage: 'Votre prénom est trop long, limite: {{ limit }}',
+    )]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\NotBlank]
+    #[Assert\Type('string')]
+    #[Assert\Length(10)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $urlPhoto = null;
 
     #[ORM\Column]
+    #[Assert\Type('boolean')]
     private ?bool $administrateur = null;
 
     #[ORM\Column]
+    #[Assert\Type('boolean')]
     private ?bool $actif = null;
 
     #[ORM\Column]
+    #[Assert\Type('boolean')]
     private ?bool $premiereConnexion = null;
 
     #[ORM\ManyToOne(inversedBy: 'stagiaires')]
@@ -384,7 +427,6 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
         $this->updatedAt = $serialized['update_at'];
         $this->imageFile = base64_decode($serialized['imageFile']);
         $this->password = $serialized['password'];
-
         return $this;
     }
 

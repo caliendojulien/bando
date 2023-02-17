@@ -32,6 +32,7 @@ class SortiesController extends AbstractController
     {
         return $this->render('sorties/test.html.twig', []);
     }
+
     #[Route('/sorties', name: '_sorties')]
     public function sorties(
         SortieRepository     $sortieRepository,
@@ -112,12 +113,13 @@ class SortiesController extends AbstractController
     #[Route('/creer', name: '_creer-sortie')]
     public function creer(
         EntityManagerInterface $entityManager,
-        StagiaireRepository $stagRepo,
-        VilleRepository $villesRepo,
-        LieuRepository $LieuxRepo,
-        Request $request
-    ): Response {
-        $user=$stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
+        StagiaireRepository    $stagRepo,
+        VilleRepository        $villesRepo,
+        LieuRepository         $LieuxRepo,
+        Request                $request
+    ): Response
+    {
+        $user = $stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
 
 
         $sortie = new Sortie();
@@ -134,7 +136,7 @@ class SortiesController extends AbstractController
         if ($form->isSubmitted()) {
 
 
-             //  trouver la date de fin en fonction de la durée et de la date de début
+            //  trouver la date de fin en fonction de la durée et de la date de début
 
             $duree = $request->request->get("duree");
             settype($duree, 'integer');
@@ -149,7 +151,7 @@ class SortiesController extends AbstractController
             $sortie->setLieu($lieu);
 
             //l'état dépend du bouton sur lequel on a cliqué
-            If ($request->request->get( 'Publier' ))
+            if ($request->request->get('Publier'))
 
                 $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
             else
@@ -197,11 +199,11 @@ class SortiesController extends AbstractController
      * @return Response
      */
     #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
-
-    public function AfficherLieu(int $id,
-                                  LieuRepository $LieuxRepo):Response{
-        $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
-       return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
+    public function AfficherLieu(int            $id,
+                                 LieuRepository $LieuxRepo): Response
+    {
+        $lieu = $LieuxRepo->findOneBy(["id" => $id]);
+        return $this->render('lieux/afficheLieu.html.twig', ["lieu" => $lieu]);
     }
 
 
@@ -215,24 +217,23 @@ class SortiesController extends AbstractController
      */
 //    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
     #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
-
-    public function Sinscrire(  int $idSortie,
+    public function Sinscrire(int                    $idSortie,
 //                                int $idStagiaire,
-                                SortieRepository $sortieRepo,
-                                EntityManagerInterface $entityManager,
-                                InscriptionsService $serv) :Response
+                              SortieRepository       $sortieRepo,
+                              EntityManagerInterface $entityManager,
+                              InscriptionsService    $serv): Response
     {
         // récupérer le stagiaire ( c'est toujours le user connecté ??)
 //        $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
         $stag = $this->getUser();
         // récupérer la sortie
-        $sortie=$sortieRepo->findOneBy(["id"=>$idSortie]);
+        $sortie = $sortieRepo->findOneBy(["id" => $idSortie]);
         // inscrire et confirmer ou infirmer l'inscription
 
-        $tab=$serv->inscrire($stag,$sortie,$entityManager);
-      if ($tab[0])
-          $this->addFlash('success', 'vous avez été inscrit à la sortie');
-      else  $this->addFlash('error','inscription impossible : '.$tab[1]);
+        $tab = $serv->inscrire($stag, $sortie, $entityManager);
+        if ($tab[0])
+            $this->addFlash('success', 'vous avez été inscrit à la sortie');
+        else  $this->addFlash('error', 'inscription impossible : ' . $tab[1]);
 
         //rediriger
         return $this->redirectToRoute('_sorties');
@@ -270,19 +271,25 @@ class SortiesController extends AbstractController
     }
 
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
-    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager,StagiaireRepository $stagiaireRepository,VilleRepository $villeRepository,LieuRepository $lieuRepository,CampusRepository $campusRepository,Request $request): Response
+    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, StagiaireRepository $stagiaireRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, CampusRepository $campusRepository, Request $request): Response
     {
+        //Contrôle de l'id organisateur entrant
+        if (!is_int($id)) {
+            $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
+            return $this->redirectToRoute('_sorties');
+        }
+
         // Récupère la sortie correspondant à l'ID spécifié.
-        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
 
         //Récupérer le campus associé à la sortie
-        $campus = $campusRepository->findOneBy(['id'=> $sortie->getCampus()]);
+        $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
 
         //Récupérer le lieu associé à la sortie
-        $lieu = $lieuRepository->findOneBy(['id'=>$sortie->getLieu()->getId()]);
+        $lieu = $lieuRepository->findOneBy(['id' => $sortie->getLieu()->getId()]);
 
         //Récupérer la ville associé à la sortie
-        $ville = $villeRepository->findOneBy(['id'=>$lieu->getVille()->getId()]);
+        $ville = $villeRepository->findOneBy(['id' => $lieu->getVille()->getId()]);
 
         //Récupère l'id du stagiaire connécté
         $stagiaireConnecte = $this->getUser();
@@ -290,11 +297,15 @@ class SortiesController extends AbstractController
         $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
         $sortieForm->handleRequest($request);
 
+
         //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
-        if($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3){
+        if ($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3) {
             return $this->redirectToRoute('_sorties');
         }
-        if ($sortieForm->isSubmitted()) {
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            foreach ($sortie->getParticipants() as $value) {
+                $sortie->removeParticipant($value);
+            }
             $sortie->setEtat(6);
             $entityManager->persist($sortie);
             $entityManager->flush();
