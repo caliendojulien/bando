@@ -13,6 +13,7 @@ use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\InscriptionsService;
 use App\Services\SortiesService;
+use DateInterval;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -28,14 +29,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  #[Route('/sorties', name: 'sorties')]
 class SortiesController extends AbstractController
 {
-    #[isGranted("ROLE_USER")]
-    #[Route('/liste', name: '_liste')]
-    public function test(): Response
-    {
-        return $this->render('sorties/test.html.twig', []);
-    }
 
-    #[Route('/sorties', name: '_sorties')]
+    #[Route('/liste', name: '_liste')]
     public function sorties(
         SortieRepository     $sortieRepository,
         Request              $request,
@@ -251,7 +246,7 @@ class SortiesController extends AbstractController
             $entityManager->flush();
 
             // Redirige vers la liste des sorties
-            return $this->redirectToRoute('_sorties');
+            return $this->redirectToRoute('sorties_liste');
         }
 
         // Récupère la liste des villes pour le formulaire
@@ -264,7 +259,7 @@ class SortiesController extends AbstractController
             'duree' => $duree
         ]);
     }
-
+    /*
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
      * @param int $idSortie L'identifiant de la sortie
      * @param SortieRepository $sortieRepo
