@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
 {
@@ -19,21 +19,25 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
+    #[Assert\GreaterThanOrEqual('today')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $debutSortie = null;
-
+    #[Assert\GreaterThanOrEqual('today')]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $finSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\GreaterThanOrEqual('today')]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(nullable: true)]
+    #[Assert\Length(min:1,max: 1000,minMessage: "doit être supérieur à zéro",maxMessage: "doit être inférieur ou égal à 1000")]
     private ?int $nombreInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $infosSortie = null;
 
+    #[Assert\Length(min:1,max: 8)]
     #[ORM\Column]
     private ?int $etat = null;
 
@@ -59,8 +63,6 @@ class Sortie
         $this->participants = new ArrayCollection();
     }
 
-
-
     public function getId(): ?int
     {
         return $this->id;
@@ -74,7 +76,6 @@ class Sortie
     public function setNom(string $nom): self
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -86,7 +87,6 @@ class Sortie
     public function setDebutSortie(\DateTimeInterface $debutSortie): self
     {
         $this->debutSortie = $debutSortie;
-
         return $this;
     }
 
