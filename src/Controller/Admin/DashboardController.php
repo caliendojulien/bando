@@ -50,6 +50,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Lieux', 'fas fa-map-marker-alt', Lieu::class);
         yield MenuItem::linkToCrud('Stagiaires', 'fas fa-list', Stagiaire::class);
         //Todo choisi une autre route quand elle sera créée
-        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_test');
+        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_liste');
     }
 }

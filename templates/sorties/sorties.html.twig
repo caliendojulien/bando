@@ -23,7 +23,7 @@
                 {{ form_row(form.non_inscrit) }}
                 {{ form_row(form.sorties_passees) }}
                 <button type="submit" class="btn btn-primary">Rechercher</button>
-                <a href="{{ path('_sorties') }}" class="btn btn-secondary">Effacer les filtres</a>
+                <a href="{{ path('sorties_liste') }}" class="btn btn-secondary">Effacer les filtres</a>
                 {{ form_end(form) }}
                 <table class="table table-striped">
                     <thead>
@@ -64,14 +64,14 @@
                             <td>{{ sortie.organisateur.nom }}</td>
                             <td>
                                 {% if sortie.etat == 1 %}
-                                    <a href="{{ path('_sorties_test', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
+                                    <a href="{{ path('accueil', {'id': sortie.id}) }}" class="btn btn-warning btn-sm">Modifier</a>
                                 {% endif %}
-                                <a href="{{ path('_sortie', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
+                                <a href="{{ path('sorties_detail', {'id': sortie.id}) }}" class="btn btn-primary btn-sm">Afficher</a>
                                 {% if app.user in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
+                                    <a href="{{ path('sorties_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
                                 {% if app.user not in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('_sinscrire', {'idSortie': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
+                                    <a href="{{ path('sorties_sinscrire', {'idSortie': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
                                 {% endif %}
 
                             </td>
@@ -80,7 +80,7 @@
                     </tbody>
                 </table>
                 <div class="text-center my-3">
-                    <a href="{{ path('_creer-sortie') }}" class="btn btn-success">
+                    <a href="{{ path('sorties_creer') }}" class="btn btn-success">
                         Créer une sortie
                     </a>
                 </div>
