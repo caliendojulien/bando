@@ -9,6 +9,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class LieuType extends AbstractType
 {
@@ -17,16 +18,25 @@ class LieuType extends AbstractType
         $builder
             ->add('nom')
             ->add('rue')
-            ->add('latitude')
-            ->add('longitude')
-            ->add('ville',EntityType::class,[
-            'class' => Ville::class,
+            ->add('latitude', null, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Regex('/^-?\d+\.\d+$/'),
+                ],
+            ])
+            ->add('longitude', null, [
+                'constraints' => [
+                    new Assert\NotBlank(),
+                    new Assert\Regex('/^-?\d+\.\d+$/'),
+                ],
+            ])
+            ->add('ville', EntityType::class, [
+                'class' => Ville::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Sélectionner une ville',
                 'required' => true,
             ])
-            ->add('creer',SubmitType::class)
-        ;
+            ->add('creer', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
