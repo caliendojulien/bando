@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class LieuxController extends AbstractController
 {
     /**
-     * Création d'un lieu
+     * Création d'un lieu (par n'importe quel stagiaire)
      * @param Request $request
      * @param EntityManagerInterface $entityManager
      * @return Response
@@ -66,6 +66,12 @@ class LieuxController extends AbstractController
         return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 
+    /**
+     * Cette URL affiche une liste déroulante contenant les lieux
+     * @param int $id
+     * @param LieuRepository $LieuxRepo
+     * @return Response
+     */
     #[Route('/listerLieux/{id}', name: 'listeLieux')]
     public function AfficherLieu(int $id,
                                  LieuRepository $LieuxRepo):Response{
