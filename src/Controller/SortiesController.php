@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -379,5 +380,16 @@ class SortiesController extends AbstractController
             'ville' => $ville
         ]);
     }
+
+//     #[isGranted("ROLE_USER")]
+//     #[Route('/retourLieux', name: '_retourLieu')]
+//     public function retourDesLieux(Request $request, SessionInterface $session){
+//         // Récupérer les données de la session
+//         $sortie = $session->get('sortie');
+//         $villes = $session->get('villes');
+//$form=
+//         // Afficher les données dans la vue
+//         return $this->render('sorties/creer.html.twig', ['form' => $form,'villes'=>$villes]);
+//     }
 
 }
