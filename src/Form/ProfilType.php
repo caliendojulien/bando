@@ -13,6 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Polyfill\Intl\Idn\Resources\unidata\Regex;
 use Vich\UploaderBundle\Form\Type\VichFileType;
 
 class ProfilType extends AbstractType
@@ -40,11 +43,35 @@ class ProfilType extends AbstractType
                     'required' => true,
                     'attr' => ['class' => 'profilEmail', 'maxlength' => 255],
                 ])
-            ->add('password', PasswordType::class,
-                ['mapped' => false, 'required' => true, 'label' => 'Mot de passe', 'hash_property_path' => 'password'],
-            )
+            ->add('password', RepeatedType::class, [
+                'type' => PasswordType::class,
+                'required'=>true,
+                'options' => [
+                    'attr' => [
+                    ],
+                ],
+                'first_options' => [
+                    'constraints' => [
+                        new NotBlank([
+                            'message' => 'Merci d\'entrer un mot de passe',
+                        ]),
+                        new Length([
+                            'min' => 8,
+                            'minMessage' => 'Votre mot de passe doit contenir au minimu {{ limit }} caracteres',
+                            // max length allowed by Symfony for security reasons
+                            'max' => 255,
+                        ]),
+                    ],
+                    'label' => 'Mot de passe',
+                ],
+                'second_options' => [
+                    'label' => 'Confirmation mot de passe',
+                ],
+                'invalid_message' => 'La confirmation du mot de passe doit correspondre au mot de passe.',
+                'mapped' => false,
+            ])
             ->add('campus', null, [
-                'attr' => ['class' => 'profilCampus'],
+                'attr' => ['class' => 'profilCampus','readonly' => true],
             ])
             ->add('url_photo', HiddenType::class,
                 [

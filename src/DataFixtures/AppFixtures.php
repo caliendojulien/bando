@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
             $stagiaires[$i]->setPrenom($faker->firstName);
             $stagiaires[$i]->setEmail($faker->email);
             $stagiaires[$i]->setTelephone("0658787562");
-            $stagiaires[$i]->setPassword('$2y$13$mt1o5tcLVkc2PR/hC.W7JuwF0BA1bS9U/kMfIRdC7DvWV/xomhbJq');
+            $stagiaires[$i]->setPassword('$2y$13$peiKbj/e0XyFN49wbbRH7u3pnuLipI5wXuW61OAEqBCvsan9MfBI6');
             $stagiaires[$i]->setUrlPhoto('images/stagiaires_no_photo.png');
             $stagiaires[$i]->setAdministrateur(rand(0, 1));
             $stagiaires[$i]->setRoles($stagiaires[$i]->isAdministrateur() ? ["ROLE_ADMIN", "ROLE_USER"] : ["ROLE_USER"]);

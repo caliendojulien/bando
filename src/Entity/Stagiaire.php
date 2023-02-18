@@ -48,14 +48,9 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Assert\Length(
-        min: 8,
-        max: 255,
-        minMessage: 'Votre email trop court, limite: {{ limit }}',
-        maxMessage: 'Votre email trop long, limite: {{ limit }}',
-    )]
+    #[Assert\Regex(['pattern'=>'/^(?=.{8,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/'],match: true)]
     private ?string $password = null;
+
 
     #[ORM\Column(length: 150)]
     #[Assert\NotBlank]
@@ -180,7 +175,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function setPassword(string $password = null): self
     {
         $this->password = $password;
 
@@ -400,9 +395,6 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
             'administrateur' => $this->administrateur,
             'actif' => $this->actif,
             'premiere_connexion' => $this->premiereConnexion,
-            'campus' => $this->campus,
-            'organise_sortie' => $this->organiseSorties,
-            'participe_sortie' => $this->participeSorties,
             'image' => $this->image,
             'update_at' => $this->updatedAt,
             'imageFile' => base64_encode($this->imageFile),
@@ -420,9 +412,6 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
         $this->urlPhoto = $serialized['url_photo'];
         $this->administrateur = $serialized['administrateur'];
         $this->premiereConnexion = $serialized['premiere_connexion'];
-        $this->campus = $serialized['campus'];
-        $this->organiseSorties = $serialized['organise_sortie'];
-        $this->participeSorties = $serialized['participe_sortie'];
         $this->image = $serialized['image'];
         $this->updatedAt = $serialized['update_at'];
         $this->imageFile = base64_decode($serialized['imageFile']);

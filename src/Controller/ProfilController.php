@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Stagiaire;
 use App\Form\ProfilType;
 use App\Repository\StagiaireRepository;
 use App\Services\EtatSorties;
@@ -11,8 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
-use Symfony\Component\Validator\Constraints\Regex;
+use Symfony\Component\Security\Core\En;
 
 
 class ProfilController extends AbstractController
@@ -20,19 +20,14 @@ class ProfilController extends AbstractController
     #[Route('/profil', name: 'profil_modif')]
     public function index(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository, UserPasswordHasherInterface $passwordHasher): Response
     {
-        $stagiaireConnecte = $this->getUser();
-        if (is_null($stagiaireConnecte)) {
-            return $this->redirectToRoute('app_login');
-        }
-        $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
-        $profilForm = $this->createForm(ProfilType::class, $stagiaireConnecte);
+        $stagiaire = $this->getUser();
+        $profilForm = $this->createForm(ProfilType::class, $stagiaire);
         $profilForm->handleRequest($request);
 
-        if ($profilForm->isSubmitted() && $profilForm->isValid()) {
-            $plaintextPassword = $profilForm->get('password')->getData();
-            if (!$passwordHasher->isPasswordValid($stagiaire, $plaintextPassword)) {
-                $this->addFlash('erreur', 'Mauvais format mot de passe ');
-            } else if (
+        if ($profilForm->isSubmitted() && $profilForm->isValid()){
+            if(!preg_match('/^(?=.{8,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/',$profilForm['password']->getData())){
+                $this->addFlash('erreur','Le mot de passe ne respect pas le format requis (Au minimum 8 caractères, une minuscule, une majuscule et 1 signe spécial');
+            }else if (
                 empty($profilForm->get('nom')->getData()) ||
                 strlen($profilForm->get('nom')->getData()) > 255
             ) {
@@ -47,14 +42,13 @@ class ProfilController extends AbstractController
                 strlen($profilForm->get('telephone')->getData()) != 10
             ) {
                 $this->addFlash('erreur', 'Mauvais format du numéro de téléphone');
-            } else if (
-                (strlen($profilForm->get('password')->getData()) < 8 && !empty($profilForm->get('password')->getData())) ||
-                preg_match('/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/', $profilForm->get('telephone')->getData())
-            ) {
-                $this->addFlash('erreur', 'Mauvais format mot de passe');
             } else {
-                $em->persist($stagiaireConnecte);
+                $stagiaire = $profilForm->getData();
+                $encoded_password = $passwordHasher->hashPassword($stagiaire, $profilForm['password']->getData());
+                $stagiaire->setPassword($encoded_password);
+                $em->persist($stagiaire);
                 $em->flush();
+                $this->addFlash('success', 'Votre profil a été mis à jour !');
             }
         }
         return $this->render('profil/modif.html.twig', [
@@ -81,14 +75,4 @@ class ProfilController extends AbstractController
             'stagiaire' => $stagiaire,
         ]);
     }
-
-    #[Route('/testService', name: 'test-service')]
-    public function service(EtatSorties $etatSorties): Response
-    {
-        $etatSorties->updateEtatSorties();
-        return $this->render('sorties/test.html.twig', [
-        ]);
-    }
-
-
 }
