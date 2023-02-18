@@ -34,7 +34,7 @@ class SortiesService
                     "":"La sortie ne peut pas être à l'état ". $laSortie->getEtat()."." ;
         // le nb d'inscrit est entre 1 et 1000
         $message .= ($laSortie->getNombreInscriptionsMax() > 0 && $laSortie->getNombreInscriptionsMax() <=1000) ?
-                    "":"Le nombre de participants doit être compris en 0 et 1000.";
+                    "":"Le nombre de participants doit être compris entre 0 et 1000.";
         // le lieu est obligatoire
         $message .= ($laSortie->getLieu()) ? "":"Le lieu est obligatoire.";
 

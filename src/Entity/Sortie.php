@@ -19,15 +19,15 @@ class Sortie
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[Assert\GreaterThanOrEqual('today')]
+    #[Assert\GreaterThanOrEqual('today',message: "La date de début est forcément supérieure à aujourd'hui")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $debutSortie = null;
-    #[Assert\GreaterThanOrEqual('today')]
+    #[Assert\GreaterThanOrEqual('today',message: "La date de fin de sortie est forcément supérieure à aujourd'hui")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $finSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    #[Assert\GreaterThanOrEqual('today')]
+    #[Assert\GreaterThanOrEqual('today',message: "La date limite est forcément supérieure à aujourd'hui")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
     #[ORM\Column(nullable: true)]

@@ -28,11 +28,15 @@ function chargerLieux( idVille){
                  }
         });
 
-        // document.addEventListener('DOMContentLoaded', function() {
-        // var elems = document.querySelectorAll('select');
-        // var instances = M.FormSelect.init(elems, "");
-    // });
-
+}
+function chargerLesLieux(idLieu){
+    fetch("/listerLieux/"+idLieu)
+        .then((reponse) => reponse.text())
+        .then((texte) =>{
+            console.log(texte);
+            let container = document.getElementById('choixLieux');
+            container.innerHTML = texte;
+        });
 }
 
 /**

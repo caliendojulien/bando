@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur{% endblock %}
+
+{% block body %}
+    <h1>Oups ! Une erreur s'est produite</h1><br>
+    <h3>{{message}}</h3><br>
+    <h4>Veuillez contacter un administrateur à cette adresse : admin@bando.fr</h4>
+    <p>
+        <a href="{{ path('accueil') }}">Retour à la page principale...</a>
+    </p>
+{% endblock %}
+
+

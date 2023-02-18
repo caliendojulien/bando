@@ -71,7 +71,7 @@
                                     <a href="{{ path('sorties_desistement', {'id': sortie.id}) }}" class="btn btn-danger btn-sm">Se désister</a>&nbsp;
                                 {% endif %}
                                 {% if app.user not in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('sorties_sinscrire', {'idSortie': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
+                                    <a href="{{ path('sorties_sinscrire', {'id': sortie.id}) }}" class="btn btn-success btn-sm">S'inscrire</a>&nbsp;
                                 {% endif %}
 
                             </td>
