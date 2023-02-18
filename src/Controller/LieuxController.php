@@ -9,7 +9,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class LieuxController extends AbstractController
@@ -20,7 +22,7 @@ class LieuxController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
-    #[Route('/Creerlieu', name: 'creer_Lieu')]
+    #[Route('/lieu/Creerlieu', name: 'creer_lieu')]
     public function index(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -59,7 +61,7 @@ class LieuxController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @return Response
      */
-    #[Route('/AfficherLieu/{id}', name: 'affLieu')]
+    #[Route('/lieu/AfficherLieu/{id}', name: 'affLieu')]
     public function LieuxParVilleBis(int $id,
                                  LieuRepository $LieuxRepo):Response{
         $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
@@ -72,10 +74,21 @@ class LieuxController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @return Response
      */
-    #[Route('/listerLieux/{id}', name: 'listeLieux')]
+    #[Route('/lieu/listerLieux/{id}', name: 'listeLieux')]
     public function AfficherLieu(int $id,
                                  LieuRepository $LieuxRepo):Response{
         $lieux = $LieuxRepo->findBy(["ville" => $id]);
         return $this->render('lieux/selectLieux.html.twig', [  "lieux"=>$lieux ]);
     }
+
+//    #[isGranted("ROLE_USER")]
+//    #[Route('/lieu/allerLieux', name: 'allerLieux')]
+//    public function sortieVersLieux(Request $request, SessionInterface $session){
+//        // Stocker les données dans la session
+//        $session->set('$form', $request);
+////        $form = $session->get('form');
+////        $villes = $session->get('villes');
+//        // Rediriger vers l'autre écran
+//        return $this->redirectToRoute('creer_Lieu');
+//    }
 }

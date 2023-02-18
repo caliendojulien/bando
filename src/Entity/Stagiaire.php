@@ -4,16 +4,14 @@ namespace App\Entity;
 
 use App\Repository\StagiaireRepository;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
-
+use Symfony\Component\Validator\Constraints as Assert;
 //comment
 #[Vich\Uploadable]
 #[ORM\Entity(repositoryClass: StagiaireRepository::class)]
@@ -43,6 +41,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[ORM\Column(length: 10, nullable: true)]
+    #[Assert\Length(10)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
