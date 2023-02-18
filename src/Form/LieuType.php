@@ -6,6 +6,7 @@ use App\Entity\Lieu;
 use App\Entity\Ville;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,8 +18,12 @@ class LieuType extends AbstractType
         $builder
             ->add('nom')
             ->add('rue')
-            ->add('latitude')
-            ->add('longitude')
+            ->add('latitude',NumberType::class,[
+                'invalid_message' => 'Veuillez entrer un nombre numérique.'
+            ])
+            ->add('longitude',NumberType::class,[
+                'invalid_message' => 'Veuillez entrer un nombre numérique.'
+            ])
             ->add('ville',EntityType::class,[
             'class' => Ville::class,
                 'choice_label' => 'nom',

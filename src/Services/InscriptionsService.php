@@ -14,7 +14,7 @@ class InscriptionsService
      * @param Stagiaire $stag
      * @param Sortie $sortie
      * @param EntityManagerInterface $em
-     * @return array Tableau qui contient : true ou falsse en fonction de l'inscription + le message explicatif
+     * @return array Tableau qui contient : true ou false en fonction de l'inscription + le message explicatif
      */
     function inscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):array{
         $message="";
@@ -41,6 +41,21 @@ class InscriptionsService
         }
         else return [false,$message];
         return [true,$message];
+    }
+
+    function SeDesinscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):bool
+    {
+        $participants = $sortie->getParticipants();
+        foreach ($participants as $participant) {
+            // Vérifie que l'utilisateur actuel participe bien à la sortie.
+            if ($participant === $stag) {
+                // Si l'utilisateur participe bien à la sortie, le supprime de la liste des participants.
+                $sortie->removeParticipant($participant);
+                $em->flush();
+                return true;
+            }
+        }
+        return false;
     }
 
 }

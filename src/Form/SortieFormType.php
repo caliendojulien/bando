@@ -32,6 +32,7 @@ class SortieFormType extends AbstractType
             ->add('debutSortie',DateTimeType::class,
                 [
                 'required' => true,
+                    'invalid_message' => 'La sortie ne peut pas être antérieure à aujourdhui.',
                 'data' => $dateDeb,
                     'constraints' => [
                         new GreaterThan([
@@ -42,6 +43,7 @@ class SortieFormType extends AbstractType
             )
             ->add('dateLimiteInscription',DateTimeType::class, [
                 'required' => true,
+                'invalid_message' => 'La date limite ne peut pas être antérieure à aujourdhui.',
                 'data' => $datelimite,
                 'constraints' => [
                     new GreaterThan([
