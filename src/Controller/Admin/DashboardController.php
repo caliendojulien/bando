@@ -2,10 +2,12 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\ImportStagiairesController;
 use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Stagiaire;
 use App\Entity\Ville;
+use App\Form\ImportStagiairesFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -51,5 +53,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Stagiaires', 'fas fa-list', Stagiaire::class);
         //Todo choisi une autre route quand elle sera créée
         yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_liste');
+        yield MenuItem::linktoRoute('Importer des stagiaires (xls/csv)', 'fas fa-file-upload', '_import-stagiaires');
     }
 }

@@ -1,0 +1,71 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block page_content %}
+
+    <article>
+        <h2>Importer des stagiaires</h2><br>
+        <p>
+            <strong>Veillez à respecter le format suivant :</strong>
+        <table class="table table-bordered text-center text-white">
+            <thead>
+            <tr class="bg-primary">
+                <th>email</th>
+                <th>password</th>
+                <th>nom</th>
+                <th>prenom</th>
+                <th>telephone</th>
+                <th>campus</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>mario@champiland.com</td>
+                <td>*******</td>
+                <td>Dupond</td>
+                <td>Mario</td>
+                <td>0614356789</td>
+                <td>12</td>
+            </tr>
+            <tr>
+                <td>luigi@mushroomland.com</td>
+                <td>*******</td>
+                <td>Martin</td>
+                <td>Luigi</td>
+                <td>0739715678</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>peach@mushroomland.com</td>
+                <td>*******</td>
+                <td>Bernard</td>
+                <td>Peach</td>
+                <td>0746790134</td>
+                <td>7</td>
+            </tr>
+            <tr>
+                <td>toad@toadland.com</td>
+                <td>*******</td>
+                <td>Thomas</td>
+                <td>Toad</td>
+                <td>0756879643</td>
+                <td>23</td>
+            </tr>
+            <tr>
+                <td>yoshi@yoshiland.com</td>
+                <td>*******</td>
+                <td>Richard</td>
+                <td>Yoshi</td>
+                <td>0656657234</td>
+                <td>12</td>
+            </tr>
+            </tbody>
+        </table>
+        <span class="subtitle"><i>Formats acceptés : .csv, .xls, .xlsx, .ods</i></span>
+        </p>
+        <div>
+            {{ form_start(form) }}
+            {{ form_widget(form.fichier) }}
+            {{ form_end(form) }}
+        </div>
+    </article>
+{% endblock %}
