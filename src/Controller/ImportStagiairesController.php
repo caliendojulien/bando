@@ -16,9 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @method redirectToReferrer()
- */
 class ImportStagiairesController extends AbstractController
 {
     #[Route('/admin/import-stagiaire', name: '_import-stagiaires')]
@@ -44,47 +41,45 @@ class ImportStagiairesController extends AbstractController
         UserPasswordHasherInterface $passwordHasher
     ): Response
     {
-        $form = $this->createForm(ImportStagiairesFormType::class);
-        $form->handleRequest($request);
+        $form = $this->createForm(ImportStagiairesFormType::class)->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('fichier')->getData();
 
             if ($fichier) {
                 // Chargement du fichier Excel avec PHPExcel/PHPSpreadsheet
-                $spreadsheet = IOFactory::load($fichier);
-                $worksheet = $spreadsheet->getActiveSheet();
-                $rows = $worksheet->toArray(null, true, true, true);
+                $tableur    = IOFactory::load($fichier);
+                $classeur   = $tableur->getActiveSheet();
+                $lignes     = $classeur->toArray(null, true, true, true);
 
                 try {
                     // Démarrage d'une transaction
                     $entityManager->beginTransaction();
 
-                    // Initialiation du compteur pour gestion de nombre de lignes inséréss
+                    // Initialiation du compteur pour gestion de nombre de lignes insérées
                     $compteur = 0;
 
-                    // On boucle sur chaque hors 1ère ligne (titres des colonnes)
-                    foreach ($rows as $key => $row) {
-                        // On ignore la première ligne du fichier Excel
-                        if ($key === 1) {
+                    // On boucle sur chaque ligne à partir de la deuxième ligne, la première ligne correspondant aux titres des colonnes
+                    foreach ($lignes as $cle => $ligne) {
+                        if ($cle === 1) {
                             continue;
                         }
                         // Récupèration des données de la ligne courante
                         $data = [
-                            'email' => $row['A'],
-                            'password' => $row['B'],
-                            'nom' => $row['C'],
-                            'prenom' => $row['D'],
-                            'telephone' => $row['E'],
-                            'campus' => $row['F']
+                            'email'     => $ligne['A'],
+                            'password'  => $ligne['B'],
+                            'nom'       => $ligne['C'],
+                            'prenom'    => $ligne['D'],
+                            'telephone' => $ligne['E'],
+                            'campus'    => $ligne['F']
                         ];
-                        // Si l'ID de campus n'est pas renseigné, annulation de l'opération
-                        try {
-                            $campus = $entityManager->getReference(Campus::class, $data['campus']);
-                        } catch (Exception) {
-                            $entityManager->rollback();
-                            $this->addFlash('danger', 'Assurez-vous que l\'identifiant du campus est bien renseigné à la ligne ' . $key . '.');
-                            return $this->redirectToRoute('admin');
+                        // Vérification de nullité
+                        foreach ($data as $valeur) {
+                            if ($valeur === null) {
+                                $entityManager->rollback();
+                                $this->addFlash('danger', 'Assurez-vous que toutes les données sont renseignées à la ligne ' . $cle . '.');
+                                return $this->redirectToRoute('admin');
+                            }
                         }
                         // Vérification et chargement de l'image par défaut
                         $imagePath = $this->getParameter('kernel.project_dir') . '/public/images/stagiaires_no_photo.png';
@@ -92,19 +87,29 @@ class ImportStagiairesController extends AbstractController
                             $image = new UploadedFile($imagePath, 'stagiaires_no_photo.png', 'image/png', null, true);
                             $data['image'] = $image;
                         }
+                        // Vérification de l'unicité de l'email
+                        $email = $data['email'];
+                        $stagiaireExistant = $entityManager->getRepository(Stagiaire::class)->findOneBy(['email' => $email]);
+                        if ($stagiaireExistant) {
+                            $entityManager->rollback();
+                            $this->addFlash('danger', sprintf('L\'email %s à la ligne %d existe déjà en base de données.', $email, $cle));
+                            return $this->redirectToRoute('admin');
+                        }
                         // Création d'un objet Stagiaire et soumission des données au formulaire d'importation
-                        $stagiaire = new Stagiaire();
-                        $stagiaire->setCampus($campus);
-                        $stagiaire->setEmail($data['email']);
-                        $stagiaire->setRoles(['ROLE_USER']);
-                        $stagiaire->setNom($data['nom']);
-                        $stagiaire->setPrenom($data['prenom']);
-                        $stagiaire->setTelephone($data['telephone']);
-                        $stagiaire->setAdministrateur(false);
-                        $stagiaire->setActif(true);
-                        $stagiaire->setPremiereConnexion(false);
+                        $campus = $entityManager->getReference(Campus::class, $data['campus']);
+                        $stagiaire = (new Stagiaire())
+                            ->setCampus($campus)
+                            ->setEmail($data['email'])
+                            ->setRoles(['ROLE_USER'])
+                            ->setNom($data['nom'])
+                            ->setPrenom($data['prenom'])
+                            ->setTelephone($data['telephone'])
+                            ->setAdministrateur(false)
+                            ->setActif(true)
+                            ->setPremiereConnexion(false)
+                            ->setUpdatedAt(new DateTime('now'));
+                        // Affectation de l'image par défaut au stagiaire
                         $stagiaire->setImage($data['image']);
-                        $stagiaire->setUpdatedAt(new DateTime('now'));
                         // Hashage du mot de passe avec la méthode hash de Security Symfony
                         $hashedPassword = $passwordHasher->hashPassword($stagiaire, $data['password']);
                         $stagiaire->setPassword($hashedPassword);
