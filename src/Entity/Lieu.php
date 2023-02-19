@@ -19,13 +19,13 @@ class Lieu
     private ?int $id = null;
 
     #[ORM\Column(length: 150)]
-    #[Groups(["lieux"])]
     #[Assert\NotBlank]
+    #[Groups(["lieux"])]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["lieux"])]
     #[Assert\NotBlank]
+    #[Groups(["lieux"])]
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]

@@ -20,6 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -380,15 +381,61 @@ class SortiesController extends AbstractController
         ]);
     }
 
-//     #[isGranted("ROLE_USER")]
-//     #[Route('/retourLieux', name: '_retourLieu')]
-//     public function retourDesLieux(Request $request, SessionInterface $session){
-//         // Récupérer les données de la session
-//         $sortie = $session->get('sortie');
-//         $villes = $session->get('villes');
-//$form=
-//         // Afficher les données dans la vue
-//         return $this->render('sorties/creer.html.twig', ['form' => $form,'villes'=>$villes]);
-//     }
+     #[isGranted("ROLE_USER")]
+     #[Route('/retourLieux', name: '_retourLieu')]
+     public function retourDesLieux(Request $request,
+                                    SessionInterface $session,
+                                    EntityManagerInterface $entityManager,
+                                    StagiaireRepository $stagRepo,
+                                    VilleRepository $villesRepo,
+                                    LieuRepository $LieuxRepo,
+                                    SortiesService $serviceSorties){
+        try{
+         // Récupérer les données de la session
+         $sortie = $session->get('sortie');
+         $form = $this->createForm(SortieFormType::class, $sortie);
+         $form->handleRequest($request);
+
+         //traiter l'envoi du formulaire
+         if ($form->isSubmitted()) {
+
+             // renseigner le lieu
+             $idLieu = $request->request->get("choixLieux");
+             if ($idLieu)  $sortie->setLieu( $LieuxRepo->findOneBy(["id" => $idLieu]));
+
+             //  trouver la date de fin en fonction de la durée et de la date de début
+             $duree =(int) $request->request->get("duree");
+             $serviceSorties->ajouterDureeAdateFin($sortie,$duree);
+
+             //l'état dépend du bouton sur lequel on a cliqué
+             $sortie->setEtat(($request->request->get( 'Publier' ) ?
+                 EtatSorties::Publiee->value: EtatSorties::Creee->value));
+
+             //vérification des contraintes métier
+             $metier=  $serviceSorties->verifSortieValide($sortie,$duree);
+
+             //si OK on enregistre
+             if ($form->isValid() && $metier["ok"]) {
+                 $entityManager->persist($sortie);
+                 $entityManager->flush();
+                 return $this->redirectToRoute('sorties_liste');
+             }
+             else //sinon on reste sur la page mais on affiche les erreurs
+             {
+                 $this->addFlash("error","merci de vérifier, il y a des erreurs.".$metier["message"]);
+             }
+         }
+
+         //passer la liste des villes au formulaire
+         $villes = $villesRepo->findAll();
+         return $this->render('sorties/creer.html.twig', [
+             'form' => $form->createView(),
+             'sortie'=>$sortie,
+             "villes" => $villes
+         ]);
+     } catch (Exception $ex){
+ return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
+ }
+     }
 
 }
