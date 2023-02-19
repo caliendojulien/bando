@@ -3,8 +3,11 @@
 namespace App\Services;
 
 use App\Entity\Sortie;
+use App\Form\SortieFormType;
 use DateInterval;
 use DateTime;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class SortiesService
 {
@@ -55,5 +58,10 @@ class SortiesService
             $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
             $sortie->setFinSortie($dateFin);
         }
+    }
+    Public function TraiterEnvoiFormulaireCreerSortie(SortieFormType $form,
+                                                      Request $request,
+                                                      EntityManagerInterface $entityManager){
+
     }
 }
