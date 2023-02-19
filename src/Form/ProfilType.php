@@ -43,31 +43,25 @@ class ProfilType extends AbstractType
                     'required' => true,
                     'attr' => ['class' => 'profilEmail', 'maxlength' => 255],
                 ])
+            ->add('currentPassword', PasswordType::class, [
+                'required'=>true,
+                'mapped' => false,
+                'label' => 'Mot de passe',
+                ])
+
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'required'=>true,
+                'required'=>false,
                 'options' => [
                     'attr' => [
                     ],
                 ],
                 'first_options' => [
-                    'constraints' => [
-                        new NotBlank([
-                            'message' => 'Merci d\'entrer un mot de passe',
-                        ]),
-                        new Length([
-                            'min' => 8,
-                            'minMessage' => 'Votre mot de passe doit contenir au minimu {{ limit }} caracteres',
-                            // max length allowed by Symfony for security reasons
-                            'max' => 255,
-                        ]),
-                    ],
-                    'label' => 'Mot de passe',
+                    'label' => 'Nouveau mot de passe',
                 ],
                 'second_options' => [
-                    'label' => 'Confirmation mot de passe',
+                    'label' => 'Confirmation nouveau mot de passe',
                 ],
-                'invalid_message' => 'La confirmation du mot de passe doit correspondre au mot de passe.',
                 'mapped' => false,
             ])
             ->add('campus', null, [

@@ -49,6 +49,10 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     #[Assert\Regex(['pattern'=>'/^(?=.{8,}$)(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/'],match: true)]
+    #[Assert\NotCompromisedPassword(message: 'Le mot de passe a été compromis.')]
+    #[Assert\NotEqualTo(propertyPath: "nom",message: 'Votre mot de passe ne doit âs être identique à votre nom')]
+    #[Assert\NotEqualTo(propertyPath: "prenom",message: 'Votre mot de passe ne doit âs être identique à votre prénom')]
+    #[Assert\NotEqualTo(propertyPath: "email",message: 'Votre mot de passe ne doit âs être identique à votre email')]
     private ?string $password = null;
 
 
