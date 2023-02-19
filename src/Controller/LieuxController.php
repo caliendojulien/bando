@@ -81,14 +81,12 @@ class LieuxController extends AbstractController
         return $this->render('lieux/selectLieux.html.twig', [  "lieux"=>$lieux ]);
     }
 
-//    #[isGranted("ROLE_USER")]
-//    #[Route('/lieu/allerLieux', name: 'allerLieux')]
-//    public function sortieVersLieux(Request $request, SessionInterface $session){
-//        // Stocker les données dans la session
-//        $session->set('$form', $request);
-////        $form = $session->get('form');
-////        $villes = $session->get('villes');
-//        // Rediriger vers l'autre écran
-//        return $this->redirectToRoute('creer_Lieu');
-//    }
+    #[isGranted("ROLE_USER")]
+    #[Route('/lieu/allerLieux', name: 'allerLieux')]
+    public function sortieVersLieux(Request $request, SessionInterface $session){
+        // Stocker les données dans la session
+        $session->set('sortie', $request->get("sortie"));
+        // Rediriger vers l'autre écran
+        return $this->redirectToRoute('creer_Lieu');
+    }
 }
