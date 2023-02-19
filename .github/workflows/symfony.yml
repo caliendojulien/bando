@@ -1,0 +1,56 @@
+name: Symfony
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  symfony-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+        with:
+          php-version: '8.2'
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Copie du fichier de tests
+        run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+      - name: Suppression du fichier composer.lock
+        run: rm composer.lock
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+      - name: Installation des dépendances
+        run: composer install
+      - name: Création de la base de données
+        run: |
+          mkdir -p data
+          touch data/database.sqlite
+      - name: Ajout des fixtures aux dépendances
+        run: composer require --dev orm-fixtures
+      - name: Mise a jour du schéma de la base de données
+        run: php bin/console d:s:u --force
+      - name: Chargement des fixtures
+        run: php bin/console d:f:l --no-interaction --env=test
+      - name: Execution des tests
+        env:
+          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+        run: vendor/bin/phpunit
+      - name: phpunit-coverage-badge
+        uses: timkrase/phpunit-coverage-badge@v1.2.1
+        with:
+          coverage_badge_path: 'badge.svg'
+          push_badge: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          commit_name: 'GitHub CI/CD'
+          commit_message: 'MAJ du badge de couverture de code'
