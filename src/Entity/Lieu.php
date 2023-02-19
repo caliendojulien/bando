@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LieuRepository::class)]
 class Lieu
@@ -19,10 +20,12 @@ class Lieu
 
     #[ORM\Column(length: 150)]
     #[Groups(["lieux"])]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["lieux"])]
+    #[Assert\NotBlank]
     private ?string $rue = null;
 
     #[ORM\Column(nullable: true)]
@@ -36,7 +39,7 @@ class Lieu
 
     #[ORM\ManyToOne(inversedBy: 'lieux')]
     #[ORM\JoinColumn(nullable: false)]
-
+    #[Assert\NotBlank]
     private ?Ville $ville = null;
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
 
