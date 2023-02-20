@@ -39,15 +39,13 @@ jobs:
       - name: Installation des dépendances
         run: composer install
       - name: Création de la base de données
-        run: |
-          mkdir -p data
-          touch data/database.sqlite
+        run: php bin/console d:d:c --env=test
       - name: Ajout des fixtures aux dépendances
         run: composer require --dev orm-fixtures
       - name: Mise a jour du schéma de la base de données
-        run: php bin/console d:s:u --force
+        run: php bin/console d:s:u --force --env=test
       - name: Chargement des fixtures
-        run: php bin/console d:f:l --no-interaction --env=test
+        run: php bin/console d:f:l --env=test
       - name: Execution des tests
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/var/data.db
