@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Créer une sortie{% endblock %}
+{% block title %}   {% if modecree %}Créer une sortie {% else %}Modifier une sortie {% endif %}{% endblock %}
 
 {% block body %}
     <script src="{{ asset('JS/VillesEtLieux.js') }}"></script>
@@ -10,8 +10,12 @@
 {#            var instances = M.FormSelect.init(elems, "");#}
 {#        });#}
 {#    </script>#}
-    <h1>Créer une sortie</h1>
 
+    {% if modecree %}
+        <h1>Créer une sortie</h1>
+    {% else %}
+        <h1>Modifier une sortie</h1>
+    {% endif %}
     {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.debutSortie) }}
@@ -24,26 +28,42 @@
     {#--------- section villes ------------#}
 
     <label for="choixVille"> Ville
-        <select id="choixVille" name="choixVille" required onchange="chargerLesLieux(value)">
-                <option  disabled selected>choisissez une ville:</option>
+        <select id="choixVille" name="choixVille" required onchange="chargerLieux(value)">
+{#                <option  disabled selected>choisissez une ville:</option>#}
             {% for ville in villes %}
-                <option value="{{ ville.id }}"> {{ ville.nom }}</option>
+                {% if ville == laville %}
+                    <option value="{{ ville.id }}" selected> {{ ville.nom }}</option>
+                {% else %}
+                    <option value="{{ ville.id }}"> {{ ville.nom }}</option>
+                {% endif %}
+            {% endfor %}
+
+        </select>
+    </label>
+{#    --------- section Lieux ------------#}
+    <label for="choixLieux"> Lieu
+        <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">
+            <option  disabled selected>choisissez un lieu:</option>
+            {#            {% if true %}#}
+            {% for lieu in lieux %}
+                {% if lieu == leLieu %}
+                    <option value="{{ lieu.id }}" selected> {{ lieu.nom }}</option>
+                {% else %}
+                    <option value="{{ lieu.id }}"> {{ lieu.nom }}</option>
+                {% endif %}
             {% endfor %}
         </select>
     </label>
-
-{#--------- section Lieux ------------#}
-{#    <label for="choixLieux"> Lieu#}
-{#        <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">#}
-{#            <option  disabled selected>choisissez d'abord une ville:</option>#}
-{#        </select>#}
-{#    </label>#}
-    <section id="choixLieux"></section>
+    <a href="{{ path('allerLieux') }}"><input type="button" name="creerLieu" value="+" ></a>
 
     <section id="afficheLieu"></section>
 
     {#--------- section boutons ------------#}
-    <input type="submit" name="Creer" value="Créer">
+    {% if modecree %}
+        <input type="submit" name="Creer" value="Creer">
+    {% else %}
+        <input type="submit" name="Modifier" value="Modifier">
+    {% endif %}
     <input type="submit" name="Publier" value="Publier">
     <a href="{{ path('sorties_liste') }}"><input type="button" name="Annuler" value="Annuler" ></a>
     {{ form_end(form) }}

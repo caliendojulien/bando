@@ -23,7 +23,7 @@
                 <button id="t6" class="touches_inactive">X</button>
                 <button id="t7" class="touches_inactive">P</button>
                 <button id="t8" class="touches_inactive">N</button>
-                <button id="t9" class="touches_active" onclick="window.location.href='{{path('_sorties_test')}}'"><span class="dollar">@</span> Sorties</button>
+                <button id="t9" class="touches_active" onclick="window.location.href='{{path('sorties_liste')}}'"><span class="dollar">@</span> Sorties</button>
                 <button id="t10" class="touches_inactive" onclick="window.location.href='{{path('app_logout') }}'"><img class="eject" src="{{ asset('/images/eject_icon.png') }}"><p>Echap</p></button>
                 <p class="titre_company">BANDO</p>
                 <p class="sous_titre_company">#758681</p>
@@ -44,7 +44,7 @@
                 {{ form_start(profilForm) }}
                 {{ form_end(profilForm) }}
             </div>
-            <a href="{{ path('_sorties') }}">
+            <a href="{{ path('sorties_liste') }}">
                 <button>Annuler</button>
             </a>
             <div>

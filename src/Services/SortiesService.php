@@ -32,8 +32,8 @@ class SortiesService
         //la durée est forcément > 30min
         $message .= ($duree >= 30) ? "":"La durée doit être supérieure à 30 minutes.";
         //l'état est 1 ou 2 - créée ou publiée
-        $message .= ($laSortie->getEtat() == \App\Entity\EtatSorties::Creee->value ||
-                    $laSortie->getEtat() == \App\Entity\EtatSorties::Publiee->value ) ?
+        $message .= ($laSortie->getEtat() == \App\Entity\EtatSortiesEnum::Creee->value ||
+                    $laSortie->getEtat() == \App\Entity\EtatSortiesEnum::Publiee->value ) ?
                     "":"La sortie ne peut pas être à l'état ". $laSortie->getEtat()."." ;
         // le nb d'inscrit est entre 1 et 1000
         $message .= ($laSortie->getNombreInscriptionsMax() > 0 && $laSortie->getNombreInscriptionsMax() <=1000) ?

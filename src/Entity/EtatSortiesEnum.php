@@ -5,7 +5,7 @@ namespace App\Entity;
 /**
  * Enumération
  */
-enum EtatSorties:int
+enum EtatSortiesEnum:int
 {
     case Creee=1;
     case Publiee=2;

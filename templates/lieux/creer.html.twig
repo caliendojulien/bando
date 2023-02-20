@@ -8,6 +8,7 @@
     {{ form_row(form.latitude) }}
     {{ form_row(form.ville) }}
     {{ form_end(form) }}
-    <a id="retour" href="{{ path('sorties_creer') }}"><input type="button" name="Retour" value="Retour" ></a>
+{#   <a href="{{ path('creer_lieu') }}"><input type="button" name="creerLieu" value="+" ></a>#}
+   <a href="{{ path('sorties_creer') }}"><input type="button" name="retour" value="Retour" ></a>
 {#   <a href="{{ path('sorties_retourLieu') }}"><input type="button" name="Retour" value="Retour" ></a>#}
 {% endblock %}
