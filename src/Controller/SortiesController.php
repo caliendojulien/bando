@@ -30,6 +30,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  #[Route('/sorties', name: 'sorties')]
 class SortiesController extends AbstractController
 {
+
     #[isGranted("ROLE_USER")]
     #[Route('/liste', name: '_liste')]
     public function sorties(
@@ -216,6 +217,7 @@ class SortiesController extends AbstractController
         // Calcule la durée de la sortie en minutes
         $duree = $sortie->getDebutSortie()->diff($sortie->getFinSortie())->i;
 
+
         // Crée le formulaire et pré-remplit les champs avec les valeurs actuelles de la sortie
         $form = $formFactory->createBuilder(SortieFormType::class, $sortie)->getForm();
         $form->handleRequest($request);
@@ -235,8 +237,10 @@ class SortiesController extends AbstractController
             $lieu = $LieuxRepo->findOneBy(["id" => $idLieu]);
             $sortie->setLieu($lieu);
 
+
             // Met à jour l'état de la sortie en fonction du bouton cliqué
             $sortie->setEtat($request->request->get('Publier') ? EtatSorties::Publiee->value : EtatSorties::Creee->value);
+
 
             // Enregistre les modifications dans la base de données
             $entityManager->flush();
@@ -257,6 +261,7 @@ class SortiesController extends AbstractController
     }
 
 
+
     /**
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
      * @param int $idSortie L'identifiant de la sortie
@@ -265,13 +270,16 @@ class SortiesController extends AbstractController
      * @param InscriptionsService $serv
      * @return Response
      */
+
     #[isGranted("ROLE_USER")]
     #[Route('/sinscrire/sortie/{id}', name: '_sinscrire')]
     public function Sinscrire(  int $id,
+
                               SortieRepository       $sortieRepo,
                               EntityManagerInterface $entityManager,
                               InscriptionsService    $serv): Response
     {
+
         try {
 
 
@@ -293,6 +301,7 @@ class SortiesController extends AbstractController
         } catch (Exception $ex){
             return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
         }
+
     }
 
 
@@ -341,8 +350,14 @@ class SortiesController extends AbstractController
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
     public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, StagiaireRepository $stagiaireRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, CampusRepository $campusRepository, Request $request): Response
     {
+        //Contrôle de l'id organisateur entrant
+        if (!is_int($id)) {
+            $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
+            return $this->redirectToRoute('_sorties');
+        }
+
         // Récupère la sortie correspondant à l'ID spécifié.
-        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+        $sortie = $sortieRepository->findOneBy(['id' => $id]);
 
         //Récupérer le campus associé à la sortie
         $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
@@ -359,13 +374,18 @@ class SortiesController extends AbstractController
         $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
         $sortieForm->handleRequest($request);
 
+
         //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
+
 
         if($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3){
             return $this->redirectToRoute('sorties_liste');
 
         }
-        if ($sortieForm->isSubmitted()) {
+        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+            foreach ($sortie->getParticipants() as $value) {
+                $sortie->removeParticipant($value);
+            }
             $sortie->setEtat(6);
             $entityManager->persist($sortie);
             $entityManager->flush();

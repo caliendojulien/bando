@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\SortieRepository;
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
@@ -21,14 +22,18 @@ class Sortie
 
     #[Assert\GreaterThanOrEqual('today',message: "La date de début est forcément supérieure à aujourd'hui")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+
     private ?\DateTimeInterface $debutSortie = null;
     #[Assert\GreaterThanOrEqual('today',message: "La date de fin de sortie est forcément supérieure à aujourd'hui")]
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $finSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?DateTimeInterface $finSortie = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+
     #[Assert\GreaterThanOrEqual('today',message: "La date limite est forcément supérieure à aujourd'hui")]
     private ?\DateTimeInterface $dateLimiteInscription = null;
+
 
     #[ORM\Column(nullable: true)]
     #[Assert\Length(min:1,max: 1000,minMessage: "doit être supérieur à zéro",maxMessage: "doit être inférieur ou égal à 1000")]
@@ -63,6 +68,7 @@ class Sortie
         $this->participants = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,35 +85,35 @@ class Sortie
         return $this;
     }
 
-    public function getDebutSortie(): ?\DateTimeInterface
+    public function getDebutSortie(): ?DateTimeInterface
     {
         return $this->debutSortie;
     }
 
-    public function setDebutSortie(\DateTimeInterface $debutSortie): self
+    public function setDebutSortie(DateTimeInterface $debutSortie): self
     {
         $this->debutSortie = $debutSortie;
         return $this;
     }
 
-    public function getFinSortie(): ?\DateTimeInterface
+    public function getFinSortie(): ?DateTimeInterface
     {
         return $this->finSortie;
     }
 
-    public function setFinSortie(\DateTimeInterface $finSortie): self
+    public function setFinSortie(DateTimeInterface $finSortie): self
     {
         $this->finSortie = $finSortie;
 
         return $this;
     }
 
-    public function getDateLimiteInscription(): ?\DateTimeInterface
+    public function getDateLimiteInscription(): ?DateTimeInterface
     {
         return $this->dateLimiteInscription;
     }
 
-    public function setDateLimiteInscription(\DateTimeInterface $dateLimiteInscription): self
+    public function setDateLimiteInscription(DateTimeInterface $dateLimiteInscription): self
     {
         $this->dateLimiteInscription = $dateLimiteInscription;
 
@@ -221,6 +227,4 @@ class Sortie
 
         return $this;
     }
-
-
 }

@@ -63,7 +63,7 @@ class AppFixtures extends Fixture
             $stagiaires[$i]->setPrenom($faker->firstName);
             $stagiaires[$i]->setEmail($faker->email);
             $stagiaires[$i]->setTelephone("0658787562");
-            $stagiaires[$i]->setPassword('$2y$13$RYJPMquswPTWjML84hGdcuV7.V8mT6R.m/95MARlOCaA6y0iUbDfi');
+            $stagiaires[$i]->setPassword('$2y$13$peiKbj/e0XyFN49wbbRH7u3pnuLipI5wXuW61OAEqBCvsan9MfBI6');
             $stagiaires[$i]->setUrlPhoto('images/stagiaires_no_photo.png');
             $stagiaires[$i]->setAdministrateur(rand(0, 1));
             $stagiaires[$i]->setRoles($stagiaires[$i]->isAdministrateur() ? ["ROLE_ADMIN", "ROLE_USER"] : ["ROLE_USER"]);
@@ -72,7 +72,7 @@ class AppFixtures extends Fixture
             $manager->persist($stagiaires[$i]);
         }
 
-        //Création de 100 sorties
+        //Création de 500 sorties
         $sorties = array();
         for ($i = 0; $i < 500; $i++) {
             //Définition d'une date de début de sortie random
@@ -124,10 +124,9 @@ class AppFixtures extends Fixture
             if ($rand_date_debut < $now && $rand_date_fin > $now) {
                 $sorties[$i]->setEtat(4);
             }
-            $sorties[$i]->addParticipant($stagiaires[2]);
+
             //ajout de participants à la sorties
-            $rand_nb_participants = rand(2, 80);
-            $random_keys_stagiaire = array();
+            $rand_nb_participants = rand(2, 30);
             $random_keys_stagiaire = array_rand($stagiaires, $rand_nb_participants);
 
             if ($sorties[$i]->getEtat() >= 2) {

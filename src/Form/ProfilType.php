@@ -5,7 +5,6 @@ namespace App\Form;
 use App\Entity\Stagiaire;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -14,26 +13,64 @@ use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Polyfill\Intl\Idn\Resources\unidata\Regex;
 use Vich\UploaderBundle\Form\Type\VichFileType;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class ProfilType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('prenom', null, ['attr' => ['class' => 'profilPrenom'],])
-            ->add('nom', null, ['attr' => ['class' => 'profilNom'],])
-            ->add('telephone', TelType::class, ['attr' => ['class' => 'profilPrenom'],])
-            ->add('email', EmailType::class, ['attr' => ['class' => 'profilEmail'],])
+            ->add('prenom', null,
+                [
+                    'disabled' => true,
+                    'attr' => ['class' => 'profilPrenom', 'pattern' => '^[^@&"()!_$*€£`+=\/;?#]+$', 'maxlength' => 150],
+                ])
+            ->add('nom', null,
+                [
+                    'disabled' => true,
+                    'attr' => ['class' => 'profilNom', 'pattern' => '^[^@&"()!_$*€£`+=\/;?#]+$', 'maxlength' => 150],
+                ])
+            ->add('telephone', TelType::class,
+                [
+                    'required' => true,
+                    'attr' => ['class' => 'profilPrenom', 'pattern' => '(0|\+33)[1-9]( *[0-9]{2}){4}', 'maxlength' => 10]
+                ])
+            ->add('email', EmailType::class,
+                [
+                    'required' => true,
+                    'attr' => ['class' => 'profilEmail', 'maxlength' => 255],
+                ])
+            ->add('currentPassword', PasswordType::class, [
+                'required'=>true,
+                'mapped' => false,
+                'label' => 'Mot de passe',
+                ])
+
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'first_options' => ['label' => 'Mot de passe', 'hash_property_path' => 'password'],
-                'second_options' => ['label' => 'Confirmation mot de passe'],
+                'required'=>false,
+                'options' => [
+                    'attr' => [
+                    ],
+                ],
+                'first_options' => [
+                    'label' => 'Nouveau mot de passe',
+                ],
+                'second_options' => [
+                    'label' => 'Confirmation nouveau mot de passe',
+                ],
                 'mapped' => false,
             ])
-            ->add('campus', null, ['attr' => ['class' => 'profilCampus'],])
-            ->add('url_photo', HiddenType::class, ['attr' => ['visible' => 'hidden'],])
+            ->add('campus', null, [
+                'attr' => ['class' => 'profilCampus','readonly' => true],
+            ])
+            ->add('url_photo', HiddenType::class,
+                [
+                    'attr' => ['visible' => 'hidden'],
+                ])
             ->add('imageFile', VichFileType::class, [
                 'required' => false,
                 'allow_delete' => false,
