@@ -46,6 +46,10 @@ jobs:
         run: php bin/console d:s:u --force --env=test
       - name: Chargement des fixtures
         run: php bin/console d:f:l --env=test
+      - name: Installation de tout ce qui concerne JavaScript
+        run: npm install
+      - name: Construction du dosier "public"
+        run: npm run dev
       - name: Execution des tests
         env:
           DATABASE_URL: sqlite:///%kernel.project_dir%/var/data.db
