@@ -4,6 +4,12 @@
 
 {% block body %}
     <script src="{{ asset('JS/VillesEtLieux.js') }}"></script>
+{#    <script>#}
+{#        document.addEventListener('DOMContentLoaded', function() {#}
+{#            var elems = document.querySelectorAll('select');#}
+{#            var instances = M.FormSelect.init(elems, "");#}
+{#        });#}
+{#    </script>#}
     <h1>Créer une sortie</h1>
 
     {{ form_start(form) }}
@@ -16,8 +22,9 @@
     {{ form_row(form.campus) }}
 
     {#--------- section villes ------------#}
+
     <label for="choixVille"> Ville
-        <select id="choixVille" name="choixVille" required onchange="chargerLieux(value)">
+        <select id="choixVille" name="choixVille" required onchange="chargerLesLieux(value)">
                 <option  disabled selected>choisissez une ville:</option>
             {% for ville in villes %}
                 <option value="{{ ville.id }}"> {{ ville.nom }}</option>
@@ -26,18 +33,19 @@
     </label>
 
 {#--------- section Lieux ------------#}
-    <label for="choixLieux"> Lieu
-        <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">
-        </select>
-    </label>
-    <a href="{{ path('creer_Lieu') }}"><input type="button" name="creerLieu" value="+" ></a>
-    <section id="afficheLieu"></section>
+{#    <label for="choixLieux"> Lieu#}
+{#        <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">#}
+{#            <option  disabled selected>choisissez d'abord une ville:</option>#}
+{#        </select>#}
+{#    </label>#}
+    <section id="choixLieux"></section>
 
+    <section id="afficheLieu"></section>
 
     {#--------- section boutons ------------#}
     <input type="submit" name="Creer" value="Créer">
     <input type="submit" name="Publier" value="Publier">
-    <a href="{{ path('_sorties') }}"><input type="button" name="Annuler" value="Annuler" ></a>
+    <a href="{{ path('sorties_liste') }}"><input type="button" name="Annuler" value="Annuler" ></a>
     {{ form_end(form) }}
 {% endblock %}
 

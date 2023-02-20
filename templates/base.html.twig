@@ -3,7 +3,15 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
+
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <!-- Compiled and minified CSS materialize-->
+{#        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">#}
+{#        <!-- Compiled and minified JavaScript -->#}
+{#        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>#}
+{#        <!-- Icones materialize-->#}
+{#        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">#}
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
 
@@ -14,16 +22,28 @@
         {% endblock %}
     </head>
     <body>
-    <nav class="navigationP">
+<nav class="navigationP nav-extended light-blue darken-4">
+        <div class="nav-wrapper light-blue darken-4">
+{#            <a href="#" class="brand-logo left"><img src="{{ asset('images/logo3.png') }}" alt="logo bando"></a>#}
+{#            <a href="{{ path('accueil') }}" class="brand-logo left">Bando!</a>#}
+            <a href="{{ path('accueil') }}" ><img class="logoBando" src="{{ asset('images/logo3.png') }}" alt="logo bando"></a>
+            <ul id="nav-mobile" class="right">
+                {% if app.user%}
+{#                    <li>  <a href={{ path('_sorties_test') }}>Accueil</a></li>#}
+                    <li><a href={{ path('profil_modif') }}>Profil</a></li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li><a href={{ path('admin') }}>Tableau de bord admin</a></li>
+                    {% endif %}
+                        <li>  <a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                {% else %}
+                    <li>  <a href="{{ path('app_login') }}">Connexion</a></li>
+                {%endif %}
+            </ul>
+        </div>
         {% if app.user%}
-            <a href={{ path('_sorties_test') }}>Accueil</a>
-            <a href={{ path('profil_modif') }}>Profil</a>
-            {% if is_granted('ROLE_ADMIN') %}
-                <a href={{ path('admin') }}>Tableau de bord admin</a>
-            {% endif %}
-            <a href="{{ path('app_logout') }}">Déconnexion</a>
-        {% else %}
-            <a href="{{ path('app_login') }}">Connexion</a>
+        <div class="nav-content orange darken-1">
+            <section><p>Bonjour {{ app.user.prenom }} {{ app.user.nom }}</p></section>
+        </div>
         {%endif %}
     </nav>
     <div id="champFlash">

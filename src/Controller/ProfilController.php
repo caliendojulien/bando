@@ -13,10 +13,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
+
+
 class ProfilController extends AbstractController
-{
+{    #[isGranted("ROLE_USER")]
     #[Route('/profil', name: 'profil_modif')]
     public function index(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository, UserPasswordHasherInterface $passwordHasher,SessionInterface $session): Response
     {
@@ -70,7 +75,7 @@ class ProfilController extends AbstractController
             'stagiaire' => $stagiaire
         ]);
     }
-
+    #[isGranted("ROLE_USER")]
     #[Route('/profilAffiche/{id}', name: 'profil_affich')]
     public function affiche(EntityManagerInterface $em, Request $request, StagiaireRepository $stagiaireRepository, int $id): Response
     {

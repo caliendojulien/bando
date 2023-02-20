@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\StagiaireRepository;
 use DateTime;
-use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\IntegerType;
@@ -374,12 +373,12 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
         $this->image = $image;
     }
 
-    public function getUpdatedAt(): ?DateTimeImmutable
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(?DateTimeImmutable $updatedAt): self
+    public function setUpdatedAt(?DateTime $updatedAt): self
     {
         $this->updatedAt = $updatedAt;
 

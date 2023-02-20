@@ -2,10 +2,13 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\ImportStagiairesController;
 use App\Entity\Campus;
 use App\Entity\Lieu;
+use App\Entity\Sortie;
 use App\Entity\Stagiaire;
 use App\Entity\Ville;
+use App\Form\ImportStagiairesFormType;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -44,12 +47,14 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        //Ajout des CRUD et du lien de retour au site
-        yield MenuItem::linkToCrud('Campus', 'fas fa-list', Campus::class);
-        yield MenuItem::linkToCrud('Villes', 'fas fa-map-marker-alt', Ville::class);
-        yield MenuItem::linkToCrud('Lieux', 'fas fa-map-marker-alt', Lieu::class);
-        yield MenuItem::linkToCrud('Stagiaires', 'fas fa-list', Stagiaire::class);
-        //Todo choisi une autre route quand elle sera créée
-        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_test');
+        yield MenuItem::linkToCrud('Campus', 'fas fa-school', Campus::class);
+        yield MenuItem::linkToCrud('Sorties', 'fas fa-champagne-glasses', Sortie::class);
+        yield MenuItem::subMenu('Localisations', 'fas fa-map-marker-alt')->setSubItems([
+            MenuItem::linkToCrud('Villes', 'fas fa-map-marker-alt', Ville::class)->setCssClass('text-primary'),
+            MenuItem::linkToCrud('Lieux', 'fas fa-map-marker-alt', Lieu::class)->setCssClass('text-primary'),
+        ]);
+        yield MenuItem::linkToCrud('Stagiaires', 'fas fa-graduation-cap', Stagiaire::class);
+        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_liste');
+        yield MenuItem::linktoRoute('Importer des stagiaires (xls/csv)', 'fas fa-file-upload', '_import-stagiaires');
     }
 }

@@ -1,8 +1,7 @@
-body {
-    margin: 0;
-    padding: 0;
+.logoBando{
+    width: 8%;
+    height: 8%;
 }
-
-h2{
-    color: #0c4a6e;
+body {
+    margin: 2%;
 }

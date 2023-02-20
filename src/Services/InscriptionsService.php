@@ -14,30 +14,24 @@ class InscriptionsService
      * @param Stagiaire $stag
      * @param Sortie $sortie
      * @param EntityManagerInterface $em
-     * @return array Tableau qui contient : true ou falsse en fonction de l'inscription + le message explicatif
+     * @return array Tableau qui contient : true ou false en fonction de l'inscription + le message explicatif
      */
     function inscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):array{
         $message="";
-        $ok=true;
         // Vérifier qu'il est possible de s'inscrire à la sortie
         // la sortie doit être à l'état 2
         if (!$sortie->getEtat()==\App\Entity\EtatSorties::Publiee->value)
-            {
                 $message="sortie a l'état".$sortie->getEtat();
-                $ok=false;
-            }
+
         // le nb d'inscrits ne dépasse pas le nb max d'inscription
         if( $sortie->getParticipants()->count() >= $sortie->getNombreInscriptionsMax())
-            {
                 $message="nb de participants max atteint";
-                $ok=false;
-            }
+
         // le stagiaire ne doit pas déjà être inscrit
-        if ($sortie->getParticipants()->contains($stag)){
-            $message="Vous êtes déjà inscrit !";
-            $ok=false;
-        }
-        if ($ok)
+        if ($sortie->getParticipants()->contains($stag))
+                $message="Vous êtes déjà inscrit !";
+
+        if ($message=="")
         {
             // inscrire
             $sortie->addParticipant($stag);
@@ -47,6 +41,21 @@ class InscriptionsService
         }
         else return [false,$message];
         return [true,$message];
+    }
+
+    function SeDesinscrire(Stagiaire $stag,Sortie $sortie,EntityManagerInterface $em):bool
+    {
+        $participants = $sortie->getParticipants();
+        foreach ($participants as $participant) {
+            // Vérifie que l'utilisateur actuel participe bien à la sortie.
+            if ($participant === $stag) {
+                // Si l'utilisateur participe bien à la sortie, le supprime de la liste des participants.
+                $sortie->removeParticipant($participant);
+                $em->flush();
+                return true;
+            }
+        }
+        return false;
     }
 
 }

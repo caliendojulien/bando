@@ -1,39 +1,38 @@
 <?php
 
 namespace App\Controller;
-
 use App\Entity\EtatSorties;
 use App\Entity\Sortie;
-use App\Form\ProfilType;
 use App\Form\SortieAnnulationFormType;
 use App\Form\SortieFormType;
+use App\Form\SortieSearchFormType;
 use App\Repository\CampusRepository;
 use App\Repository\LieuRepository;
-use App\Form\SortieSearchFormType;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\InscriptionsService;
+use App\Services\SortiesService;
 use DateInterval;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * @method AccessDeniedException(string $string)
+ */
+ #[Route('/sorties', name: 'sorties')]
 class SortiesController extends AbstractController
 {
-    #[Route('/', name: '_sorties_test')]
-    public function test(): Response
-    {
-        return $this->render('sorties/test.html.twig', []);
-    }
 
-    #[Route('/sorties', name: '_sorties')]
+    #[isGranted("ROLE_USER")]
+    #[Route('/liste', name: '_liste')]
     public function sorties(
         SortieRepository     $sortieRepository,
         Request              $request,
@@ -89,7 +88,8 @@ class SortiesController extends AbstractController
         ]);
     }
 
-    #[Route('/sortie/{id}', name: '_sortie')]
+    #[isGranted("ROLE_USER")]
+    #[Route('/sortie/{id}', name: '_detail')]
     public function detail(
         int              $id,
         SortieRepository $sortieRepository
@@ -107,104 +107,159 @@ class SortiesController extends AbstractController
      * @param VilleRepository $villesRepo
      * @param LieuRepository $LieuxRepo
      * @param Request $request
+     * @param SortiesService $serviceSorties
      * @return Response
-     * @throws Exception
      */
-    #[Route('/creer', name: '_creer-sortie')]
+    #[isGranted("ROLE_USER")]
+    #[Route('/creer', name: '_creer')]
     public function creer(
         EntityManagerInterface $entityManager,
-        StagiaireRepository    $stagRepo,
+        StagiaireRepository $stagRepo,
+        VilleRepository $villesRepo,
+        LieuRepository $LieuxRepo,
+        Request $request,
+        SortiesService $serviceSorties
+    ): Response {
+        try {
+            //récupération du stagiaire connecté
+            $user=$stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
+
+            //initialisation de la sortie
+            $sortie = new Sortie();
+            $sortie->setOrganisateur($user);
+            //mettre le campus de l'organisateur par défaut au début
+            if (!$sortie->getCampus()) $sortie->setCampus($user->getCampus());
+
+            //création du formulaire
+            $form = $this->createForm(SortieFormType::class, $sortie);
+            $form->handleRequest($request);
+
+            //traiter l'envoi du formulaire
+            if ($form->isSubmitted()) {
+
+                // renseigner le lieu
+                $idLieu = $request->request->get("choixLieux");
+                if ($idLieu)  $sortie->setLieu( $LieuxRepo->findOneBy(["id" => $idLieu]));
+
+                 //  trouver la date de fin en fonction de la durée et de la date de début
+                $duree =(int) $request->request->get("duree");
+                $serviceSorties->ajouterDureeAdateFin($sortie,$duree);
+
+                //l'état dépend du bouton sur lequel on a cliqué
+                $sortie->setEtat(($request->request->get( 'Publier' ) ?
+                                        EtatSorties::Publiee->value: EtatSorties::Creee->value));
+
+                //vérification des contraintes métier
+                $metier=  $serviceSorties->verifSortieValide($sortie,$duree);
+
+                //si OK on enregistre
+                if ($form->isValid() && $metier["ok"]) {
+                    $entityManager->persist($sortie);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('sorties_liste');
+                }
+                else //sinon on reste sur la page mais on affiche les erreurs
+                {
+                    $this->addFlash("error","merci de vérifier, il y a des erreurs.".$metier["message"]);
+                }
+            }
+
+            //passer la liste des villes au formulaire
+            $villes = $villesRepo->findAll();
+            return $this->render('sorties/creer.html.twig', [
+                'form' => $form->createView(),
+                "villes" => $villes
+            ]);
+        } catch (Exception $ex){
+            return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
+        }
+    }
+
+    /**
+     * Modifie une sortie existante dans la base de données.
+     *
+     * @param int                    $id               L'identifiant de la sortie à modifier.
+     * @param EntityManagerInterface $entityManager    L'entité manager pour accéder à la base de données.
+     * @param VilleRepository        $villesRepo       Le repository pour accéder aux villes de la base de données.
+     * @param LieuRepository         $LieuxRepo        Le repository pour accéder aux lieux de la base de données.
+     * @param Request                $request
+     * @param FormFactoryInterface   $formFactory      Le factory pour créer des formulaires.
+     *
+     * @throws Exception si la sortie n'existe pas ou si l'utilisateur cherchant à modifier la sortie n'en est pas l'organisateur.
+     *
+     * @return Response
+     */
+     #[isGranted("ROLE_USER")]
+    #[Route('/modifier/{id}', name: '_modifier-sortie')]
+    public function modifier(
+        int                    $id,
+        EntityManagerInterface $entityManager,
         VilleRepository        $villesRepo,
         LieuRepository         $LieuxRepo,
-        Request                $request
+        Request                $request,
+        FormFactoryInterface   $formFactory
     ): Response
     {
-        $user = $stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
+
+        // Récupère l'entité Sortie correspondant à l'ID passé en paramètre de la requête
+        $sortie = $entityManager->getRepository(Sortie::class)->find($id);
+
+        // Vérifie que l'utilisateur authentifié est l'organisateur de la sortie à modifier
+        if($this->getUser() !== $sortie->getOrganisateur()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier une sortie dont vous n\'êtes pas l\'organisateur.');
+        }
+
+        // Vérifie que la sortie existe
+        if (!$sortie) {
+            throw $this->createNotFoundException('La sortie n\'existe pas.');
+        }
+
+        // Calcule la durée de la sortie en minutes
+        $duree = $sortie->getDebutSortie()->diff($sortie->getFinSortie())->i;
 
 
-        $sortie = new Sortie();
-
-        $sortie->setOrganisateur($user);
-        //mettre le campus de l'organisateur par défaut
-        if (!$sortie->getCampus()) $sortie->setCampus($user->getCampus());
-
-        //création du formulaire
-        $form = $this->createForm(SortieFormType::class, $sortie);
+        // Crée le formulaire et pré-remplit les champs avec les valeurs actuelles de la sortie
+        $form = $formFactory->createBuilder(SortieFormType::class, $sortie)->getForm();
         $form->handleRequest($request);
 
-        //traiter l'envoi du formulaire
-        if ($form->isSubmitted()) {
-
-
-            //  trouver la date de fin en fonction de la durée et de la date de début
-
-            $duree = $request->request->get("duree");
-            settype($duree, 'integer');
+        // Traite l'envoi du formulaire
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Met à jour la date de fin en fonction de la durée et de la date de début
+            $duree = $request->request->get('duree');
             if ($duree) {
-                $dateFin = new DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));//"d/m/y H:i"
-                $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
+                $dateFin = clone $sortie->getDebutSortie();
+                $dateFin->add(new DateInterval('PT' . $duree . 'M'));
                 $sortie->setFinSortie($dateFin);
             }
-            // renseigner le lieu
+
+            // Renseigne le lieu
             $idLieu = $request->request->get("choixLieux");
             $lieu = $LieuxRepo->findOneBy(["id" => $idLieu]);
             $sortie->setLieu($lieu);
 
-            //l'état dépend du bouton sur lequel on a cliqué
-            if ($request->request->get('Publier'))
 
-                $sortie->setEtat(EtatSorties::Publiee->value);//la sortie est à l'état "publiée"
-            else
-                $sortie->setEtat(EtatSorties::Creee->value);//la sortie est à l'état "créée"
+            // Met à jour l'état de la sortie en fonction du bouton cliqué
+            $sortie->setEtat($request->request->get('Publier') ? EtatSorties::Publiee->value : EtatSorties::Creee->value);
 
-            //si OK on enregistre
-            if ($form->isValid()) {
-                $entityManager->persist($sortie);
-                $entityManager->flush();
-                return $this->redirectToRoute('_sorties');
-            }
+
+            // Enregistre les modifications dans la base de données
+            $entityManager->flush();
+
+            // Redirige vers la liste des sorties
+            return $this->redirectToRoute('sorties_liste');
         }
 
-        //passer la liste des villes au formulaire
+        // Récupère la liste des villes pour le formulaire
         $villes = $villesRepo->findAll();
-        return $this->render('sorties/creer.html.twig', [
+
+        // Affiche le formulaire de modification de la sortie
+        return $this->render('sorties/modifier.html.twig', [
             'form' => $form->createView(),
-            "villes" => $villes
+            'villes' => $villes,
+            'duree' => $duree
         ]);
     }
 
-    /**
-     * Cette URL permet de racupérer les lieux d'une ville
-     *
-     * @param int $id L'identifiant de la ville
-     * @param LieuRepository $LieuxRepo
-     * @param SerializerInterface $serializer
-     * @return Response Json contenant les lieux
-     */
-    #[Route('/listerLieux/{id}', name: 'sorties_listeLieux')]
-    public function LieuxParVille(int                 $id,
-                                  LieuRepository      $LieuxRepo,
-                                  SerializerInterface $serializer): Response
-    {
-        $lieux = $LieuxRepo->findBy(["ville" => $id]);
-        $productSerialized = $serializer->serialize($lieux, 'json', ['groups' => ['lieux']]);
-        return new Response($productSerialized);
-    }
-
-    /**
-     * cette URL affiche une page d'informations du lieu
-     *
-     * @param int $id
-     * @param LieuRepository $LieuxRepo
-     * @return Response
-     */
-    #[Route('/AfficherLieu/{id}', name: 'sorties_affLieu')]
-    public function AfficherLieu(int            $id,
-                                 LieuRepository $LieuxRepo): Response
-    {
-        $lieu = $LieuxRepo->findOneBy(["id" => $id]);
-        return $this->render('lieux/afficheLieu.html.twig', ["lieu" => $lieu]);
-    }
 
 
     /**
@@ -215,29 +270,40 @@ class SortiesController extends AbstractController
      * @param InscriptionsService $serv
      * @return Response
      */
-//    #[Route('/sinscrire/{idSortie}/{idStagiaire}', name: 'sorties_sinscrire')]
-    #[Route('/sinscrire/{idSortie}', name: 'sorties_sinscrire')]
-    public function Sinscrire(int                    $idSortie,
-//                                int $idStagiaire,
+
+    #[isGranted("ROLE_USER")]
+    #[Route('/sinscrire/sortie/{id}', name: '_sinscrire')]
+    public function Sinscrire(  int $id,
+
                               SortieRepository       $sortieRepo,
                               EntityManagerInterface $entityManager,
                               InscriptionsService    $serv): Response
     {
-        // récupérer le stagiaire ( c'est toujours le user connecté ??)
-//        $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
-        $stag = $this->getUser();
-        // récupérer la sortie
-        $sortie = $sortieRepo->findOneBy(["id" => $idSortie]);
-        // inscrire et confirmer ou infirmer l'inscription
 
-        $tab = $serv->inscrire($stag, $sortie, $entityManager);
-        if ($tab[0])
-            $this->addFlash('success', 'vous avez été inscrit à la sortie');
-        else  $this->addFlash('error', 'inscription impossible : ' . $tab[1]);
+        try {
 
-        //rediriger
-        return $this->redirectToRoute('_sorties');
+
+            // récupérer le stagiaire
+            // $stag = $stagRepo->findOneBy(["id"=>$idStagiaire]);
+            $stag = $this->getUser();
+            // récupérer la sortie
+            $sortie = $sortieRepo->findOneBy(["id" => $id]);
+            // inscrire et confirmer ou infirmer l'inscription
+
+            $tab = $serv->inscrire($stag, $sortie, $entityManager);
+            if ($tab[0])
+                $this->addFlash('success', 'vous avez été inscrit à la sortie');
+            else  $this->addFlash('error', 'inscription impossible : ' . $tab[1]);
+
+            //rediriger
+            return $this->redirectToRoute('sorties_liste');
+
+        } catch (Exception $ex){
+            return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
+        }
+
     }
+
 
     /**
      * Méthode permettant à un utilisateur authentifié de se désister d'une sortie à laquelle il est inscrit.
@@ -247,29 +313,40 @@ class SortiesController extends AbstractController
      * @param EntityManagerInterface $entityManager L'EntityManager pour gérer les entités Sortie.
      * @return Response
      */
+    #[isGranted("ROLE_USER")]
     #[Route('/desistement/sortie/{id}', name: '_desistement')]
-    public function desistement(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager): Response
+    public function desistement(int $id,
+                                SortieRepository $sortieRepository,
+                                EntityManagerInterface $entityManager,
+                                InscriptionsService $inscriptionsService): Response
     {
         // Récupère la sortie correspondant à l'ID spécifié.
         $sortie = $sortieRepository->findOneBy(["id" => $id]);
 
-        // Vérifie que l'utilisateur actuel participe bien à la sortie.
+        //récupère le participant
         $user = $this->getUser();
-        $participants = $sortie->getParticipants();
-        foreach ($participants as $participant) {
-            if ($participant === $user) {
-                // Si l'utilisateur participe bien à la sortie, le supprime de la liste des participants.
-                $sortie->removeParticipant($participant);
-                $entityManager->flush();
-                // Ajoute un message flash pour indiquer que le désistement a été enregistré.
-                $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
-            }
-        }
+
+//        $participants = $sortie->getParticipants();
+//        foreach ($participants as $participant) {
+//            if ($participant === $user) {
+//                // Si l'utilisateur participe bien à la sortie, le supprime de la liste des participants.
+//                $sortie->removeParticipant($participant);
+//                $entityManager->flush();
+//                // Ajoute un message flash pour indiquer que le désistement a été enregistré.
+//                $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+//            }
+//    }
+           if ($inscriptionsService->SeDesinscrire($user,$sortie,$entityManager))
+            $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+           else
+               $this->addFlash('error', 'Problème lors de votre désistement, veuilez contacter un administrateur.');
+
 
         // Redirige l'utilisateur vers la liste des sorties.
-        return $this->redirectToRoute('_sorties');
+        return $this->redirectToRoute('sorties_liste');
     }
 
+    #[isGranted("ROLE_USER")]
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
     public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, StagiaireRepository $stagiaireRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, CampusRepository $campusRepository, Request $request): Response
     {
@@ -291,7 +368,7 @@ class SortiesController extends AbstractController
         //Récupérer la ville associé à la sortie
         $ville = $villeRepository->findOneBy(['id' => $lieu->getVille()->getId()]);
 
-        //Récupère l'id du stagiaire connécté
+        //Récupère l'id du stagiaire connecté
         $stagiaireConnecte = $this->getUser();
         $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
         $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
@@ -299,8 +376,11 @@ class SortiesController extends AbstractController
 
 
         //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
-        if ($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3) {
-            return $this->redirectToRoute('_sorties');
+
+
+        if($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3){
+            return $this->redirectToRoute('sorties_liste');
+
         }
         if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
             foreach ($sortie->getParticipants() as $value) {
@@ -309,7 +389,7 @@ class SortiesController extends AbstractController
             $sortie->setEtat(6);
             $entityManager->persist($sortie);
             $entityManager->flush();
-            return $this->redirectToRoute('_sorties');
+            return $this->redirectToRoute('sorties_liste');
         }
 
         return $this->render('sorties/annulation.html.twig', [
@@ -320,5 +400,62 @@ class SortiesController extends AbstractController
             'ville' => $ville
         ]);
     }
+
+     #[isGranted("ROLE_USER")]
+     #[Route('/retourLieux', name: '_retourLieu')]
+     public function retourDesLieux(Request $request,
+                                    SessionInterface $session,
+                                    EntityManagerInterface $entityManager,
+                                    StagiaireRepository $stagRepo,
+                                    VilleRepository $villesRepo,
+                                    LieuRepository $LieuxRepo,
+                                    SortiesService $serviceSorties){
+        try{
+         // Récupérer les données de la session
+         $sortie = $session->get('sortie');
+         $form = $this->createForm(SortieFormType::class, $sortie);
+         $form->handleRequest($request);
+
+         //traiter l'envoi du formulaire
+         if ($form->isSubmitted()) {
+
+             // renseigner le lieu
+             $idLieu = $request->request->get("choixLieux");
+             if ($idLieu)  $sortie->setLieu( $LieuxRepo->findOneBy(["id" => $idLieu]));
+
+             //  trouver la date de fin en fonction de la durée et de la date de début
+             $duree =(int) $request->request->get("duree");
+             $serviceSorties->ajouterDureeAdateFin($sortie,$duree);
+
+             //l'état dépend du bouton sur lequel on a cliqué
+             $sortie->setEtat(($request->request->get( 'Publier' ) ?
+                 EtatSorties::Publiee->value: EtatSorties::Creee->value));
+
+             //vérification des contraintes métier
+             $metier=  $serviceSorties->verifSortieValide($sortie,$duree);
+
+             //si OK on enregistre
+             if ($form->isValid() && $metier["ok"]) {
+                 $entityManager->persist($sortie);
+                 $entityManager->flush();
+                 return $this->redirectToRoute('sorties_liste');
+             }
+             else //sinon on reste sur la page mais on affiche les erreurs
+             {
+                 $this->addFlash("error","merci de vérifier, il y a des erreurs.".$metier["message"]);
+             }
+         }
+
+         //passer la liste des villes au formulaire
+         $villes = $villesRepo->findAll();
+         return $this->render('sorties/creer.html.twig', [
+             'form' => $form->createView(),
+             'sortie'=>$sortie,
+             "villes" => $villes
+         ]);
+     } catch (Exception $ex){
+ return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
+ }
+     }
 
 }

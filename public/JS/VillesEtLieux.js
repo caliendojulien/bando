@@ -5,7 +5,7 @@
 function chargerLieux( idVille){
     let selectlieu=document.getElementById("choixLieux");
     selectlieu.length=0;
-    fetch("/listerLieux/"+idVille)
+    fetch("/lieu/listerLieux/"+idVille)
     // // reponse = retour de la commande précédente, puis je le transforme en JSON
 .then((reponse) => reponse.json())
         //json est donc le json récupéré, je l'ajoute dans le select
@@ -27,6 +27,16 @@ function chargerLieux( idVille){
                 selectlieu.appendChild(momOptionDisable);
                  }
         });
+
+}
+function chargerLesLieux(idLieu){
+    fetch("/lieu/listerLieux/"+idLieu)
+        .then((reponse) => reponse.text())
+        .then((texte) =>{
+            console.log(texte);
+            let container = document.getElementById('choixLieux');
+            container.innerHTML = texte;
+        });
 }
 
 /**
@@ -34,7 +44,7 @@ function chargerLieux( idVille){
  * @param idLieu
  */
 function afficherUnLieu(idLieu){
-    fetch("/AfficherLieu/"+idLieu)
+    fetch("/lieu/AfficherLieu/"+idLieu)
         .then((reponse) => reponse.text())
         .then((texte) =>{
             console.log(texte);

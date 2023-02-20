@@ -1,5 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block body %}
+   <h3>Créer un lieu</h3>
  {{ form_start(form) }}
     {{ form_row(form.nom) }}
     {{ form_row(form.rue) }}
@@ -7,5 +8,6 @@
     {{ form_row(form.latitude) }}
     {{ form_row(form.ville) }}
     {{ form_end(form) }}
-    <a href="{{ path('_creer-sortie') }}"><input type="button" name="Retour" value="Retour" ></a>
+    <a id="retour" href="{{ path('sorties_creer') }}"><input type="button" name="Retour" value="Retour" ></a>
+{#   <a href="{{ path('sorties_retourLieu') }}"><input type="button" name="Retour" value="Retour" ></a>#}
 {% endblock %}
