@@ -18,8 +18,14 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Copie du fichier de tests
-        run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+      - name: Création du fichier .env.local et .env.test.local
+        run: |
+          touch .env.local
+          touch .env.test.local
+          echo "DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" >> .env.test.local
+          echo "DATABASE_URL='sqlite:///%kernel.project_dir%/var/data.db'" >> .env.local
+          echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.local
+          echo "APP_SECRET='uneValeurParDefautPourLeCICD'" >> .env.test.local
       - name: Suppression du fichier composer.lock
         run: rm composer.lock
       - name: Cache Composer packages
