@@ -1,6 +1,6 @@
 # Projet sortir.com
 
-![Code Coverage Badge](./badge.svg)
+![couverture](./badge.svg)
 
 équipe Bruno / Déana / AnneSo
 Février 2023
