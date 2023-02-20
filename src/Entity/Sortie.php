@@ -18,6 +18,7 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[Assert\GreaterThanOrEqual('today',message: "La date de début est forcément supérieure à aujourd'hui")]
@@ -25,7 +26,6 @@ class Sortie
 
     private ?\DateTimeInterface $debutSortie = null;
     #[Assert\GreaterThanOrEqual('today',message: "La date de fin de sortie est forcément supérieure à aujourd'hui")]
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?DateTimeInterface $finSortie = null;
 
