@@ -1,6 +1,6 @@
 {% block navbar %}
-    <nav>
-        <div class="menu">
+    <div id="nav_bar">
+        <div id="menu_nav_bar">
             <button id="t1" class="touches_inactive">?</button>
             <button id="t2" class="touches_active" onclick="window.location.href='{{path('admin') }}'">Admin</button>
             <button id="t3" class="touches_active" onclick="window.location.href='{{path('profil_modif') }}'">Profil</button>
@@ -14,5 +14,5 @@
             <p class="titre_company">BANDO</p>
             <p class="sous_titre_company">#758681</p>
         </div>
-    </nav>
+    </div>
 {% endblock %}

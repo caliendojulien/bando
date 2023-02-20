@@ -72,7 +72,7 @@ class SortieFormType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Sélectionner un campus',
-                'required' => false
+                'required' => false,
             ])
         ;
 

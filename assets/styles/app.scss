@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Rubik:700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap');
+@import url('./materialize.css');
 
 $bg: #fff;
 
@@ -16,7 +17,7 @@ $dark-blue: #f9c4d2;
 $blue-border: #b18597;
 $blue-shadow: #ffe3e2;
 
-
+//Nav BAR
 @media only screen and (max-width: 799px) {
   /*style smartphones et petites tablettes en portrait*/
 }
@@ -38,13 +39,13 @@ body {
   background: $bg;
 }
 
-.container {
+#container_main {
   display: flex;
   margin: 50px;
   max-width: 1400px;
 }
 
-nav {
+#nav_bar {
   position: sticky;
   align-self: flex-start;
   top: 50px;
@@ -56,7 +57,7 @@ nav {
 
 }
 
-.menu {
+#menu_nav_bar {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
@@ -78,7 +79,6 @@ nav {
   font-size: 1rem;
   margin: auto;
   font-family: 'Zen Dots', cursive;
-
 }
 
 .dollar {
@@ -87,7 +87,9 @@ nav {
 }
 
 main {
-  padding: 60px;
+ padding-left: 60px;
+  padding-right: 60px;
+  padding-bottom: 60px;
 }
 
 footer {
@@ -207,79 +209,99 @@ button {
   }
 }
 
-/* Cool infinite background scrolling animation.
- * Twitter: @kootoopas
- */
+//Page modification Profil
 
-/* Exo thin font from Google. */
-@import url(https://fonts.googleapis.com/css?family=Exo:100);
+.button_set{
+  display: flex;
+  align-content: center;
+  margin-top: 30px;
+}
+.form{
+  margin-bottom: 30px;
+}
+.titre_modification_profil{
+  margin: 0;
+  margin-bottom: 30px;
+  font-size: 3em;
+}
+#profil_campus{
 
-/* Background data (Original source: https://subtlepatterns.com/grid-me/) */
-$bg-url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC";
-$bg-width: 50px;
-$bg-height: 50px;
-
-/* Animations */
-@-webkit-keyframes bg-scrolling-reverse {
-  100% {
-    background-position: $bg-width $bg-height;
-  }
 }
 
-@-moz-keyframes bg-scrolling-reverse {
-  100% {
-    background-position: $bg-width $bg-height;
-  }
-}
 
-@-o-keyframes bg-scrolling-reverse {
-  100% {
-    background-position: $bg-width $bg-height;
-  }
-}
 
-@keyframes bg-scrolling-reverse {
-  100% {
-    background-position: $bg-width $bg-height;
-  }
-}
 
-@-webkit-keyframes bg-scrolling {
-  0% {
-    background-position: $bg-width $bg-height;
-  }
-}
 
-@-moz-keyframes bg-scrolling {
-  0% {
-    background-position: $bg-width $bg-height;
-  }
-}
 
-@-o-keyframes bg-scrolling {
-  0% {
-    background-position: $bg-width $bg-height;
-  }
-}
-
-@keyframes bg-scrolling {
-  0% {
-    background-position: $bg-width $bg-height;
-  }
-}
-
-/* Main styles */
-body {
-  /* img size is 50x50 */
-  background: url($bg-url) repeat 0 0;
-
-  -webkit-animation: bg-scrolling-reverse .92s infinite; /* Safari 4+ */
-  -moz-animation: bg-scrolling-reverse .92s infinite; /* Fx 5+ */
-  -o-animation: bg-scrolling-reverse .92s infinite; /* Opera 12+ */
-  animation: bg-scrolling-reverse .92s infinite; /* IE 10+ */
-  -webkit-animation-timing-function: linear;
-  -moz-animation-timing-function: linear;
-  -o-animation-timing-function: linear;
-  animation-timing-function: linear;
-
-}
+///* Cool infinite background scrolling animation.
+// * Twitter: @kootoopas
+// */
+//
+///* Exo thin font from Google. */
+//@import url(https://fonts.googleapis.com/css?family=Exo:100);
+//
+///* Background data (Original source: https://subtlepatterns.com/grid-me/) */
+//$bg-url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC";
+//$bg-width: 50px;
+//$bg-height: 50px;
+//
+///* Animations */
+//@-webkit-keyframes bg-scrolling-reverse {
+//  100% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@-moz-keyframes bg-scrolling-reverse {
+//  100% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@-o-keyframes bg-scrolling-reverse {
+//  100% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@keyframes bg-scrolling-reverse {
+//  100% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@-webkit-keyframes bg-scrolling {
+//  0% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@-moz-keyframes bg-scrolling {
+//  0% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@-o-keyframes bg-scrolling {
+//  0% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+//@keyframes bg-scrolling {
+//  0% {
+//    background-position: $bg-width $bg-height;
+//  }
+//}
+//
+////body {
+////  background: url($bg-url) repeat 0 0;
+////  -webkit-animation: bg-scrolling-reverse .92s infinite; /* Safari 4+ */
+////  -moz-animation: bg-scrolling-reverse .92s infinite; /* Fx 5+ */
+////  -o-animation: bg-scrolling-reverse .92s infinite; /* Opera 12+ */
+////  animation: bg-scrolling-reverse .92s infinite; /* IE 10+ */
+////  -webkit-animation-timing-function: linear;
+////  -moz-animation-timing-function: linear;
+////  -o-animation-timing-function: linear;
+////  animation-timing-function: linear;
+////}
