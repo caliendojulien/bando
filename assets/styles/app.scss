@@ -1,0 +1,285 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik:700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap');
+
+$bg: #fff;
+
+$light-pink: #c3dfe3;
+$pink: #8ac3c9;
+$dark-pink: #74b0b7;
+$pink-border: #84afb4;
+$pink-shadow: #dae5e7;
+
+$text: #382b22;
+$light-blue: #fff0f0;
+$blue: #efcfcf;
+$dark-blue: #f9c4d2;
+$blue-border: #b18597;
+$blue-shadow: #ffe3e2;
+
+
+@media only screen and (max-width: 799px) {
+  /*style smartphones et petites tablettes en portrait*/
+}
+
+* {
+  box-sizing: border-box;
+
+  &::before, &::after {
+    box-sizing: border-box;
+  }
+}
+
+body {
+  font-family: 'Rubik', sans-serif;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin: auto;
+  min-height: 100vh;
+  background: $bg;
+}
+
+.container {
+  display: flex;
+  margin: 50px;
+  max-width: 1400px;
+}
+
+nav {
+  position: sticky;
+  align-self: flex-start;
+  top: 50px;
+  max-width: 180px;
+  padding: 10px;
+  margin-left: 30px;
+  border: 1px dotted #c4c3c3;
+  border-radius: 10%;
+
+}
+
+.menu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.eject {
+  width: 30px;
+}
+
+.titre_company {
+  font-size: 2rem;
+  font-family: 'Zen Dots', cursive;
+  margin: auto;
+  padding-top: 20px;
+}
+
+.sous_titre_company {
+  font-size: 1rem;
+  margin: auto;
+  font-family: 'Zen Dots', cursive;
+
+}
+
+.dollar {
+  color: #312f2f;
+  font-size: 0.75rem;
+}
+
+main {
+  padding: 60px;
+}
+
+footer {
+  padding: 60px;
+  background-color: #bddee8;
+}
+
+button {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  outline: none;
+  border: 0;
+  vertical-align: middle;
+  text-decoration: none;
+  font-size: inherit;
+  font-family: inherit;
+  margin: 6px;
+  flex-grow: 4;
+
+  &.touches_active {
+    font-weight: 600;
+    color: $text;
+    text-transform: uppercase;
+    padding: 0.75em 1.75em;
+    background: $light-blue;
+    border: 2px solid $blue-border;
+    border-radius: 0.75em;
+    transform-style: preserve-3d;
+    transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), background 150ms cubic-bezier(0, 0, 0.58, 1);
+
+    &::before {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 60%;
+      background: $dark-blue;
+      border-radius: inherit;
+      box-shadow: 0 0 0 2px $blue-border, 0 0.625em 0 0 $blue-shadow;
+      transform: translate3d(0, 0.75em, -1em);
+      transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+    }
+
+    &:hover {
+      background: $blue;
+      transform: translate(0, 0.25em);
+
+      &::before {
+        box-shadow: 0 0 0 2px $blue-border, 0 0.5em 0 0 $blue-shadow;
+        transform: translate3d(0, 0.5em, -1em);
+      }
+    }
+
+    &:active {
+      background: $blue;
+      transform: translate(0em, 0.75em);
+
+      &::before {
+        box-shadow: 0 0 0 2px $blue-border, 0 0 $blue-shadow;
+        transform: translate3d(0, 0, -1em);
+      }
+    }
+  }
+
+  &.touches_inactive {
+    font-weight: 600;
+    color: $text;
+    text-transform: uppercase;
+    padding: 0.75em 1.75em;
+    background: $light-pink;
+    border: 2px solid $pink-border;
+    border-radius: 0.75em;
+    transform-style: preserve-3d;
+    transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), background 150ms cubic-bezier(0, 0, 0.58, 1);
+
+    &::before {
+      position: absolute;
+      content: '';
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      opacity: 60%;
+      background: $dark-pink;
+      border-radius: inherit;
+      box-shadow: 0 0 0 2px $pink-border, 0 0.625em 0 0 $pink-shadow;
+      transform: translate3d(0, 0.75em, -1em);
+      transition: transform 150ms cubic-bezier(0, 0, 0.58, 1), box-shadow 150ms cubic-bezier(0, 0, 0.58, 1);
+    }
+
+    &:hover {
+      background: $pink;
+      transform: translate(0, 0.25em);
+
+      &::before {
+        box-shadow: 0 0 0 2px $pink-border, 0 0.5em 0 0 $pink-shadow;
+        transform: translate3d(0, 0.5em, -1em);
+      }
+    }
+
+    &:active {
+      background: $pink;
+      transform: translate(0em, 0.75em);
+
+      &::before {
+        box-shadow: 0 0 0 2px $pink-border, 0 0 $pink-shadow;
+        transform: translate3d(0, 0, -1em);
+      }
+    }
+  }
+}
+
+/* Cool infinite background scrolling animation.
+ * Twitter: @kootoopas
+ */
+
+/* Exo thin font from Google. */
+@import url(https://fonts.googleapis.com/css?family=Exo:100);
+
+/* Background data (Original source: https://subtlepatterns.com/grid-me/) */
+$bg-url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC";
+$bg-width: 50px;
+$bg-height: 50px;
+
+/* Animations */
+@-webkit-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-moz-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-o-keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@keyframes bg-scrolling-reverse {
+  100% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-webkit-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-moz-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@-o-keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+@keyframes bg-scrolling {
+  0% {
+    background-position: $bg-width $bg-height;
+  }
+}
+
+/* Main styles */
+body {
+  /* img size is 50x50 */
+  background: url($bg-url) repeat 0 0;
+
+  -webkit-animation: bg-scrolling-reverse .92s infinite; /* Safari 4+ */
+  -moz-animation: bg-scrolling-reverse .92s infinite; /* Fx 5+ */
+  -o-animation: bg-scrolling-reverse .92s infinite; /* Opera 12+ */
+  animation: bg-scrolling-reverse .92s infinite; /* IE 10+ */
+  -webkit-animation-timing-function: linear;
+  -moz-animation-timing-function: linear;
+  -o-animation-timing-function: linear;
+  animation-timing-function: linear;
+
+}
