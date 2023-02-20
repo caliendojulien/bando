@@ -4,12 +4,15 @@
  */
 function chargerLieux( idVille){
     let selectlieu=document.getElementById("choixLieux");
+    console.log("on passe là");
     selectlieu.length=0;
+// #[Route('/lieu/listerLieuxBis/{id}', name: 'listeLieux')]
     fetch("/lieu/listerLieux/"+idVille)
     // // reponse = retour de la commande précédente, puis je le transforme en JSON
 .then((reponse) => reponse.json())
         //json est donc le json récupéré, je l'ajoute dans le select
         .then((json) =>{
+            console.log(json);
             let momOptionDisable = document.createElement('option')
             momOptionDisable.disabled=true;
             momOptionDisable.selected=true;
@@ -29,15 +32,15 @@ function chargerLieux( idVille){
         });
 
 }
-function chargerLesLieux(idLieu){
-    fetch("/lieu/listerLieux/"+idLieu)
-        .then((reponse) => reponse.text())
-        .then((texte) =>{
-            console.log(texte);
-            let container = document.getElementById('choixLieux');
-            container.innerHTML = texte;
-        });
-}
+// function chargerLesLieux(idLieu){
+//     fetch("/lieu/listerLieuxBis/"+idLieu)
+//         .then((reponse) => reponse.text())
+//         .then((texte) =>{
+//             console.log(texte);
+//             let container = document.getElementById('choixLieux');
+//             container.innerHTML = texte;
+//         });
+// }
 
 /**
  * Fonction qui affiche le détail d'un lieu

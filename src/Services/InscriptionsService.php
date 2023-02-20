@@ -20,7 +20,7 @@ class InscriptionsService
         $message="";
         // Vérifier qu'il est possible de s'inscrire à la sortie
         // la sortie doit être à l'état 2
-        if (!$sortie->getEtat()==\App\Entity\EtatSorties::Publiee->value)
+        if (!$sortie->getEtat()==\App\Entity\EtatSortiesEnum::Publiee->value)
                 $message="sortie a l'état".$sortie->getEtat();
 
         // le nb d'inscrits ne dépasse pas le nb max d'inscription

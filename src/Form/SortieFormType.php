@@ -19,10 +19,6 @@ class SortieFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $dateDeb= new \DateTime('19:00:00');
-        $dateDeb->add(new \DateInterval('P2D'));
-        $datelimite= new \DateTime('18:00:00');
-        $datelimite->add(new \DateInterval('P1D'));
         $today= new \DateTime('now');
         $todayPlus3h = $today->add(new \DateInterval('PT3H'));
         $todayPlus4h = $today->add(new \DateInterval('PT4H'));
@@ -33,7 +29,6 @@ class SortieFormType extends AbstractType
                 [
                 'required' => true,
                     'invalid_message' => 'La sortie ne peut pas être antérieure à aujourdhui.',
-                'data' => $dateDeb,
                     'constraints' => [
                         new GreaterThan([
                             'value' => $todayPlus4h,
@@ -44,7 +39,6 @@ class SortieFormType extends AbstractType
             ->add('dateLimiteInscription',DateTimeType::class, [
                 'required' => true,
                 'invalid_message' => 'La date limite ne peut pas être antérieure à aujourdhui.',
-                'data' => $datelimite,
                 'constraints' => [
                     new GreaterThan([
                         'value' => $todayPlus3h,
@@ -59,14 +53,9 @@ class SortieFormType extends AbstractType
                 ]
             ])
             ->add('nombreInscriptionsMax',null,
-                ['attr' => ['value'=>5],
-                'constraints' => [ new GreaterThan([  'value' => 0 ]),
-                                    new LessThan([  'value' => 1001])
-                                ]
-                ]
-            )
+                ['constraints' => [ new GreaterThan([  'value' => 0 ]),
+                                    new LessThan([  'value' => 1001])] ])
             ->add('infosSortie',null,[
-//                    'placeholder' => 'Vous pouvez décrire la sortie si vous voulez...',
                         'required' => false,])
             ->add('campus', EntityType::class, [
                 'class' => Campus::class,
