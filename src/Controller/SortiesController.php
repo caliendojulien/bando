@@ -118,18 +118,21 @@ class SortiesController extends AbstractController
         VilleRepository $villesRepo,
         LieuRepository $LieuxRepo,
         Request $request,
-        SortiesService $serviceSorties
+        SortiesService $serviceSorties,
+        SessionInterface $session
     ): Response {
         try {
 
             //initialisation de la sortie
             // TODO on va chercher la sortie en session, s'il n'y en a pas, alors on crée une nouvelle sortie
-            $sortie = new Sortie();
-            //valeurs par défaut
-            $sortie->setDebutSortie( (new \DateTime('19:00:00'))->add(new \DateInterval('P2D')));
-            $sortie->setDateLimiteInscription( (new \DateTime('18:00:00'))->add(new \DateInterval('P1D')));
-            $sortie->setNombreInscriptionsMax(5);
-
+            $sortie = $session->get('sortie');
+            if (!$sortie) {
+                $sortie = new Sortie();
+                //valeurs par défaut
+                $sortie->setDebutSortie((new \DateTime('19:00:00'))->add(new \DateInterval('P2D')));
+                $sortie->setDateLimiteInscription((new \DateTime('18:00:00'))->add(new \DateInterval('P1D')));
+                $sortie->setNombreInscriptionsMax(5);
+            }
          return $this->creerOuModifierSortie($entityManager,
               $villesRepo,
               $LieuxRepo,
