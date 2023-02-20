@@ -44,6 +44,7 @@ class Lieu
     #[ORM\OneToMany(mappedBy: 'lieu', targetEntity: Sortie::class)]
 
     private Collection $sorties;
+    private ArrayCollection $campus;
 
     public function __serialize(): array
     {
