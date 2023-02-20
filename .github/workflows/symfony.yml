@@ -50,7 +50,7 @@ jobs:
         run: php bin/console d:f:l --no-interaction --env=test
       - name: Execution des tests
         env:
-          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+          DATABASE_URL: sqlite:///%kernel.project_dir%/var/data.db
         run: vendor/bin/phpunit
       - name: phpunit-coverage-badge
         uses: timkrase/phpunit-coverage-badge@v1.2.1
