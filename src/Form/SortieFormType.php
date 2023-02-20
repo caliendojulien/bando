@@ -20,7 +20,6 @@ class SortieFormType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $today= new \DateTime('now');
-        $todayPlus3h = $today->add(new \DateInterval('PT3H'));
         $todayPlus4h = $today->add(new \DateInterval('PT4H'));
 
         $builder
@@ -33,28 +32,17 @@ class SortieFormType extends AbstractType
                         new GreaterThan([
                             'value' => $todayPlus4h,
                             'message' => "la sortie doit démarrer au plus tôt dans 3 heures."
-                        ])]
-                ]
+                        ])]    ]
             )
-            ->add('dateLimiteInscription',DateTimeType::class, [
+            ->add('dateLimiteInscription',DateTimeType::class,
+                [
                 'required' => true,
                 'invalid_message' => 'La date limite ne peut pas être antérieure à aujourdhui.',
-                'constraints' => [
-                    new GreaterThan([
-                        'value' => $todayPlus3h,
-                        'message' => "La date d'inscription est illogique."
-                    ]),
-//Todo faire marcher ça...
-
-//                    new LessThan([
-//                        'propertyPath' => 'debutSortie',
-//                        'message' => "La date d'inscription doit être antérieure à la date de début de sortie."
-//                    ])
-                ]
-            ])
+                   ])
             ->add('nombreInscriptionsMax',null,
                 ['constraints' => [ new GreaterThan([  'value' => 0 ]),
-                                    new LessThan([  'value' => 1001])] ])
+                                    new LessThan([  'value' => 1001])] ]
+)
             ->add('infosSortie',null,[
                         'required' => false,])
             ->add('campus', EntityType::class, [
@@ -64,13 +52,5 @@ class SortieFormType extends AbstractType
                 'required' => false
             ])
         ;
-
-    }
-
-    public function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults([
-            'data_class' => Sortie::class,
-        ]);
     }
 }
