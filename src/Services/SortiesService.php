@@ -28,7 +28,7 @@ class SortiesService
         //la date d'inscription doit être postérieure à la date du jour mais antérieure à la date de début
         $message .= ($laSortie->getDateLimiteInscription() > $today &&
                       $laSortie->getDateLimiteInscription() < $laSortie->getDebutSortie()) ?
-                        "":"La date d'inscription n'est pas valide.";
+                        "":"La date limite d'inscription n'est pas valide.";
         //la durée est forcément > 30min
         $message .= ($duree >= 30) ? "":"La durée doit être supérieure à 30 minutes.";
         //l'état est 1 ou 2 - créée ou publiée
@@ -54,14 +54,10 @@ class SortiesService
      */
     Public function ajouterDureeAdateFin(Sortie $sortie,$duree):void{
         if ($duree) {
-            $dateFin = new DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));
-            $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
-            $sortie->setFinSortie($dateFin);
+//            $dateFin = new DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));
+//            $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
+            $dateFin = date('Y-m-d H:i:s', strtotime($sortie->getDebutSortie()->format("Y-m-d H:i:s") . ' + '.$duree.' minutes'));
+            $sortie->setFinSortie(new DateTime($dateFin));
         }
-    }
-    Public function TraiterEnvoiFormulaireCreerSortie(SortieFormType $form,
-                                                      Request $request,
-                                                      EntityManagerInterface $entityManager){
-
     }
 }
