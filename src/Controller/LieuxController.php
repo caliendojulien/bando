@@ -92,8 +92,10 @@ class LieuxController extends AbstractController
     #[Route('/lieu/allerLieux', name: 'allerLieux')]
     public function sortieVersLieux(Request $request, SessionInterface $session){
         // Stocker les données dans la session
+       // dd($request);
         $session->set('sortie', $request->get("sortie"));
         // Rediriger vers l'autre écran
         return $this->redirectToRoute('creer_lieu');
     }
+
 }
