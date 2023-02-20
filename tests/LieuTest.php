@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Ville;
 use Exception;
