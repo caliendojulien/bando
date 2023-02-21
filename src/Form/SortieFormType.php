@@ -24,7 +24,7 @@ class SortieFormType extends AbstractType
 
         $builder
          //   ->add('nom',null,['mapped'=>false,'attr' => ['class' => 'input-field inline']])
-            ->add('nom',null,['mapped'=>false])
+            ->add('nom',null)
             ->add('debutSortie',DateTimeType::class,
                 [
                 'required' => true,
