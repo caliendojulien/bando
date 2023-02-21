@@ -211,7 +211,6 @@ button {
 }
 .icon_sorties{
   display: flex;
-  padding: 0;
 }
 .btn-floating blue{
   margin-top: 30px;
@@ -219,6 +218,37 @@ button {
 .creer_sortie{
   margin-top: 20px;
 }
+
+#btn_affiche, #btn_remove, #btn_modify, #btn_add{
+  margin-right: 10px;
+}
+td, th{
+  text-align: center;
+}
+#nom_sortie{
+  text-align: left;
+}
+#cb_sortie_passes,#cb_sortie_non_inscrit,#cb_sortie_inscrit,#cb_sortie_organisateur{
+  display: flex;
+}
+#cb_sortie_passes label,#cb_sortie_non_inscrit label,#cb_sortie_inscrit label,#cb_sortie_organisateur label {
+  margin-left: 10px;
+  font-size: 1.3em;
+}
+#filtres{
+  margin-top: 20px;
+}
+#update_etats{
+  display: flex;
+}
+#update_icon{
+  font-size: 3rem;
+}
+#sorties_complete{
+  color: #e74d4d;
+  font-weight: bolder;
+}
+
 
 //page de création/modification des sorties
 .GestionDesLieu{

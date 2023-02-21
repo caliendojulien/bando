@@ -72,7 +72,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $nom = null;
 
     #[ORM\Column(length: 150)]
-    #[Assert\NotBlank]
+    #[Assert\NotBlank(message: "Le nom ne doit pas être vide.")]
     #[Assert\Type('string')]
     #[Assert\Length(
         min: 1,

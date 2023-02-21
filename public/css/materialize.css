@@ -2727,7 +2727,8 @@ table {
     width: 100%;
     display: table;
     border-collapse: collapse;
-    border-spacing: 0
+    border-spacing: 0;
+    margin-top: 30px;
 }
 
 table.striped tr {
