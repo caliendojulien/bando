@@ -220,6 +220,16 @@ button {
   margin-top: 20px;
 }
 
+//page de création/modification des sorties
+.GestionDesLieu{
+  display: flex;
+  justify-content: flex-start;
+  align-items: end;
+}
+.boutonEcranCreerSortie{
+  margin-top: 5%;
+}
+
 ///* Cool infinite background scrolling animation.
 // * Twitter: @kootoopas
 // */
