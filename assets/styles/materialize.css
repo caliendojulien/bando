@@ -6248,11 +6248,11 @@ textarea.materialize-textarea {
     min-height: 18px
 }
 
-[type="radio"]:not(:checked), [type="radio"]:checked {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none
-}
+/*[type="radio"]:not(:checked), [type="radio"]:checked {*/
+/*    position: absolute;*/
+/*    opacity: 0;*/
+/*    pointer-events: none*/
+/*}*/
 
 [type="radio"]:not(:checked) + span, [type="radio"]:checked + span {
     position: relative;
@@ -6546,11 +6546,11 @@ textarea.materialize-textarea {
     cursor: pointer
 }
 
-.switch label input[type=checkbox] {
-    opacity: 0;
-    width: 0;
-    height: 0
-}
+/*.switch label input[type=checkbox] {*/
+/*    opacity: 0;*/
+/*    width: 0;*/
+/*    height: 0*/
+/*}*/
 
 .switch label input[type=checkbox]:checked + .lever {
     background-color: #84c7c1
