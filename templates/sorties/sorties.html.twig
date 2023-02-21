@@ -24,10 +24,10 @@
                     {{ form_errors(form.nom) }}
                 </div>
                 <div class="row">
-                    <div class="input-field col s2">
+                    <div class="input-field col s4">
                         {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut'}} ) }}
                     </div>
-                    <div class="input-field col s2">
+                    <div class="input-field col s4">
                         {{ form_widget(form.finSortie,{'attr': {'class': 'datepicker'}} ) }}
                     </div>
                 </div>
@@ -153,6 +153,8 @@
                             </td>
                         </tr>
                     {% endfor %}
+                    </br>
+                    {{ knp_pagination_render(sorties) }}
                     </tbody>
                 </table>
             </div>
