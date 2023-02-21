@@ -40,7 +40,7 @@ class SortiesController extends AbstractController
         SortieRepository     $sortieRepository,
         Request              $request,
         FormFactoryInterface $formFactory,
-        PaginatorInterface $paginator,
+        PaginatorInterface   $paginator,
     ): Response
     {
         try {
@@ -87,14 +87,14 @@ class SortiesController extends AbstractController
                 );
                 $sortiesPaginee = $paginator->paginate(
                     $sorties,
-                    $request->query->getInt('page',1),10
+                    $request->query->getInt('page', 1), 10
                 );
             } else {
                 // Si le formulaire n'a pas été soumis ou n'est pas valide, récupération de toutes les sorties
                 $sorties = $sortieRepository->findSorties();
                 $sortiesPaginee = $paginator->paginate(
                     $sorties,
-                    $request->query->getInt('page',1),10
+                    $request->query->getInt('page', 1), 10
                 );
             }
 
