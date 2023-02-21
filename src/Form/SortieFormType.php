@@ -23,7 +23,7 @@ class SortieFormType extends AbstractType
         $todayPlus4h = $today->add(new \DateInterval('PT4H'));
 
         $builder
-            ->add('nom')
+            ->add('nom',null,['mapped'=>false,['attr' => ['class' => 'input-field inline'],]])
             ->add('debutSortie',DateTimeType::class,
                 [
                 'required' => true,
@@ -49,7 +49,7 @@ class SortieFormType extends AbstractType
                 'class' => Campus::class,
                 'choice_label' => 'nom',
                 'placeholder' => 'Sélectionner un campus',
-                'required' => false
+                'required' => false,
             ])
         ;
     }
