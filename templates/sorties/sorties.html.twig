@@ -3,7 +3,6 @@
 {% block title %}Liste des sorties{% endblock %}
 
 {% block body %}
-
     <div id="update_etats">
         <h3 class="titre_listes_sorties">Liste des sorties</h3>
         <a href="{{ path('sorties_updateEtat') }}"><i class="large material-icons" id="update_icon">update</i></a>
@@ -66,7 +65,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>Nom</th>
+                        <th onclick="play()">Nom</th>
                         <th>Campus</th>
                         <th>Date de la sortie</th>
                         <th>Clôture</th>
@@ -160,6 +159,7 @@
             </div>
         </div>
     </div>
+
 {% endblock %}
 
 

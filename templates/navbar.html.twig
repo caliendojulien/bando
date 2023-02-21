@@ -1,4 +1,12 @@
 {% block navbar %}
+    <script>
+        document.getElementById("t7").addEventListener("click", controlAnimation);
+        function controlAnimation() {
+            $("bird_box").click(function() {
+                $('.bird').toggleClass('.stopped');
+            });
+        }
+    </script>
     <div id="nav_bar">
         <div id="menu_nav_bar">
             <button id="t1" class="touches_inactive">?</button>
@@ -13,6 +21,45 @@
             <button id="t10" class="touches_inactive" onclick="window.location.href='{{path('app_logout') }}'"><img class="eject" src="{{ asset('/images/eject_icon.png') }}" alt=""><p>Echap</p></button>
             <p class="titre_company">BANDO</p>
             <p class="sous_titre_company">#758681</p>
+        </div>
+    </div>
+    <div class="wrapper" id="wrapper_box">
+        <div class="bird" id="bird_box">
+            <div class="head">
+                <div class="eye eye_right">
+                    <div class="eye__inner eye__inner_right">
+                        <div class="eye__pupil"></div>
+                    </div>
+                </div>
+                <div class="nose"></div>
+                <div class="eye eye_left">
+                    <div class="eye__inner eye__inner_left">
+                        <div class="eye__pupil"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="body-wrap">
+                <div class="body1"></div>
+                <div class="body2"></div>
+                <div class="body3"></div>
+            </div>
+
+            <div class="legs">
+                <div class="leg leg_left"></div>
+                <div class="leg leg_right"></div>
+            </div>
+
+            <div class="tail"></div>
+
+            <div class="pseudo-knife">
+                <div class="pseudo-knife__blade"></div>
+                <div class="pseudo-knife__handle"></div>
+            </div>
+
+            <div class="knife">
+                <div class="knife__blade"></div>
+                <div class="knife__handle"></div>
+            </div>
         </div>
     </div>
 {% endblock %}
