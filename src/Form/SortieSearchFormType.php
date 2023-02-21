@@ -14,7 +14,7 @@ class SortieSearchFormType extends AbstractType
     {
         $builder
             ->add('campus')
-            ->add('nom', null, ['required' => false])
+            ->add('nom', null,['mapped'    => false, 'required' => false])
             ->add('debutSortie', null, [
                 'data' => new \DateTime('00:00:01'),
             ])
