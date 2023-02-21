@@ -18,7 +18,6 @@ class Sortie
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank]
     private ?string $nom = null;
 
     #[Assert\GreaterThanOrEqual('today',message: "La date de début est forcément supérieure à aujourd'hui")]

@@ -4,8 +4,10 @@
 
 {% block body %}
 
-    <h3 class="titre_listes_sorties">Liste des sorties</h3>
-
+    <div id="update_etats">
+        <h3 class="titre_listes_sorties">Liste des sorties</h3>
+        <a href="{{ path('sorties_updateEtat') }}"><i class="large material-icons" id="update_icon">update</i></a>
+    </div>
     <div class="container-fluid">
         <div class="row justify-content-center">
             <div class="col-lg-10 col-md-12 col-sm-12">
@@ -17,30 +19,42 @@
                 <h6>Recherche d'une sortie</h6>
                 {{ form_start(form) }}
                 <div class="input-field col s12">
-                    {{ form_widget(form.nom,{'attr': {'class': 'validate'}}) }}
+                    {{ form_widget(form.nom,{'attr': {'class': ''}}) }}
                     {{ form_label(form.nom) }}
                     {{ form_errors(form.nom) }}
                 </div>
                 <div class="row">
                     <div class="input-field col s2">
-                        {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut'}} )}}
+                        {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut'}} ) }}
                     </div>
                     <div class="input-field col s2">
-                        {{ form_widget(form.finSortie,{'attr': {'class': 'datepicker'}} )}}
+                        {{ form_widget(form.finSortie,{'attr': {'class': 'datepicker'}} ) }}
                     </div>
                 </div>
                 {{ form_row(form.campus) }}
-                <br/>
-                <br/>
-                {{ form_row(form.organisateur) }}
-                <br/>
-                {{ form_row(form.inscrit) }}
-                <br/>
-                {{ form_row(form.non_inscrit) }}
-                <br/>
-                {{ form_row(form.sorties_passees) }}
+                <div id="filtres">
+                    <div id="cb_sortie_organisateur">
+                        {{ form_widget(form.organisateur) }}
+                        {{ form_label(form.organisateur) }}
+                    </div>
+                    <div id="cb_sortie_inscrit">
+                        {{ form_widget(form.inscrit) }}
+                        {{ form_label(form.inscrit) }}
+                    </div>
+                    <div id="cb_sortie_non_inscrit">
+                        {{ form_widget(form.non_inscrit) }}
+                        {{ form_label(form.non_inscrit) }}
+                    </div>
+                    <div id="cb_sortie_passes">
+                        {{ form_widget(form.sorties_passees) }}
+                        {{ form_label(form.sorties_passees) }}
+                    </div>
+                </div>
+
+
                 <br/>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
+                {{ form_end(form) }}
                 <a href="{{ path('sorties_liste') }}">
                     <button class="btn waves-effect waves-light">Effacer les filtres</button>
                 </a>
@@ -48,8 +62,6 @@
                     <button class="btn waves-effect waves-light">Créer une sortie</button>
                 </a>
                 <br/>
-                {{ form_end(form) }}
-            </br>
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -67,37 +79,70 @@
                     <tbody>
                     {% for sortie in sorties %}
                         <tr>
-                            <td>{{ sortie.nom }}</td>
+                            <td id="nom_sortie">{{ sortie.nom }}</td>
                             <td>{{ sortie.campus.nom }}</td>
                             <td>{{ sortie.debutSortie|date('d/m/Y H:i') }}</td>
                             <td>{{ sortie.dateLimiteInscription|date('d/m/Y') }}</td>
-                            <td>{{ sortie.participants|length }}/{{ sortie.nombreInscriptionsMax }}</td>
+                            {% if sortie.participants|length == sortie.nombreInscriptionsMax %}
+                                <td id="sorties_complete"><span class="new badge red">complet</span></td>
+                            {% else %}
+                                <td id="sorties_dispo">{{ sortie.participants|length }}
+                                    /{{ sortie.nombreInscriptionsMax }}</td>
+                            {% endif %}
                             <td>
-                                {{ sortie.etat == 1 ? 'En création' :
-                                sortie.etat == 2 ? 'Ouvert' :
-                                sortie.etat == 3 ? 'Fermé' :
-                                sortie.etat == 4 ? 'En cours' :
-                                sortie.etat == 5 ? 'Annulé' :
-                                sortie.etat == 6 ? 'Passé' :
-                                sortie.etat == 7 ? 'Archivé' : '' }}
+                                {% if sortie.etat == 1 %}
+                                <span class="">En création</span>
+                                {% endif %}
+                                {% if sortie.etat == 2 %}
+                                 <span class="new badge green">Ouvert</span>
+                                {% endif %}
+                                {% if sortie.etat == 3 %}
+                                <span class="new badge orange">Fermée</span>
+                                {% endif %}
+                                {% if sortie.etat == 4 %}
+                                <span class="new badge blue">Encours</span>
+                                {% endif %}
+                                {% if sortie.etat == 5 %}
+                                <span class="new badge red">Annulée</span>
+                                {% endif %}
+                                {% if sortie.etat == 6 %}
+                                <span class="new badge grey">Passée</span>
+                                {% endif %}
+                                {% if sortie.etat == 7 %}
+                                <span class="">Archivée</span>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if app.user in sortie.participants %}
-                                    x
+                                    <i class="material-icons">check</i>
                                 {% endif %}
                             </td>
-                            <td>{{ sortie.organisateur.nom }}</td>
+                            <td>
+                                <a href="{{ path('profil_affich',{'id': sortie.organisateur.id}) }}">{{ sortie.organisateur.nom }}</a>
+                            </td>
                             <td class="icon_sorties">
-                                {% if sortie.etat == 1 %}
-                                    <a href="{{ path('accueil', {'id': sortie.id}) }}" class="btn-floating blue"><i class="material-icons">mode_edit</i></a>
-                                {% endif %}
-                                <a href="{{ path('sorties_detail', {'id': sortie.id}) }}" class="btn-floating blue"><i class="material-icons">zoom_in</i></a>
-                                {% if app.user in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('sorties_desistement', {'id': sortie.id}) }}" class="btn-floating red"><i class="material-icons">remove</i></a>&nbsp;
-                                {% endif %}
-                                {% if app.user not in sortie.participants and sortie.etat == 2 %}
-                                    <a href="{{ path('sorties_sinscrire', {'id': sortie.id}) }}" class="btn-floating green"><i class="material-icons">add</i></a>&nbsp;
-                                {% endif %}
+                                <div id="btn_affiche">
+                                    <a href="{{ path('sorties_detail', {'id': sortie.id}) }}" class="btn-floating blue"><i
+                                                class="material-icons">zoom_in</i></a>
+                                </div>
+                                <div id="btn_remove">
+                                    {% if app.user in sortie.participants and sortie.etat == 2 %}
+                                        <a href="{{ path('sorties_desistement', {'id': sortie.id}) }}"
+                                           class="btn-floating red"><i class="material-icons">remove</i></a>
+                                    {% endif %}
+                                </div>
+                                <div id="btn_add">
+                                    {% if app.user not in sortie.participants and sortie.etat == 2 and sortie.participants|length < sortie.nombreInscriptionsMax %}
+                                        <a href="{{ path('sorties_sinscrire', {'id': sortie.id}) }}"
+                                           class="btn-floating green pulse"><i class="material-icons">add</i></a>
+                                    {% endif %}
+                                </div>
+                                <div id="btn_modify">
+                                    {% if sortie.etat == 1 and user_connecte == sortie.organisateur %}
+                                        <a href="{{ path('sorties_modifier-sortie', {'id': sortie.id}) }}"
+                                           class="btn-floating orange"><i class="material-icons">mode_edit</i></a>
+                                    {% endif %}
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}

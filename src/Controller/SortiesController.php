@@ -11,6 +11,7 @@ use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
+use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
 use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -35,12 +36,15 @@ class SortiesController extends AbstractController
     public function sorties(
         SortieRepository     $sortieRepository,
         Request              $request,
-        FormFactoryInterface $formFactory
+        FormFactoryInterface $formFactory,
     ): Response
     {
         try{
             // Création du formulaire de recherche de sorties
             $form = $formFactory->create(SortieSearchFormType::class);
+
+            //Récupération de l'id de l'utilisateur connecté
+            $stagiaire = $this->getUser();
 
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
@@ -86,6 +90,7 @@ class SortiesController extends AbstractController
             return $this->render('sorties/sorties.html.twig', [
                 'sorties' => $sorties,
                 'form' => $form->createView(),
+                'user_connecte' => $stagiaire
             ]);
         } catch (Exception $ex){
             return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
@@ -453,6 +458,20 @@ class SortiesController extends AbstractController
         } catch (Exception $ex){
             return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
         }
+     }
+
+     #[isGranted("ROLE_USER")]
+     #[Route('/updataEtat', name: '_updateEtat')]
+     public function miseAjourEtat(Request $request,
+                                    EtatSorties $etatSorties){
+         try{
+             $etatSorties->updateEtatSorties();
+
+         } catch (Exception $ex){
+             return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
+         }
+         // Redirige l'utilisateur vers la liste des sorties.
+         return $this->redirectToRoute('sorties_liste');
      }
 
 }
