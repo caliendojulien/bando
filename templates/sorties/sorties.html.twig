@@ -50,8 +50,6 @@
                         {{ form_label(form.sorties_passees) }}
                     </div>
                 </div>
-
-
                 <br/>
                 <button type="submit" class="btn btn-primary">Rechercher</button>
                 {{ form_end(form) }}
@@ -131,7 +129,7 @@
                                 <div id="btn_remove">
                                     {% if app.user in sortie.participants and sortie.etat == 2 %}
                                         <a href="{{ path('sorties_desistement', {'id': sortie.id}) }}"
-                                           class="btn-floating red"><i class="material-icons">remove</i></a>
+                                           class="btn-floating orange"><i class="material-icons">remove</i></a>
                                     {% endif %}
                                 </div>
                                 <div id="btn_add">
@@ -144,6 +142,12 @@
                                     {% if sortie.etat == 1 and user_connecte == sortie.organisateur %}
                                         <a href="{{ path('sorties_modifier-sortie', {'id': sortie.id}) }}"
                                            class="btn-floating orange"><i class="material-icons">mode_edit</i></a>
+                                    {% endif %}
+                                </div>
+                                <div id="btn_annuler">
+                                    {% if (sortie.etat == 2 or sortie.etat == 3) and user_connecte == sortie.organisateur %}
+                                        <a href="{{ path('sorties_annulation', {'id': sortie.id}) }}"
+                                           class="btn-floating red"><i class="material-icons">delete</i></a>
                                     {% endif %}
                                 </div>
                             </td>
