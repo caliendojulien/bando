@@ -282,7 +282,7 @@ class SortiesController extends AbstractController
              }
              else //sinon on reste sur la page mais on affiche les erreurs
              {
-                 $this->addFlash("error","merci de vérifier, il y a des erreurs.". $metier["message"]);
+                 $this->addFlash("error","Merci de vérifier, il y a des erreurs. ". $metier["message"]);
              }
          }
          //passer la liste des villes au formulaire
@@ -396,7 +396,7 @@ class SortiesController extends AbstractController
         //Contrôle de l'id organisateur entrant
         if (!is_int($id)) {
             $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
-            return $this->redirectToRoute('_sorties');
+            return $this->redirectToRoute('sorties_liste');
         }
 
         // Récupère la sortie correspondant à l'ID spécifié.
@@ -441,24 +441,6 @@ class SortiesController extends AbstractController
             'ville' => $ville
         ]);
     }
-
-     #[isGranted("ROLE_USER")]
-     #[Route('/retourLieux', name: '_retourLieu')]
-     public function retourDesLieux(Request $request,
-                                    SessionInterface $session,
-                                    EntityManagerInterface $entityManager,
-                                    StagiaireRepository $stagRepo,
-                                    VilleRepository $villesRepo,
-                                    LieuRepository $LieuxRepo,
-                                    SortiesService $serviceSorties){
-        try{
-         // Récupérer les données de la session
-         $sortie = $session->get('sortie');
-
-        } catch (Exception $ex){
-            return $this->render('pageErreur.html.twig', ["message"=>$ex->getMessage()]);
-        }
-     }
 
      #[isGranted("ROLE_USER")]
      #[Route('/updataEtat', name: '_updateEtat')]
