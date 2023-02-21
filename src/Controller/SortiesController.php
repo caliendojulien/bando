@@ -16,6 +16,7 @@ use App\Services\InscriptionsService;
 use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,6 +38,7 @@ class SortiesController extends AbstractController
         SortieRepository     $sortieRepository,
         Request              $request,
         FormFactoryInterface $formFactory,
+        PaginatorInterface $paginator,
     ): Response
     {
         try{
@@ -81,14 +83,22 @@ class SortiesController extends AbstractController
                     $data['non_inscrit'],
                     $data['sorties_passees']
                 );
+                $sortiesPaginee = $paginator->paginate(
+                    $sorties,
+                    $request->query->getInt('page',1),10
+                );
             } else {
                 // Si le formulaire n'a pas été soumis ou n'est pas valide, récupération de toutes les sorties
                 $sorties = $sortieRepository->findSorties();
+                $sortiesPaginee = $paginator->paginate(
+                    $sorties,
+                    $request->query->getInt('page',1),10
+                );
             }
 
             // Rendu de la vue et envoi des données
             return $this->render('sorties/sorties.html.twig', [
-                'sorties' => $sorties,
+                'sorties' => $sortiesPaginee,
                 'form' => $form->createView(),
                 'user_connecte' => $stagiaire
             ]);
