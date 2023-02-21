@@ -1,13 +1,3 @@
-{#<!doctype html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport"#}
-{#          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">#}
-{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
-{#    <title>Document</title>#}
-{#</head>#}
-{#<body>#}
 <label for="choixLieux"> Lieu
     <select id="choixLieux" name="choixLieux"  required onchange="afficherUnLieu(value)">
         {% if lieux %}
@@ -21,14 +11,4 @@
     </select>
 </label>
 <a href="{{ path('creer_lieu') }}"><input type="button" name="creerLieu" value="++" ></a>
-{#<a href="{{ path('allerLieux') }}"><input type="button" name="creerLieu" value="++" ></a>#}
-{#target="_blank"#}
-{#<script>#}
-{#    document.addEventListener('DOMContentLoaded', function() {#}
-{#        var elems = document.querySelectorAll('select');#}
-{#        var instances = M.FormSelect.init(elems, "");#}
-{#    });#}
-{#</script>#}
-{#</body>#}
-{#</html>#}
 

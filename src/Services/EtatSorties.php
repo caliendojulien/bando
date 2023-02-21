@@ -2,11 +2,9 @@
 
 namespace App\Services;
 
-use App\Entity\Sortie;
 use App\Repository\SortieRepository;
 use DateTime;
 use DateTimeZone;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 
 class EtatSorties
@@ -15,14 +13,22 @@ class EtatSorties
     private $entityManager;
 
 
-    //Cette fonction permet de mettre à jour l'état d'une sortie à chaque appel du service
-
+    /**
+     * Cette fonction permet de mettre à jour l'état d'une sortie à chaque appel du service
+     * @param SortieRepository $sortieRepository
+     * @param EntityManagerInterface $entityManager
+     *
+     */
     public function __construct(SortieRepository $sortieRepository, EntityManagerInterface $entityManager)
     {
         $this->sortieRepository = $sortieRepository;
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @return void
+     * @throws \Exception
+     */
     function updateEtatSorties()
     {
         //Récupérer tous les sorties non archivées

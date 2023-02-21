@@ -3,11 +3,7 @@
 namespace App\Services;
 
 use App\Entity\Sortie;
-use App\Form\SortieFormType;
-use DateInterval;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 
 class SortiesService
 {
@@ -57,8 +53,6 @@ class SortiesService
     public function ajouterDureeAdateFin(Sortie $sortie, $duree): void
     {
         if ($duree) {
-//            $dateFin = new DateTime($sortie->getDebutSortie()->format("Y-m-d H:i:s"));
-//            $dateFin = $dateFin->add(new DateInterval('PT' . $duree . 'M'));
             $dateFin = date('Y-m-d H:i:s', strtotime($sortie->getDebutSortie()->format("Y-m-d H:i:s") . ' + ' . $duree . ' minutes'));
             $sortie->setFinSortie(new DateTime($dateFin));
         }
