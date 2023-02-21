@@ -55,20 +55,14 @@
     {#--------- section boutons ------------#}
     {% if modecree %}
         <input type="submit" name="Creer" value="Creer">
-        {% if etat==1 %}
-            <input type="submit" name="Publier" value="Publier">
-        {% else %}
-            <input type="submit" name="Publier" value="Fermer">
-        {% endif %}
+        <input type="submit" name="Publier" value="Publier">
+
 
     {% else %}
-        <input type="submit" name="Modifier" value="Modifier">
         {% if etat==1 %}
-            <input type="submit" name="Publier" value="Publier">
-        {% else %}
-            <input type="submit" name="Publier" value="Fermer">
+            <input type="submit" name="Modifier" value="Modifier">
+            <input type="submit" name="Supprimer" value="Supprimer">
         {% endif %}
-        <input type="submit" name="Supprimer" value="Supprimer">
     {% endif %}
 
     <a href="{{ path('sorties_liste') }}"><input type="button" name="Retour" value="Retour" ></a>
