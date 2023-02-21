@@ -3141,9 +3141,9 @@ span.badge.new {
     border-radius: 2px
 }
 
-span.badge.new:after {
-    content: " new"
-}
+/*span.badge.new:after {*/
+/*    content: " new"*/
+/*}*/
 
 span.badge[data-badge-caption]::after {
     content: " " attr(data-badge-caption)

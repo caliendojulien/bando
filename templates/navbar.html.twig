@@ -4,12 +4,12 @@
             <button id="t1" class="touches_inactive">?</button>
             <button id="t2" class="touches_active" onclick="window.location.href='{{path('admin') }}'">Accès Admin</button>
             <button id="t3" class="touches_active" onclick="window.location.href='{{path('profil_modif') }}'">Mon Profil</button>
-            <button id="t4" class="touches_inactive">E</button>
-            <button id="t5" class="touches_inactive">I</button>
-            <button id="t6" class="touches_inactive">X</button>
-            <button id="t7" class="touches_inactive">P</button>
-            <button id="t8" class="touches_inactive" onclick="window.location.href='{{path('app_login')}}'">Connexion</button>
-            <button id="t9" class="touches_active" onclick="window.location.href='{{path('sorties_liste')}}'"><span class="dollar">@</span> Sorties</button>
+            <button id="t4" class="touches_inactive"><img src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
+            <button id="t5" class="touches_inactive"><img src="{{asset('images/arrow_left.png')}}" width="15px" height="15px"></button>
+            <button id="t6" class="touches_inactive"><img src="{{asset('images/arrow_up.png')}}" width="15px" height="15px"></button>
+            <button id="t7" class="touches_inactive"><img src="{{asset('images/arrow_down.png')}}" width="15px" height="15px"></button>
+            <button id="t8" class="touches_active" onclick="window.location.href='{{path('app_login')}}'">Connexion</button>
+            <button id="t9" class="touches_active" onclick="window.location.href='{{path('sorties_liste')}}'">Sorties</button>
             <button id="t10" class="touches_inactive" onclick="window.location.href='{{path('app_logout') }}'"><img class="eject" src="{{ asset('/images/eject_icon.png') }}" alt=""><p>Echap</p></button>
             <p class="titre_company">BANDO</p>
             <p class="sous_titre_company">#758681</p>
