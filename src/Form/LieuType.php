@@ -21,13 +21,11 @@ class LieuType extends AbstractType
             ->add('rue')
             ->add('latitude', null, [
                 'constraints' => [
-                    new Assert\NotBlank(),
                     new Assert\Regex('/^-?\d+\.\d+$/'),
                 ],
             ])
             ->add('longitude', null, [
                 'constraints' => [
-                    new Assert\NotBlank(),
                     new Assert\Regex('/^-?\d+\.\d+$/'),
                 ],
             ])
@@ -37,8 +35,8 @@ class LieuType extends AbstractType
                 'choice_label' => 'nom',
                 'placeholder' => 'Sélectionner une ville',
                 'required' => true,
-            ])
-            ->add('creer', SubmitType::class);
+            ]);
+//            ->add('creer', SubmitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% block title %}Créer un lieu{% endblock %}
 {% block body %}
    <h3>Créer un lieu</h3>
  {{ form_start(form) }}
@@ -7,8 +8,9 @@
     {{ form_row(form.longitude) }}
     {{ form_row(form.latitude) }}
     {{ form_row(form.ville) }}
+    <div class="container-fluid btnCreerLieu">
+       <button id="creer" type="submit" name="Creer" value="Creer" class="btn btn-primary">Créer</button>
+        <a href="{{ path('sorties_creer') }}"  id="retour"><input type="button" name="retour" value="Retour" class="btn btn-primary"></a>
+    </div>
     {{ form_end(form) }}
-   <button id="creer" type="submit" name="Creer" value="Creer"></button>
-   <a href="{{ path('sorties_creer') }}"  id="retour"><input type="button" name="retour" value="Retour" ></a>
-{#   <a href="{{ path('sorties_retourLieu') }}"><input type="button" name="Retour" value="Retour" ></a>#}
 {% endblock %}
