@@ -15,7 +15,14 @@ class MailService
         $this->mailer = $mailer;
     }
 
-    public function sendMailParticipants(Sortie $sortie,string $message)
+    /**
+     * Envoi un mail à tous les participants d'une sortie
+     * @param Sortie $sortie La sortie qui nécessite l'envoi d'un mail
+     * @param string $message Le message en objet du mail
+     * @return void
+     * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
+     */
+    public function sendMailParticipants(Sortie $sortie,string $message):void
     {
             foreach ($sortie->getParticipants() as $participant) {
                 $email = (new Email())

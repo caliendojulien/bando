@@ -25,23 +25,27 @@ class LieuxController extends AbstractController
     #[isGranted("ROLE_USER")]
     #[Route('/lieu/Creerlieu', name: 'creer_lieu')]
     public function index(
-        Request $request,
+        Request                $request,
         EntityManagerInterface $entityManager,
     ): Response
     {
-        $lieu=new Lieu();
-        $form=$this->createForm(LieuType::class, $lieu);
-        $form->handleRequest($request);
+        try {
+            $lieu = new Lieu();
+            $form = $this->createForm(LieuType::class, $lieu);
+            $form->handleRequest($request);
 
-        //traiter l'envoi du formulaire
-        if ($form->isSubmitted() ) {
-            if ($form->isValid()) {
-                $entityManager->persist($lieu);
-                $entityManager->flush();
-                return $this->redirectToRoute('sorties_creer');
+            //traiter l'envoi du formulaire
+            if ($form->isSubmitted()) {
+                if ($form->isValid()) {
+                    $entityManager->persist($lieu);
+                    $entityManager->flush();
+                    return $this->redirectToRoute('sorties_creer');
+                }
             }
+            return $this->render('lieux/creer.html.twig', ['form' => $form->createView()]);
+        } catch (Exception $ex) {
+            return $this->render('pageErreur.html.twig', ["message" => $ex->getMessage()]);
         }
-            return $this->render('lieux/creer.html.twig', [ 'form' => $form->createView() ]);
     }
 
 //
@@ -66,10 +70,11 @@ class LieuxController extends AbstractController
      */
     #[isGranted("ROLE_USER")]
     #[Route('/lieu/AfficherLieu/{id}', name: 'affLieu')]
-    public function LieuxParVilleBis(int $id,
-                                 LieuRepository $LieuxRepo):Response{
-        $lieu= $LieuxRepo->findOneBy(["id"=>$id]);
-        return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
+    public function LieuxParVilleBis(int            $id,
+                                     LieuRepository $LieuxRepo): Response
+    {
+        $lieu = $LieuxRepo->findOneBy(["id" => $id]);
+        return $this->render('lieux/afficheLieu.html.twig', ["lieu" => $lieu]);
     }
 
     /**
@@ -80,7 +85,8 @@ class LieuxController extends AbstractController
      */
     #[isGranted("ROLE_USER")]
     #[Route('/lieu/allerLieux', name: 'allerLieux')]
-    public function sortieVersLieux(Request $request, SessionInterface $session){
+    public function sortieVersLieux(Request $request, SessionInterface $session)
+    {
         // Stocker les données dans la session
         $session->set('sortie', $request->get("sortie"));
         // Rediriger vers l'autre écran

@@ -22,12 +22,7 @@
                     {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut','id':'dateDeb'}} )}}
                 </div>
             </div>
-{#            <div class="input-field col s2">#}
-{#                {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut'}} )}}#}
-{#            </div>#}
-
     <label for="duree" >Durée en minutes</label><input type="number" id="duree" name="duree" min="30"  step="10" value="30" required>
-{#    {{ form_row(form.dateLimiteInscription) }}#}
             <div class="row">
                 <label for="dateLimite" >Date limite d'inscription</label>
                 <div class="input-field">
@@ -42,7 +37,6 @@
 
     <label for="choixVille"> Ville
         <select id="choixVille" name="choixVille" required onchange="chargerLieux(value)">
-{#                <option  disabled selected>choisissez une ville:</option>#}
             {% for ville in villes %}
                 {% if ville == laville %}
                     <option value="{{ ville.id }}" selected> {{ ville.nom }}</option>
