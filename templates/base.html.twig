@@ -5,9 +5,9 @@
     <title>{% block title %}Welcome!{% endblock %}</title>
     <link rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-    <!-- Compiled and minified CSS -->
-{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">#}
+{#{   #    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">#}
     <link href="{{ asset('css/materialize.css') }}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Compiled and minified JavaScript -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
@@ -20,20 +20,6 @@
 </head>
 <body>
 <div>
-    <div>
-        <ul>
-            {% if app.user %}
-                {#                    <li>  <a href={{ path('_sorties_test') }}>Accueil</a></li> #}
-                <li><a href={{ path('profil_modif') }}>Profil</a></li>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <li><a href={{ path('admin') }}>Tableau de bord admin</a></li>
-                {% endif %}
-                <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
-            {% else %}
-                <li><a href="{{ path('app_login') }}">Connexion</a></li>
-            {% endif %}
-        </ul>
-    </div>
     {% if app.user %}
         <div>
             <section><p>Bonjour {{ app.user.prenom }} {{ app.user.nom }}</p></section>
@@ -41,7 +27,9 @@
     {% endif %}
 </div>
 <div id="container_main">
-    {% include 'navbar.html.twig' %}
+    {% block nav %}
+        {% include 'navbar.html.twig' %}
+    {% endblock %}
     <main>
         {% block main %}
         {% endblock %}

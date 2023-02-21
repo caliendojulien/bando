@@ -28,7 +28,7 @@ class SortieFormType extends AbstractType
         $todayPlus4h = $today->add(new \DateInterval('PT4H'));
 
         $builder
-            ->add('nom')
+            ->add('nom',null,['attr' => ['class' => 'input-field inline'],])
             ->add('debutSortie',DateTimeType::class,
                 [
                 'required' => true,

@@ -74,6 +74,7 @@ class ProfilType extends AbstractType
                 'required' => false,
                 'allow_delete' => false,
                 'download_label' => false,
+                'attr' => ['class' => 'img_profil'],
                 'constraints' => [
                     new File([
                         'maxSize' => '1024k',
