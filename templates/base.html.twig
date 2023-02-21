@@ -19,13 +19,11 @@
     {% endblock %}
 </head>
 <body>
-<div>
+<header class="bandeauBonjour">
     {% if app.user %}
-        <div>
             <section><p>Bonjour {{ app.user.prenom }} {{ app.user.nom }}</p></section>
-        </div>
     {% endif %}
-</div>
+</header>
 <div id="container_main">
     {% block nav %}
         {% include 'navbar.html.twig' %}
@@ -33,10 +31,10 @@
     <main>
         {% block main %}
         {% endblock %}
-        <div id="champFlash">
+        <div class="champFlash">
             {% for label, messages in  app.flashes %}
                 {% for message in messages %}
-                    <div class="alert-{{ label }}">{{ message }}</div>
+                    <div class="alert-{{ label }} messageFlash">{{ message }}</div>
                 {% endfor %}
             {% endfor %}
         </div>

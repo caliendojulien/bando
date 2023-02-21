@@ -69,19 +69,6 @@ class LieuxController extends AbstractController
         return $this->render('lieux/afficheLieu.html.twig', [  "lieu"=>$lieu ]);
     }
 
-//    /**
-//     * Cette URL affiche une liste déroulante contenant les lieux
-//     * @param int $id
-//     * @param LieuRepository $LieuxRepo
-//     * @return Response
-//     */
-//    #[Route('/lieu/listerLieuxBis/{id}', name: 'listeLieuxBis')]
-//    public function AfficherLieu(int $id,
-//                                 LieuRepository $LieuxRepo):Response{
-//        $lieux = $LieuxRepo->findBy(["ville" => $id]);
-//        return $this->render('lieux/selectLieux.html.twig', [  "lieux"=>$lieux ]);
-//    }
-
     /**
      * Redirige vers la page de création du lieu, mais stocke la sortie en session avant
      * @param Request $request
@@ -92,7 +79,6 @@ class LieuxController extends AbstractController
     #[Route('/lieu/allerLieux', name: 'allerLieux')]
     public function sortieVersLieux(Request $request, SessionInterface $session){
         // Stocker les données dans la session
-       // dd($request);
         $session->set('sortie', $request->get("sortie"));
         // Rediriger vers l'autre écran
         return $this->redirectToRoute('creer_lieu');

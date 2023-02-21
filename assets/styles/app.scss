@@ -77,6 +77,24 @@ main {
   padding-right: 60px;
   padding-bottom: 60px;
 }
+.bandeauBonjour{
+  background-color: $light-pink;
+  //width: 30vw;
+  width: 300px;
+  height: 10%;
+  color: white;
+  padding-left: 5px;
+  margin-left: 3px;
+}
+.champFlash{
+  background-color: $blue-shadow;
+  width: 45vw;
+}
+.messageFlash{
+  font-style: italic;
+  color: black;
+  padding: 5px;
+}
 footer {
   padding: 60px;
   background-color: #bddee8;
