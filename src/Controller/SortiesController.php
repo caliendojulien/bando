@@ -14,6 +14,7 @@ use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
+use App\Services\MailService;
 use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -149,7 +150,7 @@ class SortiesController extends AbstractController
         try {
 
             //initialisation de la sortie
-            // TODO on va chercher la sortie en session, s'il n'y en a pas, alors on crée une nouvelle sortie
+            // on va chercher la sortie en session, s'il n'y en a pas, alors on crée une nouvelle sortie
             $sortie = $session->get('sortie');
             if (!$sortie) {
                 $sortie = new Sortie();
@@ -373,20 +374,24 @@ class SortiesController extends AbstractController
                                 EntityManagerInterface $entityManager,
                                 InscriptionsService    $inscriptionsService): Response
     {
-        // Récupère la sortie correspondant à l'ID spécifié.
-        $sortie = $sortieRepository->findOneBy(["id" => $id]);
+        try {
+            // Récupère la sortie correspondant à l'ID spécifié.
+            $sortie = $sortieRepository->findOneBy(["id" => $id]);
 
-        //récupère le participant
-        $user = $this->getUser();
+            //récupère le participant
+            $user = $this->getUser();
 
-        if ($inscriptionsService->SeDesinscrire($user, $sortie, $entityManager))
-            $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
-        else
-            $this->addFlash('error', 'Problème lors de votre désistement, veuilez contacter un administrateur.');
+            if ($inscriptionsService->SeDesinscrire($user, $sortie, $entityManager))
+                $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
+            else
+                $this->addFlash('error', 'Problème lors de votre désistement, veuilez contacter un administrateur.');
 
 
-        // Redirige l'utilisateur vers la liste des sorties.
-        return $this->redirectToRoute('sorties_liste');
+            // Redirige l'utilisateur vers la liste des sorties.
+            return $this->redirectToRoute('sorties_liste');
+        } catch (Exception $ex) {
+            return $this->render('pageErreur.html.twig', ["message" => $ex->getMessage()]);
+        }
     }
 
     /**
@@ -398,59 +403,74 @@ class SortiesController extends AbstractController
      * @param LieuRepository $lieuRepository
      * @param CampusRepository $campusRepository
      * @param Request $request
+     * @param MailService $mailer
      * @return Response
      */
     #[isGranted("ROLE_USER")]
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
-    public function annulation(int $id, SortieRepository $sortieRepository, EntityManagerInterface $entityManager, StagiaireRepository $stagiaireRepository, VilleRepository $villeRepository, LieuRepository $lieuRepository, CampusRepository $campusRepository, Request $request): Response
+    public function annulation(int                    $id,
+                               SortieRepository       $sortieRepository,
+                               EntityManagerInterface $entityManager,
+                               StagiaireRepository    $stagiaireRepository,
+                               VilleRepository        $villeRepository,
+                               LieuRepository         $lieuRepository,
+                               CampusRepository       $campusRepository,
+                               Request                $request,
+                               MailService            $mailer): Response
     {
-        //Contrôle de l'id organisateur entrant
-        if (!is_int($id)) {
-            $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
-            return $this->redirectToRoute('sorties_liste');
-        }
-
-        // Récupère la sortie correspondant à l'ID spécifié.
-        $sortie = $sortieRepository->findOneBy(['id' => $id]);
-
-        //Récupérer le campus associé à la sortie
-        $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
-
-        //Récupérer le lieu associé à la sortie
-        $lieu = $lieuRepository->findOneBy(['id' => $sortie->getLieu()->getId()]);
-
-        //Récupérer la ville associé à la sortie
-        $ville = $villeRepository->findOneBy(['id' => $lieu->getVille()->getId()]);
-
-        //Récupère l'id du stagiaire connecté
-        $stagiaireConnecte = $this->getUser();
-        $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
-        $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
-        $sortieForm->handleRequest($request);
-
-
-        //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
-        if ($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3) {
-            return $this->redirectToRoute('sorties_liste');
-
-        }
-        if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
-            foreach ($sortie->getParticipants() as $value) {
-                $sortie->removeParticipant($value);
+        try {
+            //Contrôle de l'id organisateur entrant
+            if (!is_int($id)) {
+                $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
+                return $this->redirectToRoute('sorties_liste');
             }
-            $sortie->setEtat(6);
-            $entityManager->persist($sortie);
-            $entityManager->flush();
-            return $this->redirectToRoute('sorties_liste');
-        }
 
-        return $this->render('sorties/annulation.html.twig', [
-            'sortieForm' => $sortieForm,
-            'sortie' => $sortie,
-            'campus' => $campus,
-            'lieu' => $lieu,
-            'ville' => $ville
-        ]);
+            // Récupère la sortie correspondant à l'ID spécifié.
+            $sortie = $sortieRepository->findOneBy(['id' => $id]);
+
+            //Récupérer le campus associé à la sortie
+            $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
+
+            //Récupérer le lieu associé à la sortie
+            $lieu = $lieuRepository->findOneBy(['id' => $sortie->getLieu()->getId()]);
+
+            //Récupérer la ville associé à la sortie
+            $ville = $villeRepository->findOneBy(['id' => $lieu->getVille()->getId()]);
+
+            //Récupère l'id du stagiaire connecté
+            $stagiaireConnecte = $this->getUser();
+            $stagiaire = $stagiaireRepository->findOneBy(['email' => $stagiaireConnecte->getUserIdentifier()]);
+            $sortieForm = $this->createForm(SortieAnnulationFormType::class, $sortie);
+            $sortieForm->handleRequest($request);
+
+
+            //Vérifie si l'id de l'organisateur correspond à l'id de l'utilisateur connecté, si la date de début sortie n'est pas dépassée , si se n'est le cas il est renvoyé vers la liste des sorties
+            if ($sortie->getOrganisateur()->getId() != $stagiaire->getId() || $sortie->getEtat() > 3) {
+                return $this->redirectToRoute('sorties_liste');
+
+            }
+            if ($sortieForm->isSubmitted() && $sortieForm->isValid()) {
+                //on envoie un mail à chaque participant
+                $mailer->sendMailParticipants($sortie, "Une sortie a été annulée");
+                foreach ($sortie->getParticipants() as $value) {
+                    $sortie->removeParticipant($value);
+                }
+                $sortie->setEtat(EtatSortiesEnum::Annulee->value);
+                $entityManager->persist($sortie);
+                $entityManager->flush();
+                return $this->redirectToRoute('sorties_liste');
+            }
+
+            return $this->render('sorties/annulation.html.twig', [
+                'sortieForm' => $sortieForm,
+                'sortie' => $sortie,
+                'campus' => $campus,
+                'lieu' => $lieu,
+                'ville' => $ville
+            ]);
+        } catch (Exception $ex) {
+            return $this->render('pageErreur.html.twig', ["message" => $ex->getMessage()]);
+        }
     }
 
     #[isGranted("ROLE_USER")]
