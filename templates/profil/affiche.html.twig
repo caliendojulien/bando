@@ -1,14 +1,32 @@
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h2>page affichage profil autre</h2>
+{% block title %}
+    Profil
+{% endblock %}
 
-    <div>
-        <p>Prénom:{{ stagiaire.prenom }}</p>
-        <p>Nom:{{ stagiaire.nom }}</p>
-        <p>Téléphones:{{ stagiaire.telephone }}</p>
-        <p>Email:{{ stagiaire.email }}</p>
-        <p>Campus:{{ stagiaire.campus }}</p>
+{% block body %}
+    <h1 class="titre_modification_profil" xmlns="http://www.w3.org/1999/html">Profil</h1>
+    <div class="row">
+        <div class="col s12 m12 l12">
+            <div class="icon-block">
+                <div class="center">
+                    {% if stagiaire.image %}
+                        <img class="photo_stagiaire" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="">
+                    {% else %}
+                        <img class="photo_stagiaire" src="{{ asset('/images/stagiaires_no_photo.jpg') }}" alt="">
+                    {% endif %}
+                </div>
+                <h5 class="center">{{ stagiaire.prenom }} {{ stagiaire.nom }}</h5>
+                <p class="light">
+                    <i class="material-icons">phone</i> <span>{{ stagiaire.telephone }}</span><br>
+                    <i class="material-icons">mail</i> <span>{{ stagiaire.email }}</span><br>
+                    <i class="material-icons">school</i> <span>{{ stagiaire.campus }}</span>
+                </p>
+            </div>
+            <div class="right">
+                <a class="waves-effect waves-light btn-small" href="{{ path('sorties_liste') }}"><i class="material-icons left">chevron_left</i>Retour</a>
+            </div>
+        </div>
     </div>
 
 {% endblock %}
