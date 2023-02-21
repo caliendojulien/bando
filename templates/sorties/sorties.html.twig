@@ -56,12 +56,15 @@
                 <button type="submit" class="btn btn-primary">Rechercher</button>
                 {{ form_end(form) }}
                 <a href="{{ path('sorties_liste') }}">
+                    {{ form_end(form) }}
                     <button class="btn waves-effect waves-light">Effacer les filtres</button>
                 </a>
+
                 <a href="{{ path('sorties_creer') }}">
                     <button class="btn waves-effect waves-light">Créer une sortie</button>
                 </a>
                 <br/>
+
                 <table class="table table-striped">
                     <thead>
                     <tr>

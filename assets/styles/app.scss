@@ -218,6 +218,7 @@ button {
 .creer_sortie{
   margin-top: 20px;
 }
+
 #btn_affiche, #btn_remove, #btn_modify, #btn_add{
   margin-right: 10px;
 }
@@ -247,6 +248,18 @@ td, th{
   color: #e74d4d;
   font-weight: bolder;
 }
+
+
+//page de création/modification des sorties
+.GestionDesLieu{
+  display: flex;
+  justify-content: flex-start;
+  align-items: end;
+}
+.boutonEcranCreerSortie{
+  margin-top: 5%;
+}
+
 ///* Cool infinite background scrolling animation.
 // * Twitter: @kootoopas
 // */
