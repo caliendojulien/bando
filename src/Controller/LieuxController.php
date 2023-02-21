@@ -22,6 +22,7 @@ class LieuxController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
+    #[isGranted("ROLE_USER")]
     #[Route('/lieu/Creerlieu', name: 'creer_lieu')]
     public function index(
         Request $request,
@@ -44,6 +45,7 @@ class LieuxController extends AbstractController
     }
 
 //
+    #[isGranted("ROLE_USER")]
     #[Route('/lieu/listerLieux/{id}', name: 'listeLieux')]
     public function LieuxParVille(int                 $id,
                                   LieuRepository      $LieuxRepo,
@@ -62,6 +64,7 @@ class LieuxController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @return Response
      */
+    #[isGranted("ROLE_USER")]
     #[Route('/lieu/AfficherLieu/{id}', name: 'affLieu')]
     public function LieuxParVilleBis(int $id,
                                  LieuRepository $LieuxRepo):Response{

@@ -54,7 +54,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Lieux', 'fas fa-map-marker-alt', Lieu::class)->setCssClass('text-primary'),
         ]);
         yield MenuItem::linkToCrud('Stagiaires', 'fas fa-graduation-cap', Stagiaire::class);
-        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_liste');
         yield MenuItem::linktoRoute('Importer des stagiaires (xls/csv)', 'fas fa-file-upload', '_import-stagiaires');
+        yield MenuItem::linktoRoute('Retour aux sorties', 'fas fa-home', 'sorties_liste');
     }
 }
