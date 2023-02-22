@@ -19,9 +19,7 @@ use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use PHPUnit\Framework\Constraint\IsNull;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,10 +63,12 @@ class SortiesController extends AbstractController
                 'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
             ];
             $session->set('debutSortie', $form->get('debutSortie')->getData());
+
             // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
             if ($data['sorties_ouvertes']) {
                 $data['debutSortie'] = null;
             }
+
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
             $sorties = $sortieRepository->findSorties(
                 $data['nom'],
