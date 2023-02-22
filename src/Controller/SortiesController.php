@@ -21,6 +21,7 @@ use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use PHPUnit\Framework\Constraint\IsNull;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,21 +44,16 @@ class SortiesController extends AbstractController
         Request              $request,
         FormFactoryInterface $formFactory,
         PaginatorInterface   $paginator,
+        SessionInterface $session,
     ): Response
     {
         try {
             // Création du formulaire de recherche de sorties
-            $form = $formFactory->create(SortieSearchFormType::class);
-
+            $form = $this->createForm(SortieSearchFormType::class);
             //Récupération de l'id de l'utilisateur connecté
             $stagiaire = $this->getUser();
-
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
-
-            // Si le formulaire a été soumis et est valide
-            if ($form->isSubmitted()) {
-                // if ($form->isSubmitted() && $form->isValid()) {
                 // Récupération des données du formulaire
                 $data = [
                     'nom' => $form->get('nom')->getData(),
@@ -66,15 +62,15 @@ class SortiesController extends AbstractController
                     'campus' => $form->get('campus')->getData(),
                     'organisateur' => $form->get('organisateur')->getData(),
                     'inscrit' => $form->get('inscrit')->getData(),
-                    'non_inscrit' => $form->get('non_inscrit')->getData(),
-                    'sorties_passees' => $form->get('sorties_passees')->getData()
+                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
                 ];
-
+                $session->set('debutSortie',$form->get('debutSortie')->getData());
+                dump($session->get('debutSortie'));
                 // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
-                if ($data['sorties_passees']) {
+                if ($data['sorties_ouvertes']) {
                     $data['debutSortie'] = null;
                 }
-
+                dump($session->get('debutSortie'));
                 // Recherche des sorties en fonction des données renseignées par l'utilisateur
                 $sorties = $sortieRepository->findSorties(
                     $data['nom'],
@@ -84,21 +80,11 @@ class SortiesController extends AbstractController
                     $data['organisateur'],
                     $this->getUser(),
                     $data['inscrit'],
-                    $data['non_inscrit'],
-                    $data['sorties_passees']
+                    $data['sorties_ouvertes']
                 );
-                $sortiesPaginee = $paginator->paginate(
-                    $sorties,
-                    $request->query->getInt('page', 1), 10
-                );
-            } else {
-                // Si le formulaire n'a pas été soumis ou n'est pas valide, récupération de toutes les sorties
-                $sorties = $sortieRepository->findSorties();
-                $sortiesPaginee = $paginator->paginate(
-                    $sorties,
-                    $request->query->getInt('page', 1), 10
-                );
-            }
+            $sortiesPaginee = $paginator->paginate(
+                $sorties,
+                $request->query->getInt('page', 1), 30);
 
             // Rendu de la vue et envoi des données
             return $this->render('sorties/sorties.html.twig', [

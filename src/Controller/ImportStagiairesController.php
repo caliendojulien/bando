@@ -43,8 +43,12 @@ class ImportStagiairesController extends AbstractController
     {
         $form = $this->createForm(ImportStagiairesFormType::class)->handleRequest($request);
 
+        dump($form);
+
         if ($form->isSubmitted() && $form->isValid()) {
             $fichier = $form->get('fichier')->getData();
+
+            dump($fichier);
 
             if ($fichier) {
                 // Chargement du fichier Excel avec PHPExcel/PHPSpreadsheet

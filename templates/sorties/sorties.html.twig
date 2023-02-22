@@ -40,13 +40,9 @@
                         {{ form_widget(form.inscrit) }}
                         {{ form_label(form.inscrit) }}
                     </div>
-                    <div id="cb_sortie_non_inscrit">
-                        {{ form_widget(form.non_inscrit) }}
-                        {{ form_label(form.non_inscrit) }}
-                    </div>
                     <div id="cb_sortie_passes">
-                        {{ form_widget(form.sorties_passees) }}
-                        {{ form_label(form.sorties_passees) }}
+                        {{ form_widget(form.sorties_ouvertes) }}
+                        {{ form_label(form.sorties_ouvertes) }}
                     </div>
                 </div>
                 <br/>
@@ -153,6 +149,7 @@
                         </tr>
                     {% endfor %}
                     </br>
+                    Total sorties: {{ sorties.getTotalItemCount }}
                     {{ knp_pagination_render(sorties) }}
                     </tbody>
                 </table>

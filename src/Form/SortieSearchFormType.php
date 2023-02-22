@@ -24,35 +24,29 @@ class SortieSearchFormType extends AbstractType
             ->add('nom', null,['mapped'=> false, 'required' => false])
             ->add('debutSortie',null, [
                 'date_widget'=>'single_text',
-                'data' => new \DateTime('00:00:01'),
+                'data' => (new \DateTime('00:00:01'))->modify('-12 month'),
             ])
             ->add('finSortie', null, [
                 'date_widget'=>'single_text',
-                'data' => (new \DateTime('23:59:59'))->modify('+1 month'),
+                'data' => (new \DateTime('23:59:59'))->modify('+12 month'),
             ])
             ->add('organisateur', CheckboxType::class, [
                 'mapped'    => false,
                 'required'  => false,
                 'label'     => "Sorties dont je suis l'organisateur/trice",
-                'data'      => true,
+                'data'      => false,
             ])
             ->add('inscrit', CheckboxType::class, [
                 'mapped'    => false,
                 'required'  => false,
                 'label'     => "Sorties auxquelles je suis inscrit/e",
-                'data'      => true,
+                'data'      => false,
             ])
-            ->add('non_inscrit', CheckboxType::class, [
+            ->add('sorties_ouvertes', CheckboxType::class, [
                 'mapped'    => false,
                 'required'  => false,
-                'label'     => "Sorties auxquelles je ne suis pas inscrit/e",
-                'data'      => true,
-            ])
-            ->add('sorties_passees', CheckboxType::class, [
-                'mapped'    => false,
-                'required'  => false,
-                'label'     => "Sorties passées",
-                'data'      => true,
+                'label'     => "Sorties ouvertes",
+                'data'      => false,
             ]);
     }
     public function configureOptions(OptionsResolver $resolver): void
