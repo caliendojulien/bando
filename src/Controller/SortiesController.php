@@ -82,7 +82,7 @@ class SortiesController extends AbstractController
             );
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
-                $request->query->getInt('page', 1), 30);
+                $request->query->getInt('page', 1), 20);
 
             // Rendu de la vue et envoi des données
             return $this->render('sorties/sorties.html.twig', [
