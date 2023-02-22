@@ -63,12 +63,12 @@ class SortiesController extends AbstractController
                 'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
             ];
             $session->set('debutSortie', $form->get('debutSortie')->getData());
-            dump($session->get('debutSortie'));
+
             // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
             if ($data['sorties_ouvertes']) {
                 $data['debutSortie'] = null;
             }
-            dump($session->get('debutSortie'));
+
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
             $sorties = $sortieRepository->findSorties(
                 $data['nom'],
@@ -243,7 +243,6 @@ class SortiesController extends AbstractController
         if (!$cree) {
             $interval = $sortie->getDebutSortie()->diff($sortie->getFinSortie());
             $duree = $interval->d * 1440 + $interval->h * 60 + $interval->i;
-            $request->request->set("duree", $duree);
         } else $duree = 30;
 
         //traiter l'envoi du formulaire
@@ -254,11 +253,8 @@ class SortiesController extends AbstractController
             if ($idLieu) $sortie->setLieu($LieuxRepo->findOneBy(["id" => $idLieu]));
 
             //  trouver la date de fin en fonction de la durée et de la date de début
-
-            if ($cree) {
-                $duree = (int)$request->request->get("duree");
-                $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
-            }
+            $duree = (int)$request->request->get("duree");
+            $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
 
             //l'état dépend du bouton sur lequel on a cliqué
             if ($request->request->get('Publier'))
