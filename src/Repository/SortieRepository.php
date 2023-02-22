@@ -68,8 +68,7 @@ class SortieRepository extends ServiceEntityRepository
         ?bool     $organisateur = false,
         Stagiaire $user = null,
         ?bool     $inscrit = false,
-        ?bool     $non_inscrit = false,
-        ?bool     $sorties_passees = false
+        ?bool     $sorties_ouvertes = false
     ): array
     {
         $query_builder = $this->createQueryBuilder('s')
@@ -99,42 +98,35 @@ class SortieRepository extends ServiceEntityRepository
         }
 
         // Gestion des cases à cocher
-
         switch (true) {
-            case ($organisateur && $inscrit && $non_inscrit && $sorties_passees):
-                $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user OR s.finSortie <= :now')
+            case ($organisateur && $inscrit && $sorties_ouvertes):
+                $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user OR s.etat = :etat')
                     ->setParameter('user', $user)
-                    ->setParameter('now', new DateTime());
-                break;
-            case ($organisateur && $non_inscrit):
-            case ($organisateur && $inscrit && $non_inscrit):
-            case ($inscrit && $non_inscrit):
-                $query_builder->andWhere('s.organisateur = :user OR s.organisateur != :user')
-                    ->setParameter('user', $user);
+                    ->setParameter('etat', 2);
                 break;
             case ($organisateur && $inscrit):
+                $query_builder->andWhere('s.organisateur = :user OR :user MEMBER OF s.participants ')
+                    ->setParameter('user', $user);
+                break;
             case ($organisateur):
-            case ($inscrit):
                 $query_builder->andWhere('s.organisateur = :user')
                     ->setParameter('user', $user);
                 break;
-            case ($organisateur && $sorties_passees):
-                $query_builder->andWhere('s.organisateur = :user OR s.finSortie <= :now')
-                    ->setParameter('user', $user)
-                    ->setParameter('now', new DateTime());
+            case ($inscrit):
+                $query_builder->andWhere(':user MEMBER OF s.participants')
+                    ->setParameter('user', $user);
                 break;
-            case($non_inscrit && $sorties_passees):
-                $query_builder->andWhere('s.organisateur != :user OR s.finSortie <= :now')
+            case ($organisateur && $sorties_ouvertes):
+                $query_builder->andWhere('s.organisateur = :user OR s.etat <= :etat')
                     ->setParameter('user', $user)
-                    ->setParameter('now', new DateTime());
+                    ->setParameter('etat', 2);
                 break;
-            case($sorties_passees):
-                $query_builder->andWhere('s.finSortie <= :now')
-                    ->setParameter('now', new DateTime());
+            case($sorties_ouvertes):
+                $query_builder->andWhere('s.etat <= :etat')
+                    ->setParameter('etat', 2);
                 break;
             default:
                 // Traiter les cas où toutes les cases à cocher sont décochées en retournant toutes les sorties
-                $query_builder->andWhere('1=1');
                 break;
         }
 
@@ -143,8 +135,8 @@ class SortieRepository extends ServiceEntityRepository
                 $query_builder->getQuery()->getResult(),
                 function ($sortie) use ($user) {
                     return
-                        $sortie->getEtat() != 1 || ( $sortie->getEtat() == 1 && $sortie->getOrganisateur() == $user);
-                });
+                        $sortie->getEtat() != 1 || ($sortie->getEtat() === 1 && $sortie->getOrganisateur() === $user);
+
     }
 
     /**
