@@ -18,7 +18,7 @@
     {% endblock %}
 </head>
 <body>
-<header class="bandeauBonjour">
+<header class="bandeauBonjour" >
     {% if app.user %}
             <section><p>Bonjour {{ app.user.prenom }} {{ app.user.nom }}</p></section>
     {% endif %}
@@ -40,5 +40,19 @@
         {% block body %}{% endblock %}
     </main>
 </div>
+<footer>
+        <div class="container">
+                <div class="col-md-6">
+                    <h4>Bando</h4>
+                    <p>© 2023 Bando. Tous droits réservés.</p>
+                </div>
+                <div class="col-md-6">
+                    <ul class="list-inline text-right">
+                        <li class="list-inline-item"><a href="/">Accueil</a></li>
+                        <li class="list-inline-item"><a href="#container_main">Haut de page</a></li>
+                    </ul>
+                </div>
+        </div>
+</footer>
 </body>
 </html>
