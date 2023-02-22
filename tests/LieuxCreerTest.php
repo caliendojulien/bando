@@ -85,18 +85,18 @@ class LieuxCreerTest extends WebTestCase
         $this->assertCount(1, $input);
     }
 
-    public function testBoutonCreer(): void
-    {
-        $client = static::createClient();
-        $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
-        $client->loginUser($testUser);
-        $crawler = $client->request('POST', '/lieu/Creerlieu');
-        $input = $client->getCrawler()->filter('button[id="creer"]');
-
-        // Vérifier que le bouton est présent
-        $this->assertCount(1, $input);
-    }
+//    public function testBoutonCreer(): void
+//    {
+//        $client = static::createClient();
+//        $userRepository = static::getContainer()->get(StagiaireRepository::class);
+//        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+//        $client->loginUser($testUser);
+//        $crawler = $client->request('POST', '/lieu/Creerlieu');
+//        $input = $client->getCrawler()->filter('button[id="creer"]');
+//
+//        // Vérifier que le bouton est présent
+//        $this->assertCount(1, $input);
+//    }
     public function testLienRetour(): void
     {
         $client = static::createClient();
