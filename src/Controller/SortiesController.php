@@ -19,9 +19,7 @@ use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use PHPUnit\Framework\Constraint\IsNull;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,7 +42,7 @@ class SortiesController extends AbstractController
         Request              $request,
         FormFactoryInterface $formFactory,
         PaginatorInterface   $paginator,
-        SessionInterface $session,
+        SessionInterface     $session,
     ): Response
     {
         try {
@@ -54,34 +52,34 @@ class SortiesController extends AbstractController
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
-                // Récupération des données du formulaire
-                $data = [
-                    'nom' => $form->get('nom')->getData(),
-                    'debutSortie' => $form->get('debutSortie')->getData(),
-                    'finSortie' => $form->get('finSortie')->getData(),
-                    'campus' => $form->get('campus')->getData(),
-                    'organisateur' => $form->get('organisateur')->getData(),
-                    'inscrit' => $form->get('inscrit')->getData(),
-                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
-                ];
-                $session->set('debutSortie',$form->get('debutSortie')->getData());
-                dump($session->get('debutSortie'));
-                // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
-                if ($data['sorties_ouvertes']) {
-                    $data['debutSortie'] = null;
-                }
-                dump($session->get('debutSortie'));
-                // Recherche des sorties en fonction des données renseignées par l'utilisateur
-                $sorties = $sortieRepository->findSorties(
-                    $data['nom'],
-                    $data['debutSortie'],
-                    $data['finSortie'],
-                    $data['campus'],
-                    $data['organisateur'],
-                    $this->getUser(),
-                    $data['inscrit'],
-                    $data['sorties_ouvertes']
-                );
+            // Récupération des données du formulaire
+            $data = [
+                'nom' => $form->get('nom')->getData(),
+                'debutSortie' => $form->get('debutSortie')->getData(),
+                'finSortie' => $form->get('finSortie')->getData(),
+                'campus' => $form->get('campus')->getData(),
+                'organisateur' => $form->get('organisateur')->getData(),
+                'inscrit' => $form->get('inscrit')->getData(),
+                'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
+            ];
+            $session->set('debutSortie', $form->get('debutSortie')->getData());
+            dump($session->get('debutSortie'));
+            // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
+            if ($data['sorties_ouvertes']) {
+                $data['debutSortie'] = null;
+            }
+            dump($session->get('debutSortie'));
+            // Recherche des sorties en fonction des données renseignées par l'utilisateur
+            $sorties = $sortieRepository->findSorties(
+                $data['nom'],
+                $data['debutSortie'],
+                $data['finSortie'],
+                $data['campus'],
+                $data['organisateur'],
+                $this->getUser(),
+                $data['inscrit'],
+                $data['sorties_ouvertes']
+            );
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 30);
@@ -133,7 +131,7 @@ class SortiesController extends AbstractController
         Request                $request,
         SortiesService         $serviceSorties,
         SessionInterface       $session,
-        LoggerInterface $logger
+        LoggerInterface        $logger
     ): Response
     {
         try {
