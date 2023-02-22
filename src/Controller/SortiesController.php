@@ -44,7 +44,7 @@ class SortiesController extends AbstractController
         Request              $request,
         FormFactoryInterface $formFactory,
         PaginatorInterface   $paginator,
-        SessionInterface $session,
+        SessionInterface     $session,
     ): Response
     {
         try {
@@ -54,34 +54,34 @@ class SortiesController extends AbstractController
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
-                // Récupération des données du formulaire
-                $data = [
-                    'nom' => $form->get('nom')->getData(),
-                    'debutSortie' => $form->get('debutSortie')->getData(),
-                    'finSortie' => $form->get('finSortie')->getData(),
-                    'campus' => $form->get('campus')->getData(),
-                    'organisateur' => $form->get('organisateur')->getData(),
-                    'inscrit' => $form->get('inscrit')->getData(),
-                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
-                ];
-                $session->set('debutSortie',$form->get('debutSortie')->getData());
-                dump($session->get('debutSortie'));
-                // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
-                if ($data['sorties_ouvertes']) {
-                    $data['debutSortie'] = null;
-                }
-                dump($session->get('debutSortie'));
-                // Recherche des sorties en fonction des données renseignées par l'utilisateur
-                $sorties = $sortieRepository->findSorties(
-                    $data['nom'],
-                    $data['debutSortie'],
-                    $data['finSortie'],
-                    $data['campus'],
-                    $data['organisateur'],
-                    $this->getUser(),
-                    $data['inscrit'],
-                    $data['sorties_ouvertes']
-                );
+            // Récupération des données du formulaire
+            $data = [
+                'nom' => $form->get('nom')->getData(),
+                'debutSortie' => $form->get('debutSortie')->getData(),
+                'finSortie' => $form->get('finSortie')->getData(),
+                'campus' => $form->get('campus')->getData(),
+                'organisateur' => $form->get('organisateur')->getData(),
+                'inscrit' => $form->get('inscrit')->getData(),
+                'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
+            ];
+            $session->set('debutSortie', $form->get('debutSortie')->getData());
+            dump($session->get('debutSortie'));
+            // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
+            if ($data['sorties_ouvertes']) {
+                $data['debutSortie'] = null;
+            }
+            dump($session->get('debutSortie'));
+            // Recherche des sorties en fonction des données renseignées par l'utilisateur
+            $sorties = $sortieRepository->findSorties(
+                $data['nom'],
+                $data['debutSortie'],
+                $data['finSortie'],
+                $data['campus'],
+                $data['organisateur'],
+                $this->getUser(),
+                $data['inscrit'],
+                $data['sorties_ouvertes']
+            );
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 30);
@@ -133,7 +133,7 @@ class SortiesController extends AbstractController
         Request                $request,
         SortiesService         $serviceSorties,
         SessionInterface       $session,
-        LoggerInterface $logger
+        LoggerInterface        $logger
     ): Response
     {
         try {
@@ -245,7 +245,6 @@ class SortiesController extends AbstractController
         if (!$cree) {
             $interval = $sortie->getDebutSortie()->diff($sortie->getFinSortie());
             $duree = $interval->d * 1440 + $interval->h * 60 + $interval->i;
-            $request->request->set("duree", $duree);
         } else $duree = 30;
 
         //traiter l'envoi du formulaire
@@ -256,11 +255,8 @@ class SortiesController extends AbstractController
             if ($idLieu) $sortie->setLieu($LieuxRepo->findOneBy(["id" => $idLieu]));
 
             //  trouver la date de fin en fonction de la durée et de la date de début
-
-            if ($cree) {
-                $duree = (int)$request->request->get("duree");
-                $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
-            }
+            $duree = (int)$request->request->get("duree");
+            $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
 
             //l'état dépend du bouton sur lequel on a cliqué
             if ($request->request->get('Publier'))
