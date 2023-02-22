@@ -86,9 +86,6 @@ class ProfilType extends AbstractType
                         'mimeTypesMessage' => 'Votre photo doit être au format .jpg ou .jpeg ou .png'
                     ])
                 ]
-            ])
-            ->add('Envoyer', SubmitType::class, [
-                'attr' => ['class' => 'btn waves-effect waves-light'],
             ]);
     }
 
