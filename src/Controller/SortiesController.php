@@ -65,12 +65,10 @@ class SortiesController extends AbstractController
                 'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
             ];
             $session->set('debutSortie', $form->get('debutSortie')->getData());
-            dump($session->get('debutSortie'));
             // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
             if ($data['sorties_ouvertes']) {
                 $data['debutSortie'] = null;
             }
-            dump($session->get('debutSortie'));
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
             $sorties = $sortieRepository->findSorties(
                 $data['nom'],
