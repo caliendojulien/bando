@@ -19,6 +19,8 @@ use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -144,7 +146,8 @@ class SortiesController extends AbstractController
         LieuRepository         $LieuxRepo,
         Request                $request,
         SortiesService         $serviceSorties,
-        SessionInterface       $session
+        SessionInterface       $session,
+        LoggerInterface $logger
     ): Response
     {
         try {
@@ -159,6 +162,7 @@ class SortiesController extends AbstractController
                 $sortie->setDateLimiteInscription((new \DateTime('18:00:00'))->add(new \DateInterval('P1D')));
                 $sortie->setNombreInscriptionsMax(5);
             }
+            $logger->debug("le user " . $this->getUser()->getUserIdentifier() . " a créé cette sortie " . $sortie->getNom());
             return $this->creerOuModifierSortie($entityManager,
                 $villesRepo,
                 $LieuxRepo,
@@ -346,8 +350,8 @@ class SortiesController extends AbstractController
 
             $tab = $serv->inscrire($stag, $sortie, $entityManager);
             if ($tab[0])
-                $this->addFlash('success', 'vous avez été inscrit à la sortie');
-            else  $this->addFlash('error', 'inscription impossible : ' . $tab[1]);
+                $this->addFlash('success', 'Vous avez été inscrit à la sortie');
+            else  $this->addFlash('error', 'Inscription impossible : ' . $tab[1]);
 
             //rediriger
             return $this->redirectToRoute('sorties_liste');
@@ -384,7 +388,7 @@ class SortiesController extends AbstractController
             if ($inscriptionsService->SeDesinscrire($user, $sortie, $entityManager))
                 $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
             else
-                $this->addFlash('error', 'Problème lors de votre désistement, veuilez contacter un administrateur.');
+                $this->addFlash('error', 'Problème lors de votre désistement, veuillez contacter un administrateur.');
 
 
             // Redirige l'utilisateur vers la liste des sorties.
