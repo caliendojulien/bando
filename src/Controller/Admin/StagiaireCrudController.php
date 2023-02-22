@@ -46,7 +46,7 @@ class StagiaireCrudController extends AbstractCrudController
     public function persistEntity(EntityManagerInterface $em, $stag): void
     {
         if (!$stag instanceof Stagiaire) return;
-        //Todo : chiffrer le mot de passe avant son envoi
+        //chiffrer le mot de passe avant son envoi
        // $stag->setPassword("Passw0rd");
         $stag->setPassword("$2y$13\$zwa64OHleb.MuWUuCBi2yeT6ZHM28wyiSNacOIKhflcdO3OyMYwui");
         //par défaut le stagiaire est actif
