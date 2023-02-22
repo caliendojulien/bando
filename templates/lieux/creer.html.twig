@@ -8,9 +8,9 @@
     {{ form_row(form.longitude) }}
     {{ form_row(form.latitude) }}
     {{ form_row(form.ville) }}
-    <div class="container-fluid btnCreerLieu">
-       <button id="creer" type="submit" name="Creer" value="Creer" class="btn btn-primary">Créer</button>
+    <section class="btnCreerLieu">
+       <input id="creer" type="submit" name="Creer" value="Créer" class="btn btn-primary">
         <a href="{{ path('sorties_creer') }}"  id="retour"><input type="button" name="retour" value="Retour" class="btn btn-primary"></a>
-    </div>
+    </section>
     {{ form_end(form) }}
 {% endblock %}

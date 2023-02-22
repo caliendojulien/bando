@@ -15,7 +15,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
 
@@ -27,7 +27,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('input[type="text"][name="lieu[nom]"]');
@@ -40,7 +40,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('input[type="text"][name="lieu[rue]"]');
@@ -52,7 +52,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('input[type="text"][name="lieu[longitude]"]');
@@ -64,7 +64,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('input[type="text"][name="lieu[latitude]"]');
@@ -76,7 +76,7 @@ class LieuxCreerTest extends WebTestCase
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('select[name="lieu[ville]"]');
@@ -84,6 +84,7 @@ class LieuxCreerTest extends WebTestCase
         // Vérifier que le champ de saisie est présent
         $this->assertCount(1, $input);
     }
+
 
 //    public function testBoutonCreer(): void
 //    {
@@ -97,11 +98,12 @@ class LieuxCreerTest extends WebTestCase
 //        // Vérifier que le bouton est présent
 //        $this->assertCount(1, $input);
 //    }
+
     public function testLienRetour(): void
     {
         $client = static::createClient();
         $userRepository = static::getContainer()->get(StagiaireRepository::class);
-        $testUser = $userRepository->findOneByEmail('ltanguy@club-internet.fr');
+        $testUser = $userRepository->findAll()[0];
         $client->loginUser($testUser);
         $crawler = $client->request('POST', '/lieu/Creerlieu');
         $input = $client->getCrawler()->filter('a[id="retour"]');
