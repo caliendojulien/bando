@@ -14,6 +14,7 @@ use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
+use App\Services\ListeSortiesService;
 use App\Services\MailService;
 use App\Services\SortiesService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -40,9 +41,8 @@ class SortiesController extends AbstractController
     public function sorties(
         SortieRepository     $sortieRepository,
         Request              $request,
-        FormFactoryInterface $formFactory,
         PaginatorInterface   $paginator,
-        SessionInterface $session,
+        ListeSortiesService $listeSortiesService,
     ): Response
     {
         try {
@@ -62,13 +62,6 @@ class SortiesController extends AbstractController
                     'inscrit' => $form->get('inscrit')->getData(),
                     'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
                 ];
-                $session->set('debutSortie',$form->get('debutSortie')->getData());
-                dump($session->get('debutSortie'));
-                // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
-                if ($data['sorties_ouvertes']) {
-                    $data['debutSortie'] = null;
-                }
-                dump($session->get('debutSortie'));
                 // Recherche des sorties en fonction des données renseignées par l'utilisateur
                 $sorties = $sortieRepository->findSorties(
                     $data['nom'],
@@ -80,6 +73,16 @@ class SortiesController extends AbstractController
                     $data['inscrit'],
                     $data['sorties_ouvertes']
                 );
+            dump($listeSortiesService->getListe());
+                if(count($listeSortiesService->getListe())!=0){
+                    $sorties = $listeSortiesService->getListe();
+                    dd($listeSortiesService->getListe());
+                }
+                if($form->isSubmitted()){
+                    $listeSortiesService->setListe($sorties);
+                    dump($listeSortiesService->getListe());
+                    dump('submit');
+                };
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 30);
