@@ -7,9 +7,15 @@
             });
         }
     </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, []);
+        });
+    </script>
     <div id="nav_bar">
         <div id="menu_nav_bar">
-            <button id="t1" class="touches_inactive">?</button>
+            <button id="t1"  data-target="modal1" class="touches_inactive modal-trigger">?</button>
             <button id="t2" class="touches_active" onclick="window.location.href='{{path('admin') }}'">Accès Admin</button>
             <button id="t3" class="touches_active" onclick="window.location.href='{{path('profil_modif') }}'">Mon Profil</button>
             <button id="t4" class="touches_inactive"><img src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
@@ -60,6 +66,18 @@
                 <div class="knife__blade"></div>
                 <div class="knife__handle"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- Modal Structure -->
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Qui sommes nous</h4>
+            <p>Ce site a été créé en 2023 par Déana, Bruno et AnneSo</p>
+            <p>Bisous</p>
+        </div>
+        <div class="modal-footer">
+            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Merci</a>
         </div>
     </div>
 {% endblock %}

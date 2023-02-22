@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+{{ parent() }}
+Erreur
+{%  endblock %}
+
+{% block body %}
+    <div class="d-flex flex-row justify-content-center m-5">
+        <div>
+            <h3>Erreur {{ statusCode }}</h3>
+            <div class="alert alert-danger"> {{ message }}</div>
+        </div>
+    </div>
+{% endblock %}

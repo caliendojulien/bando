@@ -22,7 +22,8 @@
                     {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut','id':'dateDeb'}} )}}
                 </div>
             </div>
-    <label for="duree" >Durée en minutes</label><input type="number" id="duree" name="duree" min="30"  step="10" value="30" required>
+
+    <label for="duree" >Durée en minutes</label><input type="number" id="duree" name="duree" min="30"  step="10" value={{duree }} required>
             <div class="row">
                 <label for="dateLimite" >Date limite d'inscription</label>
                 <div class="input-field">
@@ -73,6 +74,7 @@
                 {% else %}
                     {% if etat==1 %}
                         <input type="submit" name="Modifier" value="Modifier" class="btn btn-primary">
+                        <input type="submit" name="Publier" value="Publier" class="btn btn-primary">
                         <input type="submit" name="Supprimer" value="Supprimer" class="btn btn-primary">
                     {% endif %}
                 {% endif %}

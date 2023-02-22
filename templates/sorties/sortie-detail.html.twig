@@ -60,10 +60,15 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th id="titre_participants">Participants</th>
+                    <th id="titre_participants">Participants</th>
             </tr>
             </thead>
             <tbody>
+            {% if  sortie.participants | length == 0 %}
+                <tr>
+                    <td id="nom_participants">Aucun participant n'est inscrit pour le moment !</td>
+                </tr>
+            {% endif %}
             {% for participant in sortie.participants %}
                 <tr>
                     <td id="nom_participants"><a href="{{ path('profil_affich', {'id': participant.id}) }}">{{ participant.prenom }} {{ participant.nom }}</a></td>

@@ -187,6 +187,9 @@ class SortiesController extends AbstractController
             // Récupère l'entité Sortie correspondant à l'ID passé en paramètre de la requête
             $sortie = $entityManager->getRepository(Sortie::class)->find($id);
             if (!$sortie) throw $this->createNotFoundException('La sortie n\'existe pas.');
+            if ($sortie->getEtat() != EtatSortiesEnum::Creee->value) throw new Exception("Cette sortie n'est pas modifiable");
+            if ($this->getUser() !== $sortie->getOrganisateur())
+                throw $this->createAccessDeniedException('Vous ne pouvez pas modifier une sortie dont vous n\'êtes pas l\'organisateur.');
             return $this->creerOuModifierSortie($entityManager,
                 $villesRepo,
                 $LieuxRepo,
@@ -227,13 +230,7 @@ class SortiesController extends AbstractController
     {
         //récupération du stagiaire connecté
         $user = $stagRepo->findOneAvecCampus($this->getUser()->getUserIdentifier());
-        if (!$cree) { // en mode modif on ne peut pas modifier une sortie si on n'est pas l'utilisateur
-            // Vérifie que l'utilisateur authentifié est l'organisateur de la sortie à modifier
-            if ($this->getUser() !== $sortie->getOrganisateur())
-                throw $this->createAccessDeniedException('Vous ne pouvez pas modifier une sortie dont vous n\'êtes pas l\'organisateur.');
-            // Vérifie que la sortie existe
 
-        }
         $sortie->setOrganisateur($user);
         //mettre le campus de l'organisateur par défaut au début
         if (!$sortie->getCampus()) $sortie->setCampus($user->getCampus());
@@ -241,7 +238,12 @@ class SortiesController extends AbstractController
         //création du formulaire
         $form = $this->createForm(SortieFormType::class, $sortie);
         $form->handleRequest($request);
-        $duree = 0;
+        if (!$cree) {
+            $interval = $sortie->getDebutSortie()->diff($sortie->getFinSortie());
+            $duree = $interval->d * 1440 + $interval->h * 60 + $interval->i;
+            $request->request->set("duree", $duree);
+        } else $duree = 30;
+
         //traiter l'envoi du formulaire
         if ($form->isSubmitted()) {
 
@@ -254,8 +256,6 @@ class SortiesController extends AbstractController
             if ($cree) {
                 $duree = (int)$request->request->get("duree");
                 $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
-            } else {
-                $duree = $sortie->getDebutSortie()->diff($sortie->getFinSortie())->i;
             }
 
             //l'état dépend du bouton sur lequel on a cliqué

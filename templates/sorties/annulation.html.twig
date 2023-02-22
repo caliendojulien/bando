@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des sorties{% endblock %}
+{% block title %}Annuler une sortie{% endblock %}
 
 {% block body %}
     <h1>Annuler une sortie</h1>
@@ -8,13 +8,18 @@
     <p>Date de la sortie: {{ sortie.debutSortie | date('d-m-Y') }}</p>
     <p>Campus: {{ campus.nom }}</p>
     <p>Lieu: {{ lieu.nom }} {{ lieu.rue }} {{ ville.codePostal }} {{ ville.nom }}</p>
-
     <div>
-        {{ form(sortieForm) }}
+        {{ form_start(sortieForm) }}
+        {{ form_row(sortieForm.motifAnnulation) }}
+        <section class="btnAnnulerSortie">
+            <input type="submit" name="Enregistrer" value="Enregistrer" class="btn btn-primary">
+            <a href="{{ path('sorties_liste') }}">
+                <input type="button" name="Annuler" value="Annuler" class="btn btn-primary">
+            </a>
+        </section>
+        {{ form_end(sortieForm) }}
     </div>
-    <a href="{{ path('sorties_liste') }}">
-        <button>Annuler</button>
-    </a>
+
 {% endblock %}
 
 
