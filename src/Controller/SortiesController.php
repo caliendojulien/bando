@@ -69,7 +69,7 @@ class SortiesController extends AbstractController
                 $data['debutSortie'] = null;
             }
 
-            // Recherche des sorties en fonction des données renseignées par l'utilisateur
+            // Recherche des sorties en fonction des données renseignées par l'utilisateur.
             $sorties = $sortieRepository->findSorties(
                 $data['nom'],
                 $data['debutSortie'],

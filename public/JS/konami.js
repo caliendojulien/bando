@@ -1,6 +1,6 @@
 /*
  * Konami-JS ~
- * :: Now with support for touch events and multiple instances for
+ * :: Now with suupport for touch events and multiple instances for
  * :: those situations that call for multiple easter eggs!
  * Code: https://github.com/georgemandis/konami-js
  * Copyright (c) 2009 George Mandis (https://george.mand.is)
