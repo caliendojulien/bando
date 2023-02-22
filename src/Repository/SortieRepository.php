@@ -143,8 +143,7 @@ class SortieRepository extends ServiceEntityRepository
                 $query_builder->getQuery()->getResult(),
                 function ($sortie) use ($user) {
                     return
-                        $sortie->getEtat() != 1 ||
-                        $sortie->getOrganisateur() == $user;
+                        $sortie->getEtat() != 1 || ( $sortie->getEtat() == 1 && $sortie->getOrganisateur() == $user);
                 });
     }
 
