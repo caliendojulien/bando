@@ -22,17 +22,17 @@ class MailService
      * @return void
      * @throws \Symfony\Component\Mailer\Exception\TransportExceptionInterface
      */
-    public function sendMailParticipants(Sortie $sortie,string $message):void
+    public function sendMailParticipants(Sortie $sortie, string $message): void
     {
-            foreach ($sortie->getParticipants() as $participant) {
-                $email = (new Email())
-                    ->from('ne_pas_repondre@bando.f')
-                    ->to($participant->getEmail())
-                    ->cc($sortie->getOrganisateur()->getEmail())
-                    ->subject($message)
-                    ->html($message . ". Sortie concernée " . $sortie->getNom().". Raison : ".$sortie->getMotifAnnulation() );
-                $this->mailer->send($email);
-            }
+        foreach ($sortie->getParticipants() as $participant) {
+            $email = (new Email())
+                ->from('ne_pas_repondre@bando.f')
+                ->to($participant->getEmail())
+                ->cc($sortie->getOrganisateur()->getEmail())
+                ->subject($message)
+                ->html("<h3>Bonjour " . $participant->getPrenom() . ". </h3> <p>" . $message . ". Sortie concernée : " . $sortie->getNom() . "</p>.<p>Raison : " . $sortie->getMotifAnnulation() . "</p>");
+            $this->mailer->send($email);
+        }
 
     }
 }
