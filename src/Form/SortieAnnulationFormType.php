@@ -17,8 +17,7 @@ class SortieAnnulationFormType extends AbstractType
         $builder
             ->add('motifAnnulation', TextareaType::class,
                 ['attr' => ['class' => 'motif_annulation', 'pattern' => '^[^@&"()!_$*€£`+=\/;?#]+$', 'maxlength' => 200], 'required' => true,],
-            )
-            ->add('Enregistrer', SubmitType::class);
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
