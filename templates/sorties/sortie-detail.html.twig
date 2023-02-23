@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css"
           integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ=="
           crossorigin=""/>
-    <style type="text/css">
+    <style>
         #map { /* la carte DOIT avoir une hauteur sinon elle n'apparaît pas */
             height: 400px;
         }
@@ -21,9 +21,9 @@
             crossorigin=""></script>
     <script type="text/javascript">
         // On initialise la latitude et la longitude de Paris (centre de la carte)
-        var lat = {{ sortie.lieu.latitude }};
-        var lon = {{ sortie.lieu.longitude }};
-        var macarte = null;
+        let lat =;
+        let lon =;
+        let macarte = null;
 
         // Fonction d'initialisation de la carte
         function initMap() {
@@ -36,7 +36,7 @@
                 minZoom: 1,
                 maxZoom: 20
             }).addTo(macarte);
-            var marker = L.marker([lat, lon]).addTo(macarte);
+            const marker = L.marker([lat, lon]).addTo(macarte);
         }
 
         window.onload = function () {

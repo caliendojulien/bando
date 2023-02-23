@@ -22,7 +22,6 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Assert\Type('int')]
-    #[Assert\NotNull]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]

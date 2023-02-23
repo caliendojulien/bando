@@ -13,7 +13,7 @@ use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Faker;
 
-class AppFixtures extends Fixture
+class AppFixturesProd extends Fixture
 {
     /**
      * @throws Exception

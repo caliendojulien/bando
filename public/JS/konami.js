@@ -9,8 +9,8 @@
  * Tested in: Safari 4+, Google Chrome 4+, Firefox 3+, IE7+, Mobile Safari 2.2.1+ and Android
  */
 
-var Konami = function (callback) {
-    var konami = {
+let Konami = function (callback) {
+    let konami = {
         addEvent: function (obj, type, fn, ref_obj) {
             if (obj.addEventListener)
                 obj.addEventListener(type, fn, false);
@@ -74,7 +74,7 @@ var Konami = function (callback) {
             },
             touchmoveHandler: function (e) {
                 if (e.touches.length === 1 && konami.iphone.capture === true) {
-                    var touch = e.touches[0];
+                    let touch = e.touches[0];
                     konami.iphone.stop_x = touch.pageX;
                     konami.iphone.stop_y = touch.pageY;
                     konami.iphone.tap = false;
@@ -88,8 +88,8 @@ var Konami = function (callback) {
                 if (konami.iphone.input.length > konami.iphone.keys.length) konami.iphone.input.shift();
 
                 if (konami.iphone.input.length === konami.iphone.keys.length) {
-                    var match = true;
-                    for (var i = 0; i < konami.iphone.keys.length; i++) {
+                    let match = true;
+                    for (let i = 0; i < konami.iphone.keys.length; i++) {
                         if (konami.iphone.input[i] !== konami.iphone.keys[i]) {
                             match = false;
                         }
