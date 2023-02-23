@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\EtatSortiesEnum;
 use App\Entity\Sortie;
 use App\Form\SortieAnnulationFormType;
@@ -42,47 +43,52 @@ class SortiesController extends AbstractController
         SortieRepository     $sortieRepository,
         Request              $request,
         PaginatorInterface   $paginator,
-        ListeSortiesService $listeSortiesService,
+        CampusRepository $campusRepository,
     ): Response
     {
         try {
+            $searchData = [
+                'nom' => '',
+                'debutSortie' =>new \DateTime("- 1 month"),
+                'finSortie' => new \DateTime("+ 1 year"),
+                 'campus' => '303',
+                'organisateur' => true,
+                'inscrit' => false,
+                'sorties_ouvertes' => false,
+            ];
+            //Instanciation d'un campus
+            $campus = $campusRepository->find($searchData['campus']);
+            $searchData['campus'] = $campus;
             // Création du formulaire de recherche de sorties
-            $form = $this->createForm(SortieSearchFormType::class);
+            $form = $this->createForm(SortieSearchFormType::class,$searchData);
             //Récupération de l'id de l'utilisateur connecté
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
                 // Récupération des données du formulaire
-                $data = [
-                    'nom' => $form->get('nom')->getData(),
-                    'debutSortie' => $form->get('debutSortie')->getData(),
-                    'finSortie' => $form->get('finSortie')->getData(),
-                    'campus' => $form->get('campus')->getData(),
-                    'organisateur' => $form->get('organisateur')->getData(),
-                    'inscrit' => $form->get('inscrit')->getData(),
-                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
-                ];
-                // Recherche des sorties en fonction des données renseignées par l'utilisateur
+            $searchData = $form->getData();
+//                $data = [
+//                    'nom' => $form->get('nom')->getData(),
+//                    'debutSortie' => $form->get('debutSortie')->getData(),
+//                    'finSortie' => $form->get('finSortie')->getData(),
+//                    'campus' => $form->get('campus')->getData(),
+//                    'organisateur' => $form->get('organisateur')->getData(),
+//                    'inscrit' => $form->get('inscrit')->getData(),
+//                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
+//                ];
+            dump($searchData);
+            // Recherche des sorties en fonction des données renseignées par l'utilisateur
                 $sorties = $sortieRepository->findSorties(
-                    $data['nom'],
-                    $data['debutSortie'],
-                    $data['finSortie'],
-                    $data['campus'],
-                    $data['organisateur'],
+                    $searchData['nom'],
+                    $searchData['debutSortie'],
+                    $searchData['finSortie'],
+                    $campus,
+                    $searchData['organisateur'],
                     $this->getUser(),
-                    $data['inscrit'],
-                    $data['sorties_ouvertes']
+                    $searchData['inscrit'],
+                    $searchData['sorties_ouvertes']
                 );
-            dump($listeSortiesService->getListe());
-                if(count($listeSortiesService->getListe())!=0){
-                    $sorties = $listeSortiesService->getListe();
-                    dd($listeSortiesService->getListe());
-                }
-                if($form->isSubmitted()){
-                    $listeSortiesService->setListe($sorties);
-                    dump($listeSortiesService->getListe());
-                    dump('submit');
-                };
+             //Appel du paginator
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 30);
