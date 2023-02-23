@@ -16,15 +16,17 @@ use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
 use App\Services\MailService;
 use App\Services\SortiesService;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,11 +40,10 @@ class SortiesController extends AbstractController
     #[isGranted("ROLE_USER")]
     #[Route('/liste', name: '_liste')]
     public function sorties(
-        SortieRepository     $sortieRepository,
-        Request              $request,
-        FormFactoryInterface $formFactory,
-        PaginatorInterface   $paginator,
-        SessionInterface     $session,
+        SortieRepository   $sortieRepository,
+        Request            $request,
+        PaginatorInterface $paginator,
+        SessionInterface   $session,
     ): Response
     {
         try {
@@ -119,6 +120,8 @@ class SortiesController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @param Request $request
      * @param SortiesService $serviceSorties
+     * @param SessionInterface $session
+     * @param LoggerInterface $logger
      * @return Response
      */
     #[isGranted("ROLE_USER")]
@@ -142,8 +145,8 @@ class SortiesController extends AbstractController
             if (!$sortie) {
                 $sortie = new Sortie();
                 //valeurs par défaut
-                $sortie->setDebutSortie((new \DateTime('19:00:00'))->add(new \DateInterval('P2D')));
-                $sortie->setDateLimiteInscription((new \DateTime('18:00:00'))->add(new \DateInterval('P1D')));
+                $sortie->setDebutSortie((new DateTime('19:00:00'))->add(new DateInterval('P2D')));
+                $sortie->setDateLimiteInscription((new DateTime('18:00:00'))->add(new DateInterval('P1D')));
                 $sortie->setNombreInscriptionsMax(5);
             }
             $logger->debug("le user " . $this->getUser()->getUserIdentifier() . " a créé cette sortie " . $sortie->getNom());
@@ -305,7 +308,7 @@ class SortiesController extends AbstractController
 
     /**
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
-     * @param int $idSortie L'identifiant de la sortie
+     * @param int $id L'identifiant de la sortie
      * @param SortieRepository $sortieRepo
      * @param EntityManagerInterface $entityManager
      * @param InscriptionsService $serv
@@ -389,6 +392,7 @@ class SortiesController extends AbstractController
      * @param Request $request
      * @param MailService $mailer
      * @return Response
+     * @throws TransportExceptionInterface
      */
     #[isGranted("ROLE_USER")]
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
@@ -403,15 +407,12 @@ class SortiesController extends AbstractController
                                MailService            $mailer): Response
     {
         try {
-            //Contrôle de l'id organisateur entrant
-            if (!is_int($id)) {
-                $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
-                return $this->redirectToRoute('sorties_liste');
-            }
-
             // Récupère la sortie correspondant à l'ID spécifié.
             $sortie = $sortieRepository->findOneBy(['id' => $id]);
-
+            if (!$sortie) {
+                $this->addFlash('erreur', 'Erreur la sortie n\'existe pas');
+                return $this->redirectToRoute('sorties_liste');
+            }
             //Récupérer le campus associé à la sortie
             $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
 
@@ -459,8 +460,7 @@ class SortiesController extends AbstractController
 
     #[isGranted("ROLE_USER")]
     #[Route('/updataEtat', name: '_updateEtat')]
-    public function miseAjourEtat(Request     $request,
-                                  EtatSorties $etatSorties)
+    public function miseAjourEtat(EtatSorties $etatSorties)
     {
         try {
             $etatSorties->updateEtatSorties();

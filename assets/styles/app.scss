@@ -90,9 +90,7 @@ main {
 
 //bandeau header
 .bandeauBonjour {
-  //background-color: $light-pink;
   background-color: $pink-shadow;
-  //width: 30vw;
   width: 300px;
   height: 10%;
   color: black;
@@ -114,8 +112,11 @@ main {
 footer {
   padding: 60px;
   background-color: $pink-shadow;
-  height: 20%;
   color: black;
+}
+
+.contenuFooter {
+  margin-left: 30px;
 }
 
 button {
@@ -348,16 +349,17 @@ td, th {
   text-align: left;
 }
 
-.libSortie{
-font-style: italic;
-font-size: larger;
+.libSortie {
+  font-style: italic;
+  font-size: larger;
 }
 
-.detailSortie{
+.detailSortie {
   margin: 5px;
   border: 3px solid $blue;
 }
-.zoneRecherche{
+
+.zoneRecherche {
   display: grid;
   grid-template-columns: 50% 50%;
   margin: 5px;
@@ -366,7 +368,7 @@ font-size: larger;
   height: 30%;
 }
 
-.libDonneesSortie{
+.libDonneesSortie {
   color: $pink;
   margin-left: 10%;
 }
@@ -391,6 +393,7 @@ font-size: larger;
 *::after {
   box-sizing: border-box;
 }
+
 .wrapper {
   position:sticky;
   top:240px;
@@ -404,7 +407,7 @@ font-size: larger;
   justify-content: center;
   background-size: cover;
   background-position: 50px 19px;
-  transform:scale(50%);
+  transform: scale(50%);
 }
 
 .bird {
@@ -416,7 +419,7 @@ font-size: larger;
   animation-duration: 10s;
   animation-fill-mode: both;
   animation-name: moveBird;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .head {
@@ -441,18 +444,21 @@ font-size: larger;
   animation-name: changeZIndex;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .eye_right {
   left: -29px;
   top: 23px;
 }
+
 .eye_left {
   left: 1px;
   top: 23px;
   animation-direction: reverse;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .eye__inner {
   position: relative;
   width: 100%;
@@ -463,8 +469,9 @@ font-size: larger;
   animation-name: moveEyes;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .eye__inner_right::before, .eye__inner_left::before {
   content: "";
   position: absolute;
@@ -478,8 +485,9 @@ font-size: larger;
   animation-name: blinkTopEyelid;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .eye__inner_right::after, .eye__inner_left::after {
   content: "";
   position: absolute;
@@ -493,8 +501,9 @@ font-size: larger;
   animation-name: blinkBottomEyelid;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .eye__pupil {
   position: absolute;
   top: 18px;
@@ -508,7 +517,7 @@ font-size: larger;
   animation-name: movePupils;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .nose {
@@ -525,7 +534,7 @@ font-size: larger;
   animation-name: moveNose;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .body-wrap {
@@ -544,7 +553,7 @@ font-size: larger;
   transform: skew(-3deg, 0deg);
   background-color: var(--birdColor);
   border-radius: 190px 0 0 0;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .body2 {
@@ -556,7 +565,7 @@ font-size: larger;
   transform: skew(-21deg, 0deg);
   border-radius: 8px 10px 0 53px;
   background-color: var(--birdColor);
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .body3 {
@@ -567,8 +576,9 @@ font-size: larger;
   bottom: 63px;
   border-radius: 0 0 0 73px;
   background-color: var(--birdColor);
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .body3::after {
   content: "";
   position: absolute;
@@ -580,7 +590,7 @@ font-size: larger;
   transform: rotate(-69deg);
   background-color: var(--birdColor);
   border-radius: 0 0 13px 80px;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .leg {
@@ -590,13 +600,15 @@ font-size: larger;
   bottom: 10px;
   transform: rotate(-19deg);
   border-radius: 10px;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .leg_left {
   right: 90px;
   background-color: var(--legsColor);
   z-index: 2;
 }
+
 .leg_right {
   right: 106px;
   background-color: #d8a911;
@@ -614,7 +626,7 @@ font-size: larger;
   animation-name: moveTail;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .pseudo-knife {
@@ -628,8 +640,9 @@ font-size: larger;
   animation-name: pseudoKnifeRotate;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .pseudo-knife__blade {
   width: 250px;
   height: 220px;
@@ -638,8 +651,9 @@ font-size: larger;
   clip-path: polygon(50% 58%, 15% 0, 88% 0);
   background: radial-gradient(var(--knifeColor) 25%, var(--white) 25% 45%, var(--knifeColor) 45% 100%);
   transform: rotate(-153deg);
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .pseudo-knife__handle {
   width: 80px;
   height: 80px;
@@ -650,7 +664,7 @@ font-size: larger;
   clip-path: polygon(50% 58%, 15% 0, 88% 0);
   background: var(--pupilsColor);
   transform: rotate(20deg);
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
 
 .knife {
@@ -662,8 +676,9 @@ font-size: larger;
   animation-name: showKnife;
   animation-duration: 5s;
   animation-fill-mode: both;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .knife::before {
   content: "✦";
   position: absolute;
@@ -677,8 +692,9 @@ font-size: larger;
   animation-duration: 400ms;
   animation-fill-mode: both;
   animation-delay: 2.5s;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .knife__blade {
   position: relative;
   width: 22px;
@@ -686,8 +702,9 @@ font-size: larger;
   background-color: #91C1C6;
   border-radius: 92% 6% 0 100%/100% 6% 94% 0;
   overflow: hidden;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .knife__blade::after {
   content: "";
   display: block;
@@ -704,8 +721,9 @@ font-size: larger;
   animation-duration: 500ms;
   animation-fill-mode: both;
   animation-delay: 2s;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .knife__handle {
   width: 53px;
   height: 13px;
@@ -715,8 +733,9 @@ font-size: larger;
   transform: translateX(-50%);
   top: 85px;
   border-radius: 25px;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 .knife__handle::after {
   content: "";
   width: 21px;
@@ -728,17 +747,18 @@ font-size: larger;
   left: 50%;
   transform: translateX(-50%);
   border-radius: 0 0 20px 20px;
-  animation-play-state:paused;
+  animation-play-state: paused;
 }
+
 @keyframes moveBird {
   0% {
-    transform: translate(50%,+50%);
+    transform: translate(50%, +50%);
   }
   50% {
-    transform: translate(100%,+200%);
+    transform: translate(100%, +200%);
   }
   0% {
-    transform: translate(50%,+50%);
+    transform: translate(50%, +50%);
   }
 }
 
@@ -786,6 +806,7 @@ font-size: larger;
     transform: translateY(-100%);
   }
 }
+
 @keyframes blinkBottomEyelid {
   0% {
     transform: translateY(100%);
@@ -848,6 +869,7 @@ font-size: larger;
     z-index: 2;
   }
 }
+
 @keyframes moveEyes {
   0% {
     transform: translateX(0);
@@ -874,6 +896,7 @@ font-size: larger;
     transform: translateX(0);
   }
 }
+
 @keyframes movePupils {
   0% {
     left: 27%;
@@ -903,6 +926,7 @@ font-size: larger;
     left: 27%;
   }
 }
+
 @keyframes moveTail {
   0% {
     transform: rotate(-45deg) translateY(6px);
@@ -971,6 +995,7 @@ font-size: larger;
     transform: rotate(-45deg) translate(0, 6px);
   }
 }
+
 @keyframes showKnife {
   0% {
     opacity: 0;
@@ -991,6 +1016,7 @@ font-size: larger;
     opacity: 0;
   }
 }
+
 @keyframes bladeBlink {
   0% {
     transform: rotate(-30deg) translateY(0s);
@@ -999,6 +1025,7 @@ font-size: larger;
     transform: rotate(-30deg) translateY(-38px);
   }
 }
+
 @keyframes bladeFlare {
   0% {
     transform: scale(0);
@@ -1010,6 +1037,7 @@ font-size: larger;
     transform: scale(0);
   }
 }
+
 @keyframes pseudoKnifeRotate {
   0% {
     opacity: 0;
@@ -1045,6 +1073,7 @@ font-size: larger;
     transform: rotate(-375deg);
   }
 }
+
 @keyframes moveNose {
   0% {
     border-radius: 77% 23% 25% 75%/55% 52% 48% 45%;
