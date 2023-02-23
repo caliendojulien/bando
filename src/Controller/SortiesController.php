@@ -70,7 +70,7 @@ class SortiesController extends AbstractController
             // Récupération des données du formulaire
             $searchData = $form->getData();
 
-            dump($searchData);
+
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
                 $sorties = $sortieRepository->findSorties(
                     $searchData['nom'],
@@ -151,7 +151,7 @@ class SortiesController extends AbstractController
                 $sortie->setDateLimiteInscription((new DateTime('18:00:00'))->add(new DateInterval('P1D')));
                 $sortie->setNombreInscriptionsMax(5);
             }
-            $logger->debug("le user " . $this->getUser()->getUserIdentifier() . " a créé cette sortie " . $sortie->getNom());
+//            $logger->debug("le user " . $this->getUser()->getUserIdentifier() . " a créé cette sortie " . $sortie->getNom());
             return $this->creerOuModifierSortie($entityManager,
                 $villesRepo,
                 $LieuxRepo,

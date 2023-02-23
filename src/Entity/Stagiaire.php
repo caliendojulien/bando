@@ -75,7 +75,6 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $prenom = null;
 
     #[ORM\Column(length: 10, nullable: true)]
-    #[Assert\NotBlank]
     #[Assert\Type('string')]
     #[Assert\Length(10)]
     private ?string $telephone = null;
