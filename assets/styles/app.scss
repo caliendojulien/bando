@@ -321,7 +321,7 @@ td, th {
   align-items: end;
 }
 
-.boutonEcranCreerSortie {
+.boutonEcranCreerSortie , .btnCreerLieu , .btnAnnulerSortie , .btnModifProfil{
   margin-top: 5%;
 }
 
@@ -329,15 +329,6 @@ td, th {
   font-size: 20px;
 }
 
-//page annulation sortie
-.btnAnnulerSortie {
-  margin-top: 5%;
-}
-
-//page modif profil
-.btnModifProfil {
-  margin-top: 5%;
-}
 
 //Page info sorties
 #titre_participants {
@@ -1110,10 +1101,7 @@ td, th {
   }
 }
 
-//page de création d'un lieu
-.btnCreerLieu {
-  margin-top: 5%;
-}
+
 
 //background
 .ball {

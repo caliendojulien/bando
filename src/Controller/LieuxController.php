@@ -6,7 +6,9 @@ use App\Entity\Lieu;
 use App\Form\LieuType;
 use App\Repository\LieuRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -81,11 +83,11 @@ class LieuxController extends AbstractController
      * Redirige vers la page de création du lieu, mais stocke la sortie en session avant
      * @param Request $request
      * @param SessionInterface $session
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     #[isGranted("ROLE_USER")]
     #[Route('/lieu/allerLieux', name: 'allerLieux')]
-    public function sortieVersLieux(Request $request, SessionInterface $session)
+    public function sortieVersLieux(Request $request, SessionInterface $session): Response
     {
         // Stocker les données dans la session
         $session->set('sortie', $request->get("sortie"));
