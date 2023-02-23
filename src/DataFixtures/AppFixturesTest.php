@@ -5,15 +5,15 @@ namespace App\DataFixtures;
 use App\Entity\Campus;
 use App\Entity\Lieu;
 use App\Entity\Sortie;
-use App\Entity\Ville;
 use App\Entity\Stagiaire;
+use App\Entity\Ville;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Exception;
 use Faker;
 
-class AppFixturesProd extends Fixture
+class AppFixturesTest
 {
     /**
      * @throws Exception
