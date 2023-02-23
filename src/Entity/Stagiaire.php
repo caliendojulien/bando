@@ -396,7 +396,7 @@ class Stagiaire implements UserInterface, PasswordAuthenticatedUserInterface
             'premiere_connexion' => $this->premiereConnexion,
             'image' => $this->image,
             'update_at' => $this->updatedAt,
-            'imageFile' => base64_encode($this->imageFile ?? ''),
+            'imageFile' => base64_encode($this->imageFile),
             'password' => $this->password,
         ];
     }

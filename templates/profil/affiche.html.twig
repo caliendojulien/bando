@@ -11,9 +11,9 @@
             <div class="icon-block">
                 <div class="center">
                     {% if stagiaire.image %}
-                        <img class="photo_stagiaire" src="{{ vich_uploader_asset(app.user, 'imageFile') }}" alt="">
+                        <img class="photo_stagiaire" src="/photos/{{stagiaire.image}}">
                     {% else %}
-                        <img class="photo_stagiaire" src="{{ asset('/images/stagiaires_no_photo.jpg') }}" alt="">
+                        <img class="photo_stagiaire" src="{{ asset('/images/stagiaires_no_photo.jpg') }}">
                     {% endif %}
                 </div>
                 <h5 class="center">{{ stagiaire.prenom }} {{ stagiaire.nom }}</h5>
