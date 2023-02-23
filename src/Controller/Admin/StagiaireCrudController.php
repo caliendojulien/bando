@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TelephoneField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class StagiaireCrudController extends AbstractCrudController
@@ -28,7 +29,7 @@ class StagiaireCrudController extends AbstractCrudController
             EmailField::new('email'),
             TextField::new('nom'),
             TextField::new('prenom'),
-            NumberField::new('telephone'),
+            TelephoneField::new('telephone'),
             ArrayField::new('roles')->hideOnForm(),
             BooleanField::new('administrateur')->renderAsSwitch(false)->setHelp("n'activer que si nécessaire"),
             BooleanField::new('actif')->renderAsSwitch(false)->hideOnForm(),

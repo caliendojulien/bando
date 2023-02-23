@@ -9,9 +9,9 @@
 <div class="form">
     {{ form_start(profilForm) }}
     {% if stagiaire.image %}
-        <img class="photo_stagiaire" src="{{ vich_uploader_asset(app.user, 'imageFile') }}">
+        <img alt="photo profil" class="photo_stagiaire" src="{{ vich_uploader_asset(app.user, 'imageFile') }}">
     {% else %}
-        <img class="photo_stagiaire" src="{{ asset('/images/stagiaires_no_photo.jpg') }}">
+        <img alt="photo profil" class="photo_stagiaire" src="{{ asset('/images/stagiaires_no_photo.jpg') }}">
     {% endif %}
     {{ form_row(profilForm.nom) }}
     {{ form_row(profilForm.prenom) }}

@@ -54,7 +54,7 @@ class SortiesController extends AbstractController
                 'debutSortie' =>new \DateTime("- 1 month"),
                 'finSortie' => new \DateTime("+ 1 year"),
                  'campus' => '303',
-                'organisateur' => true,
+                'organisateur' => false,
                 'inscrit' => false,
                 'sorties_ouvertes' => false,
             ];
@@ -295,7 +295,9 @@ class SortiesController extends AbstractController
         if ($lelieu) $ville = $lelieu->getVille();
         else // sinon je prends la premiere ville de la liste
             if (count($villes) > 0) $ville = $villes[0];
-        if ($ville) $lieux = $LieuxRepo->findBy(["ville" => $ville]); // et je récupère les lieux de la ville, quelle qu'elle soit
+            else $ville=null;
+        if ($ville) $lieux = $LieuxRepo->findBy(["ville" => $ville]);
+        else $lieux=[];// et je récupère les lieux de la ville, quelle qu'elle soit
         return $this->render('sorties/creer.html.twig', [
             'form' => $form->createView(),
             "villes" => $villes,

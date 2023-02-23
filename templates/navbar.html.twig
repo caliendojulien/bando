@@ -2,14 +2,14 @@
     <script src="{{ asset('JS/konami.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.modal');
-            var instances = M.Modal.init(elems, []);
+            const elems = document.querySelectorAll('.modal');
+            const instances = M.Modal.init(elems, []);
         });</script>
     <script type="application/javascript">
-        var easter_egg = new Konami(function() {
+        const easter_egg = new Konami(function () {
             let anim = document.querySelectorAll(".bird_text,.bird,.eye,.face,.head,.eye_left,.eye__inner,.eye__inner_right,.eye__inner_left,.eye__pupil,.nose,.body1,.body2,.body3,.leg,.leg_left,.leg_right,.tail,.pseudo-knife,.pseudo-knife__blade,.pseudo-knife__handle,.knife,.knife__blade,.knife__handle");
             console.log(anim);
-            for (var i = 0; i < anim.length; i++) {
+            for (let i = 0; i < anim.length; i++) {
                 anim[i].style.animationPlayState = "running";
             }
         });
@@ -19,10 +19,10 @@
             <button id="t1"  data-target="modal1" class="touches_inactive modal-trigger">?</button>
             <button id="t2" class="touches_active" onclick="window.location.href='{{path('admin') }}'">Accès Admin</button>
             <button id="t3" class="touches_active" onclick="window.location.href='{{path('profil_modif') }}'">Mon Profil</button>
-            <button id="t4" class="touches_inactive" onclick="play()"><img src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
-            <button id="t5" class="touches_inactive"><img src="{{asset('images/arrow_left.png')}}" width="15px" height="15px"></button>
-            <button id="t6" class="touches_inactive"><img src="{{asset('images/arrow_up.png')}}" width="15px" height="15px"></button>
-            <button id="t7" class="touches_inactive"><img src="{{asset('images/arrow_down.png')}}" width="15px" height="15px"></button>
+            <button id="t4" class="touches_inactive" onclick="play()"><img alt="arrow right" src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
+            <button id="t5" class="touches_inactive"><img  alt="arrow left" src="{{asset('images/arrow_left.png')}}" width="15px" height="15px"></button>
+            <button id="t6" class="touches_inactive"><img  alt="arrow up" src="{{asset('images/arrow_up.png')}}" width="15px" height="15px"></button>
+            <button id="t7" class="touches_inactive"><img  alt="arrow down" src="{{asset('images/arrow_down.png')}}" width="15px" height="15px"></button>
             <button id="t8" class="touches_active" onclick="window.location.href='{{path('app_login')}}'">Connexion</button>
             <button id="t9" class="touches_active" onclick="window.location.href='{{path('sorties_liste')}}'">Sorties</button>
             <button id="t10" class="touches_inactive" onclick="window.location.href='{{path('app_logout') }}'"><img class="eject" src="{{ asset('/images/eject_icon.png') }}" alt=""><p>Echap</p></button>
