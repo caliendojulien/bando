@@ -23,12 +23,12 @@
                         {{ form_label(form.nom) }}
                         {{ form_errors(form.nom) }}
                     </div>
-                    <div>  {{ form_row(form.campus) }}</div>
+                    <div> {{ form_row(form.campus) }}</div>
                     <div class="row">
-                        <div class="input-field col s4">
+                        <div class="input-field col s6">
                             {{ form_widget(form.debutSortie,{'attr': {'class': 'datepicker','name': 'debut'}} ) }}
                         </div>
-                        <div class="input-field col s4">
+                        <div class="input-field col s6">
                             {{ form_widget(form.finSortie,{'attr': {'class': 'datepicker'}} ) }}
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th onclick="play()">Nom</th>
+                        <th>Nom</th>
                         <th>Campus</th>
                         <th>Date de la sortie</th>
                         <th>Clôture</th>
@@ -154,6 +154,12 @@
                     </br>
                     Total sorties: {{ sorties.getTotalItemCount }}
                     {{ knp_pagination_render(sorties) }}
+{#                   . {{ dump(form.campus.vars.value) }}#}
+{#                    {{ dump(form.organisateur.vars.data) }}#}
+{#                    {{ dump(form.inscrit.vars.data) }}#}
+{#                    {{ dump(form.debutSortie.vars.data) }}#}
+{#                    {{ dump(form.sorties_ouvertes.vars.data) }}#}
+{#                    {{ dump(form.finSortie.vars.data) }}#}
                     </tbody>
                 </table>
             </div>

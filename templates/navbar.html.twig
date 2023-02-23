@@ -1,16 +1,12 @@
 {% block navbar %}
-    <script>
-        document.getElementById("t7").addEventListener("click", controlAnimation);
-        function controlAnimation() {
-            $("bird_box").click(function() {
-                $('.bird').toggleClass('.stopped');
-            });
-        }
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.modal');
-            var instances = M.Modal.init(elems, []);
+    <script src="{{ asset('JS/konami.js') }}"></script>
+    <script type="application/javascript">
+        var easter_egg = new Konami(function() {
+            let anim = document.querySelectorAll(".bird_text,.bird,.eye,.face,.head,.eye_left,.eye__inner,.eye__inner_right,.eye__inner_left,.eye__pupil,.nose,.body1,.body2,.body3,.leg,.leg_left,.leg_right,.tail,.pseudo-knife,.pseudo-knife__blade,.pseudo-knife__handle,.knife,.knife__blade,.knife__handle");
+            console.log(anim);
+            for (var i = 0; i < anim.length; i++) {
+                anim[i].style.animationPlayState = "running";
+            }
         });
     </script>
     <div id="nav_bar">
@@ -18,7 +14,7 @@
             <button id="t1"  data-target="modal1" class="touches_inactive modal-trigger">?</button>
             <button id="t2" class="touches_active" onclick="window.location.href='{{path('admin') }}'">Accès Admin</button>
             <button id="t3" class="touches_active" onclick="window.location.href='{{path('profil_modif') }}'">Mon Profil</button>
-            <button id="t4" class="touches_inactive"><img src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
+            <button id="t4" class="touches_inactive" onclick="play()"><img src="{{asset('images/arrow_right.png')}}" width="15px" height="15px"></button>
             <button id="t5" class="touches_inactive"><img src="{{asset('images/arrow_left.png')}}" width="15px" height="15px"></button>
             <button id="t6" class="touches_inactive"><img src="{{asset('images/arrow_up.png')}}" width="15px" height="15px"></button>
             <button id="t7" class="touches_inactive"><img src="{{asset('images/arrow_down.png')}}" width="15px" height="15px"></button>
@@ -29,9 +25,10 @@
             <p class="sous_titre_company">#758681</p>
         </div>
     </div>
-    <div class="wrapper" id="wrapper_box">
-        <div class="bird" id="bird_box">
-            <div class="head">
+    <div class="wrapper" id="wrapper">
+
+        <div class="bird" id="bird">
+            <div class="head" id="head">
                 <div class="eye eye_right">
                     <div class="eye__inner eye__inner_right">
                         <div class="eye__pupil"></div>
@@ -62,7 +59,7 @@
                 <div class="pseudo-knife__handle"></div>
             </div>
 
-            <div class="knife">
+            <div class="knife" id="knife">
                 <div class="knife__blade"></div>
                 <div class="knife__handle"></div>
             </div>
@@ -77,7 +74,7 @@
             <p>Bisous</p>
         </div>
         <div class="modal-footer">
-            <a href="#!" class="modal-close waves-effect waves-green btn-flat">Merci</a>
+            <a href="#" class="modal-close waves-effect waves-green btn-flat">Merci</a>
         </div>
     </div>
 {% endblock %}
