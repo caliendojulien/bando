@@ -395,11 +395,11 @@ td, th {
 }
 
 .wrapper {
-  position: sticky;
-  top: 240px;
-  left: -200px;
+  position:sticky;
+  top:240px;
+  left:-500px;
   z-index: -2;
-  width: 300px;
+  width: 50px;
   height: 400px;
   display: flex;
   flex-direction: column;
@@ -408,6 +408,7 @@ td, th {
   background-size: cover;
   background-position: 50px 19px;
   transform: scale(50%);
+
 }
 
 .bird {
@@ -415,7 +416,7 @@ td, th {
   height: 330px;
   position: relative;
   top: 26px;
-  left: -380px;
+  left: -320px;
   animation-duration: 10s;
   animation-fill-mode: both;
   animation-name: moveBird;
@@ -758,7 +759,7 @@ td, th {
     transform: translate(100%, +200%);
   }
   0% {
-    transform: translate(50%, +50%);
+    transform: translate(10%, +50%);
   }
 }
 
