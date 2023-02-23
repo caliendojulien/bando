@@ -18,15 +18,17 @@ use App\Services\InscriptionsService;
 use App\Services\ListeSortiesService;
 use App\Services\MailService;
 use App\Services\SortiesService;
+use DateInterval;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Knp\Component\Pager\PaginatorInterface;
-use PHPUnit\Framework\Constraint\IsNull;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -65,17 +67,9 @@ class SortiesController extends AbstractController
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
-                // Récupération des données du formulaire
+            // Récupération des données du formulaire
             $searchData = $form->getData();
-//                $data = [
-//                    'nom' => $form->get('nom')->getData(),
-//                    'debutSortie' => $form->get('debutSortie')->getData(),
-//                    'finSortie' => $form->get('finSortie')->getData(),
-//                    'campus' => $form->get('campus')->getData(),
-//                    'organisateur' => $form->get('organisateur')->getData(),
-//                    'inscrit' => $form->get('inscrit')->getData(),
-//                    'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
-//                ];
+
             dump($searchData);
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
                 $sorties = $sortieRepository->findSorties(
@@ -91,7 +85,7 @@ class SortiesController extends AbstractController
              //Appel du paginator
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
-                $request->query->getInt('page', 1), 30);
+                $request->query->getInt('page', 1), 20);
 
             // Rendu de la vue et envoi des données
             return $this->render('sorties/sorties.html.twig', [
@@ -128,6 +122,8 @@ class SortiesController extends AbstractController
      * @param LieuRepository $LieuxRepo
      * @param Request $request
      * @param SortiesService $serviceSorties
+     * @param SessionInterface $session
+     * @param LoggerInterface $logger
      * @return Response
      */
     #[isGranted("ROLE_USER")]
@@ -139,7 +135,8 @@ class SortiesController extends AbstractController
         LieuRepository         $LieuxRepo,
         Request                $request,
         SortiesService         $serviceSorties,
-        SessionInterface       $session
+        SessionInterface       $session,
+        LoggerInterface        $logger
     ): Response
     {
         try {
@@ -150,10 +147,11 @@ class SortiesController extends AbstractController
             if (!$sortie) {
                 $sortie = new Sortie();
                 //valeurs par défaut
-                $sortie->setDebutSortie((new \DateTime('19:00:00'))->add(new \DateInterval('P2D')));
-                $sortie->setDateLimiteInscription((new \DateTime('18:00:00'))->add(new \DateInterval('P1D')));
+                $sortie->setDebutSortie((new DateTime('19:00:00'))->add(new DateInterval('P2D')));
+                $sortie->setDateLimiteInscription((new DateTime('18:00:00'))->add(new DateInterval('P1D')));
                 $sortie->setNombreInscriptionsMax(5);
             }
+            $logger->debug("le user " . $this->getUser()->getUserIdentifier() . " a créé cette sortie " . $sortie->getNom());
             return $this->creerOuModifierSortie($entityManager,
                 $villesRepo,
                 $LieuxRepo,
@@ -250,7 +248,6 @@ class SortiesController extends AbstractController
         if (!$cree) {
             $interval = $sortie->getDebutSortie()->diff($sortie->getFinSortie());
             $duree = $interval->d * 1440 + $interval->h * 60 + $interval->i;
-            $request->request->set("duree", $duree);
         } else $duree = 30;
 
         //traiter l'envoi du formulaire
@@ -261,11 +258,8 @@ class SortiesController extends AbstractController
             if ($idLieu) $sortie->setLieu($LieuxRepo->findOneBy(["id" => $idLieu]));
 
             //  trouver la date de fin en fonction de la durée et de la date de début
-
-            if ($cree) {
-                $duree = (int)$request->request->get("duree");
-                $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
-            }
+            $duree = (int)$request->request->get("duree");
+            $serviceSorties->ajouterDureeAdateFin($sortie, $duree);
 
             //l'état dépend du bouton sur lequel on a cliqué
             if ($request->request->get('Publier'))
@@ -316,7 +310,7 @@ class SortiesController extends AbstractController
 
     /**
      * Méthode permettant à un utilisateur authentifié de s'inscrire à une sortie
-     * @param int $idSortie L'identifiant de la sortie
+     * @param int $id L'identifiant de la sortie
      * @param SortieRepository $sortieRepo
      * @param EntityManagerInterface $entityManager
      * @param InscriptionsService $serv
@@ -341,8 +335,8 @@ class SortiesController extends AbstractController
 
             $tab = $serv->inscrire($stag, $sortie, $entityManager);
             if ($tab[0])
-                $this->addFlash('success', 'vous avez été inscrit à la sortie');
-            else  $this->addFlash('error', 'inscription impossible : ' . $tab[1]);
+                $this->addFlash('success', 'Vous avez été inscrit à la sortie');
+            else  $this->addFlash('error', 'Inscription impossible : ' . $tab[1]);
 
             //rediriger
             return $this->redirectToRoute('sorties_liste');
@@ -379,7 +373,7 @@ class SortiesController extends AbstractController
             if ($inscriptionsService->SeDesinscrire($user, $sortie, $entityManager))
                 $this->addFlash('success', 'Votre désistement a bien été pris en compte.');
             else
-                $this->addFlash('error', 'Problème lors de votre désistement, veuilez contacter un administrateur.');
+                $this->addFlash('error', 'Problème lors de votre désistement, veuillez contacter un administrateur.');
 
 
             // Redirige l'utilisateur vers la liste des sorties.
@@ -400,6 +394,7 @@ class SortiesController extends AbstractController
      * @param Request $request
      * @param MailService $mailer
      * @return Response
+     * @throws TransportExceptionInterface
      */
     #[isGranted("ROLE_USER")]
     #[Route('/annulation/sortie/{id}', name: '_annulation')]
@@ -414,15 +409,12 @@ class SortiesController extends AbstractController
                                MailService            $mailer): Response
     {
         try {
-            //Contrôle de l'id organisateur entrant
-            if (!is_int($id)) {
-                $this->addFlash('erreur', 'Erreur l\'utilisateur n\'est pas reconnu');
-                return $this->redirectToRoute('sorties_liste');
-            }
-
             // Récupère la sortie correspondant à l'ID spécifié.
             $sortie = $sortieRepository->findOneBy(['id' => $id]);
-
+            if (!$sortie) {
+                $this->addFlash('erreur', 'Erreur la sortie n\'existe pas');
+                return $this->redirectToRoute('sorties_liste');
+            }
             //Récupérer le campus associé à la sortie
             $campus = $campusRepository->findOneBy(['id' => $sortie->getCampus()]);
 
@@ -470,8 +462,7 @@ class SortiesController extends AbstractController
 
     #[isGranted("ROLE_USER")]
     #[Route('/updataEtat', name: '_updateEtat')]
-    public function miseAjourEtat(Request     $request,
-                                  EtatSorties $etatSorties)
+    public function miseAjourEtat(EtatSorties $etatSorties)
     {
         try {
             $etatSorties->updateEtatSorties();

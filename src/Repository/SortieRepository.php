@@ -138,7 +138,6 @@ class SortieRepository extends ServiceEntityRepository
                         $sortie->getEtat() != 1 || ($sortie->getEtat() === 1 && $sortie->getOrganisateur() === $user);
 
                 });
-
     }
 
     /**
