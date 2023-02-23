@@ -394,24 +394,10 @@ td, th {
   box-sizing: border-box;
 }
 
-.bird_text {
-  position: fixed;
-  top: 670px;
-  left: 90px;
-  z-index: -1;
-  transform: scale(100%);
-  animation-duration: 8s;
-  animation-fill-mode: both;
-  animation-name: moveBirdText;
-  animation-play-state: paused;
-  font-family: "Magneto", serif;
-  font-size: 1em;
-}
-
 .wrapper {
-  position: fixed;
-  top: 240px;
-  left: -20px;
+  position:sticky;
+  top:240px;
+  left:-200px;
   z-index: -2;
   width: 300px;
   height: 400px;
@@ -429,7 +415,7 @@ td, th {
   height: 330px;
   position: relative;
   top: 26px;
-  left: 28px;
+  left: -380px;
   animation-duration: 10s;
   animation-fill-mode: both;
   animation-name: moveBird;
@@ -1122,82 +1108,14 @@ td, th {
     z-index: 2;
   }
 }
-
-
 //page de création d'un lieu
 .btnCreerLieu {
   margin-top: 5%;
 }
 
-///* Cool infinite background scrolling animation.
-// * Twitter: @kootoopas
-// */
-//
-///* Exo thin font from Google. */
-//@import url(https://fonts.googleapis.com/css?family=Exo:100);
-//
-///* Background data (Original source: https://subtlepatterns.com/grid-me/) */
-//$bg-url: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAIAAACRXR/mAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAIGNIUk0AAHolAACAgwAA+f8AAIDpAAB1MAAA6mAAADqYAAAXb5JfxUYAAABnSURBVHja7M5RDYAwDEXRDgmvEocnlrQS2SwUFST9uEfBGWs9c97nbGtDcquqiKhOImLs/UpuzVzWEi1atGjRokWLFi1atGjRokWLFi1atGjRokWLFi1af7Ukz8xWp8z8AAAA//8DAJ4LoEAAlL1nAAAAAElFTkSuQmCC";
-//$bg-width: 50px;
-//$bg-height: 50px;
-//
-///* Animations */
-//@-webkit-keyframes bg-scrolling-reverse {
-//  100% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@-moz-keyframes bg-scrolling-reverse {
-//  100% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@-o-keyframes bg-scrolling-reverse {
-//  100% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@keyframes bg-scrolling-reverse {
-//  100% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@-webkit-keyframes bg-scrolling {
-//  0% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@-moz-keyframes bg-scrolling {
-//  0% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@-o-keyframes bg-scrolling {
-//  0% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-//
-//@keyframes bg-scrolling {
-//  0% {
-//    background-position: $bg-width $bg-height;
-//  }
-//}
-///
-////body {
-////  background: url($bg-url) repeat 0 0;
-////  -webkit-animation: bg-scrolling-reverse .92s infinite; /* Safari 4+ */
-////  -moz-animation: bg-scrolling-reverse .92s infinite; /* Fx 5+ */
-////  -o-animation: bg-scrolling-reverse .92s infinite; /* Opera 12+ */
-////  animation: bg-scrolling-reverse .92s infinite; /* IE 10+ */
-////  -webkit-animation-timing-function: linear;
-////  -moz-animation-timing-function: linear;
-////  -o-animation-timing-function: linear;
-////  animation-timing-function: linear;
-////}
+//background
+.ball {
+  position: absolute;
+  border-radius: 100%;
+  opacity: 0.7;
+}
