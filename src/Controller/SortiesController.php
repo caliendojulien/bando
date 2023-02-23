@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Campus;
 use App\Entity\EtatSortiesEnum;
 use App\Entity\Sortie;
 use App\Form\SortieAnnulationFormType;
@@ -14,6 +15,7 @@ use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
 use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
+use App\Services\ListeSortiesService;
 use App\Services\MailService;
 use App\Services\SortiesService;
 use DateInterval;
@@ -40,47 +42,47 @@ class SortiesController extends AbstractController
     #[isGranted("ROLE_USER")]
     #[Route('/liste', name: '_liste')]
     public function sorties(
-        SortieRepository   $sortieRepository,
-        Request            $request,
-        PaginatorInterface $paginator,
-        SessionInterface   $session,
+        SortieRepository     $sortieRepository,
+        Request              $request,
+        PaginatorInterface   $paginator,
+        CampusRepository $campusRepository,
     ): Response
     {
         try {
+            $searchData = [
+                'nom' => '',
+                'debutSortie' =>new \DateTime("- 1 month"),
+                'finSortie' => new \DateTime("+ 1 year"),
+                 'campus' => '303',
+                'organisateur' => true,
+                'inscrit' => false,
+                'sorties_ouvertes' => false,
+            ];
+            //Instanciation d'un campus
+            $campus = $campusRepository->find($searchData['campus']);
+            $searchData['campus'] = $campus;
             // Création du formulaire de recherche de sorties
-            $form = $this->createForm(SortieSearchFormType::class);
+            $form = $this->createForm(SortieSearchFormType::class,$searchData);
             //Récupération de l'id de l'utilisateur connecté
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
             $form->handleRequest($request);
             // Récupération des données du formulaire
-            $data = [
-                'nom' => $form->get('nom')->getData(),
-                'debutSortie' => $form->get('debutSortie')->getData(),
-                'finSortie' => $form->get('finSortie')->getData(),
-                'campus' => $form->get('campus')->getData(),
-                'organisateur' => $form->get('organisateur')->getData(),
-                'inscrit' => $form->get('inscrit')->getData(),
-                'sorties_ouvertes' => $form->get('sorties_ouvertes')->getData()
-            ];
-            $session->set('debutSortie', $form->get('debutSortie')->getData());
+            $searchData = $form->getData();
 
-            // Si la case "Sorties passées" est cochée, on ignore la date de début de la sortie
-            if ($data['sorties_ouvertes']) {
-                $data['debutSortie'] = null;
-            }
-
-            // Recherche des sorties en fonction des données renseignées par l'utilisateur.
-            $sorties = $sortieRepository->findSorties(
-                $data['nom'],
-                $data['debutSortie'],
-                $data['finSortie'],
-                $data['campus'],
-                $data['organisateur'],
-                $this->getUser(),
-                $data['inscrit'],
-                $data['sorties_ouvertes']
-            );
+            dump($searchData);
+            // Recherche des sorties en fonction des données renseignées par l'utilisateur
+                $sorties = $sortieRepository->findSorties(
+                    $searchData['nom'],
+                    $searchData['debutSortie'],
+                    $searchData['finSortie'],
+                    $campus,
+                    $searchData['organisateur'],
+                    $this->getUser(),
+                    $searchData['inscrit'],
+                    $searchData['sorties_ouvertes']
+                );
+             //Appel du paginator
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 20);
