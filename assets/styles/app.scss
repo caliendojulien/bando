@@ -395,9 +395,9 @@ td, th {
 }
 
 .wrapper {
-  position:sticky;
-  top:240px;
-  left:-200px;
+  position: sticky;
+  top: 240px;
+  left: -200px;
   z-index: -2;
   width: 300px;
   height: 400px;
@@ -1108,6 +1108,7 @@ td, th {
     z-index: 2;
   }
 }
+
 //page de création d'un lieu
 .btnCreerLieu {
   margin-top: 5%;
