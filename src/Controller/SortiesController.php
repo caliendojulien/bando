@@ -76,7 +76,7 @@ class SortiesController extends AbstractController
                     $searchData['nom'],
                     $searchData['debutSortie'],
                     $searchData['finSortie'],
-                    $campus,
+                    $searchData['campus'],
                     $searchData['organisateur'],
                     $this->getUser(),
                     $searchData['inscrit'],
@@ -449,7 +449,7 @@ class SortiesController extends AbstractController
                 $entityManager->flush();
                 return $this->redirectToRoute('sorties_liste');
             }
-
+            dump('test');
             return $this->render('sorties/annulation.html.twig', [
                 'sortieForm' => $sortieForm,
                 'sortie' => $sortie,
