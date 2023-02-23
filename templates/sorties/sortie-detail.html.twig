@@ -21,8 +21,8 @@
             crossorigin=""></script>
     <script type="text/javascript">
         // On initialise la latitude et la longitude de Paris (centre de la carte)
-        let lat =47.21343;
-        let lon =-1.560380;
+        let lat = {{ sortie.lieu.latitude }};
+        let lon = {{ sortie.lieu.longitude }};
         let macarte = null;
 
         // Fonction d'initialisation de la carte
