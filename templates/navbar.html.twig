@@ -1,5 +1,10 @@
 {% block navbar %}
     <script src="{{ asset('JS/konami.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var elems = document.querySelectorAll('.modal');
+            var instances = M.Modal.init(elems, []);
+        });</script>
     <script type="application/javascript">
         var easter_egg = new Konami(function() {
             let anim = document.querySelectorAll(".bird_text,.bird,.eye,.face,.head,.eye_left,.eye__inner,.eye__inner_right,.eye__inner_left,.eye__pupil,.nose,.body1,.body2,.body3,.leg,.leg_left,.leg_right,.tail,.pseudo-knife,.pseudo-knife__blade,.pseudo-knife__handle,.knife,.knife__blade,.knife__handle");
