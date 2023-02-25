@@ -1,4 +1,4 @@
-
+composer.lock
 ###> symfony/framework-bundle ###
 .idea
 /.env.local
