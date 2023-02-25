@@ -31,6 +31,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 /**
  * @method AccessDeniedException(string $string)
@@ -46,6 +51,7 @@ class SortiesController extends AbstractController
         Request              $request,
         PaginatorInterface   $paginator,
         CampusRepository $campusRepository,
+        HttpClientInterface $httpClient
     ): Response
     {
         try {
@@ -72,16 +78,21 @@ class SortiesController extends AbstractController
 
 
             // Recherche des sorties en fonction des données renseignées par l'utilisateur
-                $sorties = $sortieRepository->findSorties(
-                    $searchData['nom'],
-                    $searchData['debutSortie'],
-                    $searchData['finSortie'],
-                    $searchData['campus'],
-                    $searchData['organisateur'],
-                    $this->getUser(),
-                    $searchData['inscrit'],
-                    $searchData['sorties_ouvertes']
-                );
+//                $sorties = $sortieRepository->findSorties(
+//                    $searchData['nom'],
+//                    $searchData['debutSortie'],
+//                    $searchData['finSortie'],
+//                    $searchData['campus'],
+//                    $searchData['organisateur'],
+//                    $this->getUser(),
+//                    $searchData['inscrit'],
+//                    $searchData['sorties_ouvertes']
+//                );
+            $response = $httpClient->request(
+                'GET',
+                'https://localhost:8000/api/sorties.json'
+            );
+            $sorties = $response->toArray();
              //Appel du paginator
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
@@ -95,6 +106,7 @@ class SortiesController extends AbstractController
             ]);
         } catch (Exception $ex) {
             return $this->render('pageErreur.html.twig', ["message" => $ex->getMessage()]);
+        } catch (\Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface|DecodingExceptionInterface $e) {
         }
     }
 
