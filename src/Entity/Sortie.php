@@ -2,64 +2,82 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SortieRepository;
 use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+#[ApiResource(
+    normalizationContext: ["groups" => ["sortie"]],
+    denormalizationContext: ["groups" => ["sortie"]]
+)]
 #[ORM\Entity(repositoryClass: SortieRepository::class)]
 class Sortie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["sortie"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["sortie"])]
     private ?string $nom = null;
 
     #[Assert\GreaterThanOrEqual('today',message: "La date de début est forcément supérieure à aujourd'hui")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-
+    #[Groups(["sortie"])]
     private ?\DateTimeInterface $debutSortie = null;
+
     #[Assert\GreaterThanOrEqual('today',message: "La date de fin de sortie est forcément supérieure à aujourd'hui")]
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(["sortie"])]
     private ?DateTimeInterface $finSortie = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-
     #[Assert\GreaterThanOrEqual('today',message: "La date limite est forcément supérieure à aujourd'hui")]
+    #[Groups(["sortie"])]
     private ?\DateTimeInterface $dateLimiteInscription = null;
 
 
     #[ORM\Column(nullable: true)]
     #[Assert\Length(min:1,max: 1000,minMessage: "doit être supérieur à zéro",maxMessage: "doit être inférieur ou égal à 1000")]
+    #[Groups(["sortie"])]
     private ?int $nombreInscriptionsMax = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(["sortie"])]
     private ?string $infosSortie = null;
 
     #[Assert\Length(min:1,max: 8)]
     #[ORM\Column]
+    #[Groups(["sortie"])]
     private ?int $etat = null;
 
     #[ORM\Column(length: 150, nullable: true)]
+    #[Groups(["sortie"])]
     private ?string $motifAnnulation = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["sortie"])]
     private ?Lieu $lieu = null;
 
     #[ORM\ManyToOne(inversedBy: 'sorties')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["sortie"])]
     private ?Campus $campus = null;
 
     #[ORM\ManyToOne(inversedBy: 'organiseSorties')]
+    #[Groups(["sortie"])]
     private ?Stagiaire $organisateur = null;
 
     #[ORM\ManyToMany(targetEntity: Stagiaire::class, inversedBy: 'participeSorties')]
+    #[Groups(["sortie"])]
     private Collection $participants;
 
     public function __construct()
