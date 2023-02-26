@@ -13,6 +13,7 @@ use App\Repository\LieuRepository;
 use App\Repository\SortieRepository;
 use App\Repository\StagiaireRepository;
 use App\Repository\VilleRepository;
+use App\Services\Api;
 use App\Services\EtatSorties;
 use App\Services\InscriptionsService;
 use App\Services\ListeSortiesService;
@@ -47,19 +48,19 @@ class SortiesController extends AbstractController
     #[isGranted("ROLE_USER")]
     #[Route('/liste', name: '_liste')]
     public function sorties(
-        SortieRepository     $sortieRepository,
-        Request              $request,
-        PaginatorInterface   $paginator,
-        CampusRepository $campusRepository,
-        HttpClientInterface $httpClient
+        SortieRepository   $sortieRepository,
+        Request            $request,
+        PaginatorInterface $paginator,
+        CampusRepository   $campusRepository,
+        Api                $api
     ): Response
     {
         try {
             $searchData = [
                 'nom' => '',
-                'debutSortie' =>new \DateTime("- 1 month"),
+                'debutSortie' => new \DateTime("- 1 month"),
                 'finSortie' => new \DateTime("+ 1 year"),
-                 'campus' => '303',
+                'campus' => '303',
                 'organisateur' => false,
                 'inscrit' => false,
                 'sorties_ouvertes' => false,
@@ -68,7 +69,7 @@ class SortiesController extends AbstractController
             $campus = $campusRepository->find($searchData['campus']);
             $searchData['campus'] = $campus;
             // Création du formulaire de recherche de sorties
-            $form = $this->createForm(SortieSearchFormType::class,$searchData);
+            $form = $this->createForm(SortieSearchFormType::class, $searchData);
             //Récupération de l'id de l'utilisateur connecté
             $stagiaire = $this->getUser();
             // Gestion de la soumission du formulaire
@@ -88,12 +89,8 @@ class SortiesController extends AbstractController
 //                    $searchData['inscrit'],
 //                    $searchData['sorties_ouvertes']
 //                );
-            $response = $httpClient->request(
-                'GET',
-                'https://localhost:8000/api/sorties.json'
-            );
-            $sorties = $response->toArray();
-             //Appel du paginator
+            $sorties = [];
+            //Appel du paginator
             $sortiesPaginee = $paginator->paginate(
                 $sorties,
                 $request->query->getInt('page', 1), 20);
@@ -307,9 +304,9 @@ class SortiesController extends AbstractController
         if ($lelieu) $ville = $lelieu->getVille();
         else // sinon je prends la premiere ville de la liste
             if (count($villes) > 0) $ville = $villes[0];
-            else $ville=null;
+            else $ville = null;
         if ($ville) $lieux = $LieuxRepo->findBy(["ville" => $ville]);
-        else $lieux=[];// et je récupère les lieux de la ville, quelle qu'elle soit
+        else $lieux = [];// et je récupère les lieux de la ville, quelle qu'elle soit
         return $this->render('sorties/creer.html.twig', [
             'form' => $form->createView(),
             "villes" => $villes,
